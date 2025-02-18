@@ -150,14 +150,14 @@ class _CourseListScreenState extends State<CourseListScreen> {
             padding: const EdgeInsets.all(16.0),
             child: TextField(
               decoration: InputDecoration(
-                hintText: 'Cerca corsi...',
+                hintText: 'Cerca...',
                 filled: true,
                 fillColor: Color(0xFF2C2C2E), // Light gray color
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16), // Make the borders more rounded
+                  borderRadius: BorderRadius.circular(30), // Make the borders more rounded
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               ),
               onChanged: (value) {
                 setState(() {
