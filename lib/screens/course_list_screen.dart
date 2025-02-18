@@ -65,6 +65,20 @@ class _CourseListScreenState extends State<CourseListScreen> {
     });
   }
 
+  void _editCourse(int index, Course course) {
+    setState(() {
+      _courses[index] = course;
+      _saveCourses();
+    });
+  }
+
+  void _deleteCourse(int index) {
+    setState(() {
+      _courses.removeAt(index);
+      _saveCourses();
+    });
+  }
+
   void _sortCourses() {
     setState(() {
       if (_sortCriteria == 'name') {
@@ -135,6 +149,99 @@ class _CourseListScreenState extends State<CourseListScreen> {
     );
   }
 
+  void _showEditCourseDialog(int index) {
+    final course = _courses[index];
+    final nameController = TextEditingController(text: course.name);
+    final deadlineController = TextEditingController(text: course.deadline.toLocal().toString().split(' ')[0]);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Modifica Corso'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(labelText: 'Nome Corso'),
+              ),
+              TextField(
+                controller: deadlineController,
+                decoration: InputDecoration(
+                  labelText: 'Scadenza (YYYY-MM-DD)',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.calendar_today),
+                    onPressed: () async {
+                      final DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2101),
+                      );
+                      if (picked != null) {
+                        setState(() {
+                          deadlineController.text = picked.toLocal().toString().split(' ')[0];
+                        });
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Annulla'),
+            ),
+            TextButton(
+              onPressed: () {
+                final editedCourse = Course(
+                  name: nameController.text,
+                  deadline: DateTime.parse(deadlineController.text),
+                );
+                _editCourse(index, editedCourse);
+                Navigator.of(context).pop();
+              },
+              child: Text('Salva'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDeleteConfirmationDialog(int index) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Conferma Eliminazione'),
+          content: Text('Sei sicuro di voler eliminare questo corso?'),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Annulla'),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                _deleteCourse(index);
+                Navigator.of(context).pop();
+              },
+              child: Text('Elimina'),
+              isDestructiveAction: true,
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredCourses = _courses.where((course) {
@@ -191,10 +298,37 @@ class _CourseListScreenState extends State<CourseListScreen> {
               itemCount: filteredCourses.length,
               itemBuilder: (context, index) {
                 final course = filteredCourses[index];
-                return CourseCard(
-                  title: course.name,
-                  description: 'Scadenza: ${course.deadline.toLocal().toString().split(' ')[0]}',
-                  dueDate: course.deadline,
+                return Dismissible(
+                  key: Key(course.name),
+                  background: Container(
+                    color: Colors.blue,
+                    alignment: Alignment.centerLeft,
+                    padding: EdgeInsets.only(left: 20),
+                    child: Icon(Icons.edit, color: Colors.white),
+                  ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: EdgeInsets.only(right: 20),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  confirmDismiss: (direction) async {
+                    if (direction == DismissDirection.endToStart) {
+                      _showDeleteConfirmationDialog(index);
+                      return false;
+                    } else {
+                      _showEditCourseDialog(index);
+                      return false;
+                    }
+                  },
+                  child: Container(
+                    width: double.infinity, // Ensure the course card occupies the entire width
+                    child: CourseCard(
+                      title: course.name,
+                      description: 'Scadenza: ${course.deadline.toLocal().toString().split(' ')[0]}',
+                      dueDate: course.deadline,
+                    ),
+                  ),
                 );
               },
             ),
