@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:isail/screens/add_course_screen.dart';
 import '../models/course.dart';
+import '../widgets/course_card.dart';
 
 class CourseListScreen extends StatefulWidget {
   const CourseListScreen({super.key});
@@ -51,15 +52,10 @@ class _CourseListScreenState extends State<CourseListScreen> {
         itemCount: _courses.length,
         itemBuilder: (context, index) {
           final course = _courses[index];
-          return ListTile(
-            title: Text(
-              course.name,
-              style: TextStyle(color: Colors.white),
-            ),
-            subtitle: Text(
-              'Deadline: ${course.deadline.toLocal()}',
-              style: TextStyle(color: Colors.white70),
-            ),
+          return CourseCard(
+            title: course.name,
+            description: 'Scadenza: ${course.deadline.toLocal().toString().split(' ')[0]}',
+            dueDate: course.deadline,
           );
         },
       ),

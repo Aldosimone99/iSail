@@ -5,6 +5,13 @@ import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized(); // Assicura la corretta inizializzazione
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent, // Make the status bar transparent
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: Color(0xFF1C1C1E), // Match the background color
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
   runApp(const MyApp());
 }
 
@@ -18,12 +25,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.black, // Cambia il colore della status bar
-      statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Colors.black,
-      systemNavigationBarIconBrightness: Brightness.light,
-    ));
     return FutureBuilder<bool>(
       future: _isFirstTime(),
       builder: (context, snapshot) {
