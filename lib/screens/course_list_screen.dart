@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'package:isail/screens/add_course_screen.dart';
 import '../models/course.dart';
 import '../widgets/course_card.dart';
@@ -23,6 +24,7 @@ class _CourseListScreenState extends State<CourseListScreen> {
   void initState() {
     super.initState();
     _loadUserName();
+    _loadCourses();
   }
 
   void _loadUserName() async {
@@ -39,9 +41,27 @@ class _CourseListScreenState extends State<CourseListScreen> {
     setState(() {});
   }
 
+  void _loadCourses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? coursesString = prefs.getString('courses');
+    if (coursesString != null) {
+      final List<dynamic> coursesJson = jsonDecode(coursesString);
+      setState(() {
+        _courses.addAll(coursesJson.map((json) => Course.fromJson(json)).toList());
+      });
+    }
+  }
+
+  void _saveCourses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String coursesString = jsonEncode(_courses.map((course) => course.toJson()).toList());
+    await prefs.setString('courses', coursesString);
+  }
+
   void _addCourse(Course course) {
     setState(() {
       _courses.add(course);
+      _saveCourses();
     });
   }
 
