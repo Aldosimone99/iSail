@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:isail/screens/add_course_screen.dart';
 import '../models/course.dart';
@@ -16,6 +17,7 @@ class _CourseListScreenState extends State<CourseListScreen> {
   final List<Course> _courses = [];
   String _greeting = '';
   String _searchQuery = '';
+  String _sortCriteria = 'name';
 
   @override
   void initState() {
@@ -43,6 +45,76 @@ class _CourseListScreenState extends State<CourseListScreen> {
     });
   }
 
+  void _sortCourses() {
+    setState(() {
+      if (_sortCriteria == 'name') {
+        _courses.sort((a, b) => a.name.compareTo(b.name));
+      } else if (_sortCriteria == 'deadline_asc') {
+        _courses.sort((a, b) => a.deadline.compareTo(b.deadline));
+      } else if (_sortCriteria == 'deadline_desc') {
+        _courses.sort((a, b) => b.deadline.compareTo(a.deadline));
+      } else if (_sortCriteria == 'added') {
+        // Assuming courses are added in order, no need to sort
+      }
+    });
+  }
+
+  void _showSortOptions(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: Text('Nome'),
+            onPressed: () {
+              setState(() {
+                _sortCriteria = 'name';
+                _sortCourses();
+              });
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Scadenza vicina'),
+            onPressed: () {
+              setState(() {
+                _sortCriteria = 'deadline_asc';
+                _sortCourses();
+              });
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Scadenza lontana'),
+            onPressed: () {
+              setState(() {
+                _sortCriteria = 'deadline_desc';
+                _sortCourses();
+              });
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Aggiunta'),
+            onPressed: () {
+              setState(() {
+                _sortCriteria = 'added';
+                _sortCourses();
+              });
+              Navigator.pop(context);
+            },
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('Annulla'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredCourses = _courses.where((course) {
@@ -52,9 +124,24 @@ class _CourseListScreenState extends State<CourseListScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black, // Make the AppBar black (OLED)
-        title: Text(
-          _greeting,
-          style: TextStyle(fontSize: 24), // Increase the font size
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              _greeting,
+              style: TextStyle(fontSize: 24), // Increase the font size
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF2C2C2E), // Same color as the search bar
+                shape: BoxShape.circle,
+              ),
+              child: IconButton(
+                icon: Icon(Icons.swap_vert), // Use up and down arrows icon
+                onPressed: () => _showSortOptions(context),
+              ),
+            ),
+          ],
         ),
       ),
       body: Column(
