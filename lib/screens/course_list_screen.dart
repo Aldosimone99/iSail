@@ -26,11 +26,11 @@ class _CourseListScreenState extends State<CourseListScreen> {
     final userName = prefs.getString('userName') ?? 'Utente';
     final hour = DateTime.now().hour;
     if (hour < 12) {
-      _greeting = 'Buongiorno, $userName';
+      _greeting = 'Buongiorno $userName';
     } else if (hour < 18) {
-      _greeting = 'Buonpomeriggio, $userName';
+      _greeting = 'Buon Pomeriggio $userName';
     } else {
-      _greeting = 'Buonasera, $userName';
+      _greeting = 'Buonasera $userName';
     }
     setState(() {});
   }
