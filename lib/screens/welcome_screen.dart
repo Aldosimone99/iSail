@@ -26,6 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black, // Make the AppBar black (OLED)
         title: Text('Benvenuto su iSail'),
       ),
       body: Padding(

@@ -5,12 +5,11 @@ import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized(); // Assicura la corretta inizializzazione
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent, // Make the status bar transparent
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,  // Necessario su iOS
+    statusBarBrightness: Brightness.dark, // Icone chiare su sfondo scuro
     statusBarIconBrightness: Brightness.light,
-    systemNavigationBarColor: Color(0xFF1C1C1E), // Match the background color
-    systemNavigationBarIconBrightness: Brightness.light,
   ));
   runApp(const MyApp());
 }
@@ -35,7 +34,7 @@ class MyApp extends StatelessWidget {
             title: 'iSail',
             theme: ThemeData(
               brightness: Brightness.dark,
-              scaffoldBackgroundColor: Color(0xFF1C1C1E), // System Background
+              scaffoldBackgroundColor: Colors.black, // System Background (OLED black)
               colorScheme: ColorScheme.dark(
                 primary: Colors.white, // Cambia il colore primario in bianco
                 secondary: Colors.white, // Cambia il colore secondario in bianco
