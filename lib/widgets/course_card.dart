@@ -24,9 +24,9 @@ class CourseCard extends StatelessWidget {
   Color _getBackgroundColor() {
     final now = DateTime.now();
     if (dueDate.isBefore(now.add(Duration(days: 365)))) {
-      return Colors.red.withOpacity(0.1); // Light red background for due within a year
+      return Colors.red.withAlpha(50); // Light red background for due within a year
     } else {
-      return Colors.blue.withOpacity(0.1); // Light blue background for due after a year
+      return Colors.blue.withAlpha(50); // Light blue background for due after a year
     }
   }
 
