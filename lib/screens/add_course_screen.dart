@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 import '../models/course.dart';
 
 class AddCourseScreen extends StatefulWidget {
@@ -13,122 +12,115 @@ class AddCourseScreen extends StatefulWidget {
 }
 
 class _AddCourseScreenState extends State<AddCourseScreen> {
-  final _nameController = TextEditingController();
-  DateTime? _selectedDate;
-  bool _showCalendar = false;
+  final List<Course> _predefinedCourses = [
+    Course(name: 'PSSR (Personal Safety and Social Responsibilities)', deadline: DateTime.now()),
+    Course(name: 'Sopravvivenza e Salvataggio', deadline: DateTime.now()),
+    Course(name: 'Antincendio di Base', deadline: DateTime.now()),
+    Course(name: 'Primo Soccorso Elementare', deadline: DateTime.now()),
+    Course(name: 'Security Awareness', deadline: DateTime.now()),
+    Course(name: 'Antincendio Avanzato', deadline: DateTime.now()),
+    Course(name: 'MAMS (Marittimo Abilitato ai Mezzi di Salvataggio)', deadline: DateTime.now()),
+    Course(name: 'MABEV (Marittimo Abilitato ai Battelli di Emergenza Veloci)', deadline: DateTime.now()),
+    Course(name: 'High Voltage', deadline: DateTime.now()),
+    Course(name: 'IGF (International Gas Fuel)', deadline: DateTime.now()),
+    Course(name: 'ECDIS (Electronic Chart Display and Information System)', deadline: DateTime.now()),
+    Course(name: 'GMDSS (Global Maritime Distress and Safety System)', deadline: DateTime.now()),
+    Course(name: 'Corsi Radar', deadline: DateTime.now()),
+    Course(name: 'Security Duties', deadline: DateTime.now()),
+    Course(name: 'Ship Security Officer (SSO)', deadline: DateTime.now()),
+    Course(name: 'Crowd Management', deadline: DateTime.now()),
+    Course(name: 'Crisis Management', deadline: DateTime.now()),
+    Course(name: 'Leadership e Teamwork', deadline: DateTime.now()),
+  ];
 
-  void _submitData() {
-    if (_nameController.text.isEmpty || _selectedDate == null) {
-      return;
-    }
+  Course? _selectedCourse;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _deadlineController = TextEditingController();
 
-    final newCourse = Course(
-      name: _nameController.text,
-      deadline: _selectedDate!,
-    );
-
-    widget.onAddCourse(newCourse);
+  void _addCourse() {
+    final name = _selectedCourse?.name ?? _nameController.text;
+    final deadline = DateTime.parse(_deadlineController.text);
+    final course = Course(name: name, deadline: deadline);
+    widget.onAddCourse(course);
     Navigator.of(context).pop();
   }
 
-  void _toggleCalendar() {
-    setState(() {
-      _showCalendar = !_showCalendar;
-    });
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000), // Allow any date
+      lastDate: DateTime(2101), // Allow any date
+    );
+    if (picked != null) {
+      setState(() {
+        _deadlineController.text = picked.toLocal().toString().split(' ')[0];
+      });
+    }
+  }
+
+  void _showPredefinedCoursesDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Seleziona un corso predefinito'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _predefinedCourses.length,
+              itemBuilder: (BuildContext context, int index) {
+                final course = _predefinedCourses[index];
+                return ListTile(
+                  title: Text(course.name),
+                  onTap: () {
+                    setState(() {
+                      _selectedCourse = course;
+                      _nameController.text = course.name;
+                    });
+                    Navigator.of(context).pop();
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Aggiungi Nuovo Corso'),
+        title: Text('Aggiungi Corso'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
+          children: [
+            ElevatedButton(
+              onPressed: _showPredefinedCoursesDialog,
+              child: Text('Seleziona un corso predefinito'),
+            ),
             TextField(
               controller: _nameController,
+              decoration: InputDecoration(labelText: 'Nome Corso'),
+            ),
+            TextField(
+              controller: _deadlineController,
               decoration: InputDecoration(
-                labelText: 'Nome del Corso',
-                labelStyle: TextStyle(color: Colors.white),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10.0),
+                labelText: 'Scadenza (YYYY-MM-DD)',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () => _selectDate(context),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              style: TextStyle(color: Colors.white),
-            ),
-            SizedBox(height: 20),
-            TextButton(
-              onPressed: _toggleCalendar,
-              style: TextButton.styleFrom(
-                backgroundColor: Colors.grey[800],
-                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              child: Text(
-                'Seleziona Scadenza',
-                style: TextStyle(color: Colors.white),
               ),
             ),
-            if (_showCalendar)
-              TableCalendar(
-                firstDay: DateTime.utc(2020, 1, 1),
-                lastDay: DateTime.utc(2100, 12, 31),
-                focusedDay: _selectedDate ?? DateTime.now(),
-                selectedDayPredicate: (day) {
-                  return isSameDay(_selectedDate, day);
-                },
-                onDaySelected: (selectedDay, focusedDay) {
-                  setState(() {
-                    _selectedDate = selectedDay;
-                  });
-                },
-                calendarStyle: CalendarStyle(
-                  todayDecoration: BoxDecoration(
-                    color: Colors.deepPurple,
-                    shape: BoxShape.circle,
-                  ),
-                  selectedDecoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  defaultTextStyle: TextStyle(color: Colors.white),
-                  weekendTextStyle: TextStyle(color: Colors.white),
-                ),
-                headerStyle: HeaderStyle(
-                  titleTextStyle: TextStyle(color: Colors.white),
-                  formatButtonTextStyle: TextStyle(color: Colors.white),
-                  formatButtonDecoration: BoxDecoration(
-                    color: Colors.deepPurple,
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
-                  rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
-                ),
-                daysOfWeekStyle: DaysOfWeekStyle(
-                  weekdayStyle: TextStyle(color: Colors.white),
-                  weekendStyle: TextStyle(color: Colors.white),
-                ),
-              ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _submitData,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 62, 56, 56),
-                padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
+              onPressed: _addCourse,
               child: Text('Aggiungi Corso'),
             ),
           ],

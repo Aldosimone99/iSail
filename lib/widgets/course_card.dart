@@ -21,10 +21,19 @@ class CourseCard extends StatelessWidget {
     }
   }
 
+  Color _getBackgroundColor() {
+    final now = DateTime.now();
+    if (dueDate.isBefore(now.add(Duration(days: 365)))) {
+      return Colors.red.withOpacity(0.1); // Light red background for due within a year
+    } else {
+      return Colors.blue.withOpacity(0.1); // Light blue background for due after a year
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Color(0xFF2C2C2E),
+      color: _getBackgroundColor(), // Set the background color
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: _getBorderColor(), width: 2),
