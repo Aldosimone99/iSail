@@ -104,9 +104,11 @@ class MainScreen extends StatelessWidget {
             backgroundColor: Colors.blue,
             shape: CircleBorder(),
             onPressed: () {
-              // Do nothing if already on the homepage
+              if (ModalRoute.of(context)?.settings.name != '/') {
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
+              }
             },
-            child: Icon(Icons.storefront, color: Colors.white, size: 30),
+            child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
           ),
         ],
       ),
