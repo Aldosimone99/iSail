@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +17,7 @@ class SettingsScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               title: Text(
                 'Impostazioni',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold), // Reduced font size
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'SF Pro'), // Reduced font size
               ),
               titlePadding: EdgeInsets.only(left: 16, bottom: 16),
             ),
@@ -51,8 +53,8 @@ class SettingsScreen extends StatelessWidget {
       children: [
         ListTile(
           leading: Icon(icon, color: iconColor),
-          title: Text(title, style: TextStyle(color: Colors.white)),
-          subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: Colors.grey)) : null,
+          title: Text(title, style: TextStyle(color: Colors.white, fontFamily: 'SF Pro')),
+          subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: Colors.grey, fontFamily: 'SF Pro')) : null,
           trailing: trailing ?? Icon(CupertinoIcons.chevron_forward, color: Colors.grey, size: 20),
           onTap: () {},
         ),

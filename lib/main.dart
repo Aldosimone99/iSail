@@ -43,14 +43,14 @@ class MyApp extends StatelessWidget {
                 surface: Color(0xFF2C2C2E), // Secondary Background
               ),
               textTheme: TextTheme(
-                bodyLarge: TextStyle(color: Color(0xFFFFFFFF)), // Label
-                bodyMedium: TextStyle(color: Color(0xFFEBEBF5)), // Secondary Label
-                headlineLarge: TextStyle(color: Color(0xFFFFFFFF)), // Label
-                headlineMedium: TextStyle(color: Color(0xFFFFFFFF)), // Label
-                headlineSmall: TextStyle(color: Color(0xFFFFFFFF)), // Label
-                titleLarge: TextStyle(color: Color(0xFFFFFFFF)), // Label
-                titleMedium: TextStyle(color: Color(0xFFFFFFFF)), // Label
-                titleSmall: TextStyle(color: Color(0xFFFFFFFF)), // Label
+                bodyLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+                bodyMedium: TextStyle(color: Color(0xFFEBEBF5), fontFamily: 'SF Pro'), // Secondary Label
+                headlineLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+                headlineMedium: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+                headlineSmall: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+                titleLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+                titleMedium: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+                titleSmall: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
               ),
               dividerColor: Color(0xFF38383A), // Separator
             ),
@@ -67,6 +67,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
