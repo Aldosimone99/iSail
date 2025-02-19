@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'widgets/custom_bottom_app_bar.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,10 +53,45 @@ class MyApp extends StatelessWidget {
               ),
               dividerColor: Color(0xFF38383A), // Separator
             ),
-            home: snapshot.data == true ? WelcomeScreen() : CourseListScreen(),
+            home: snapshot.data == true ? WelcomeScreen() : MainScreen(),
           );
         }
       },
+    );
+  }
+}
+
+class MainScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: CourseListScreen(),
+      bottomNavigationBar: CustomBottomAppBar(),
+      floatingActionButton: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue.withOpacity(0.3), // Effetto alone
+            ),
+          ),
+          FloatingActionButton(
+            backgroundColor: Colors.blue,
+            shape: CircleBorder(),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CourseListScreen()),
+              );
+            },
+            child: Icon(Icons.storefront, color: Colors.white, size: 30),
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
