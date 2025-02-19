@@ -14,13 +14,40 @@ class SettingsScreen extends StatelessWidget {
           SliverAppBar(
             backgroundColor: Colors.black,
             pinned: true,
-            expandedHeight: 100.0,
+            expandedHeight: 70.0, // Reduced height
+            automaticallyImplyLeading: false, // Remove back arrow
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                'Impostazioni',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'SF Pro'), // Reduced font size
+              title: Align(
+                alignment: Alignment.bottomLeft, // Align title to the bottom left
+                child: Padding(
+                  padding: EdgeInsets.only(left: 16, bottom: 0), // Increase bottom padding to move text down
+                  child: Text(
+                    'Impostazioni',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'SF Pro'), // Reduced font size
+                  ),
+                ),
               ),
-              titlePadding: EdgeInsets.only(left: 16, bottom: 16),
+              centerTitle: false, // Ensure title is not centered
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Reduced padding
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Cerca...',
+                  filled: true,
+                  fillColor: Color(0xFF2C2C2E), // Light gray color
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30), // Make the borders more rounded
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                ),
+                onChanged: (value) {
+                  // Handle search query change
+                },
+              ),
             ),
           ),
           _buildSettingsSection([
@@ -72,7 +99,7 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildSettingsSection(List<Widget> tiles) {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Reduced padding
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10), // Increased vertical padding
         child: Container(
           decoration: BoxDecoration(
             color: Color(0xFF1C1C1E),
