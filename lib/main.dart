@@ -54,7 +54,35 @@ class MyApp extends StatelessWidget {
               ),
               dividerColor: Color(0xFF38383A), // Separator
             ),
-            home: snapshot.data == true ? WelcomeScreen() : MainScreen(),
+            home: Scaffold(
+              body: snapshot.data == true ? WelcomeScreen() : MainScreen(),
+              bottomNavigationBar: CustomBottomAppBar(),
+              floatingActionButton: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.blue.withOpacity(0.3), // Effetto alone
+                    ),
+                  ),
+                  FloatingActionButton(
+                    heroTag: 'uniqueHeroTag', // Add unique heroTag
+                    backgroundColor: Colors.blue,
+                    shape: CircleBorder(),
+                    onPressed: () {
+                      if (ModalRoute.of(context)?.settings.name != '/') {
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
+                      }
+                    },
+                    child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
+                  ),
+                ],
+              ),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+            ),
             routes: {
               '/settings': (context) => MainScreen(initialPage: '/settings'),
             },
@@ -87,32 +115,6 @@ class MainScreen extends StatelessWidget {
           return MaterialPageRoute(builder: (_) => page);
         },
       ),
-      bottomNavigationBar: CustomBottomAppBar(),
-      floatingActionButton: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue.withOpacity(0.3), // Effetto alone
-            ),
-          ),
-          FloatingActionButton(
-            heroTag: 'uniqueHeroTag', // Add unique heroTag
-            backgroundColor: Colors.blue,
-            shape: CircleBorder(),
-            onPressed: () {
-              if (ModalRoute.of(context)?.settings.name != '/') {
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
-              }
-            },
-            child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
-          ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

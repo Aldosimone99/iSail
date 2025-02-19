@@ -29,9 +29,9 @@ class CustomBottomAppBar extends StatelessWidget {
   Widget _buildNavItem(IconData icon, String label, BuildContext context, {bool isSelected = false}) {
     return GestureDetector(
       onTap: () {
-        if (label == "Courses" && ModalRoute.of(context)?.settings.name != '/') {
+        if (label == "Documenti" && ModalRoute.of(context)?.settings.name != '/') {
           Navigator.pushNamed(context, '/');
-        } else if (label == "Settings" && ModalRoute.of(context)?.settings.name != '/settings') {
+        } else if (label == "Impostazioni" && ModalRoute.of(context)?.settings.name != '/settings') {
           Navigator.pushNamed(context, '/settings');
         }
         // Add other navigation logic here if needed
