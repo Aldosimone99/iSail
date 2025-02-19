@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import '../screens/course_list_screen.dart';
-
 class CustomBottomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -29,10 +27,9 @@ class CustomBottomAppBar extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (label == "Courses") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CourseListScreen()),
-          );
+          Navigator.pushNamed(context, '/courses');
+        } else if (label == "Settings") {
+          Navigator.pushNamed(context, '/settings');
         }
         // Add other navigation logic here if needed
       },

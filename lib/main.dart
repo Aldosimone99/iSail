@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
 import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
+import 'screens/settings_screen.dart'; // Import SettingsScreen
 import 'widgets/custom_bottom_app_bar.dart';
 
 void main() {
@@ -54,6 +55,10 @@ class MyApp extends StatelessWidget {
               dividerColor: Color(0xFF38383A), // Separator
             ),
             home: snapshot.data == true ? WelcomeScreen() : MainScreen(),
+            routes: {
+              '/courses': (context) => CourseListScreen(),
+              '/settings': (context) => SettingsScreen(),
+            },
           );
         }
       },
@@ -65,7 +70,22 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CourseListScreen(),
+      body: Navigator(
+        onGenerateRoute: (settings) {
+          Widget page;
+          switch (settings.name) {
+            case '/courses':
+              page = CourseListScreen();
+              break;
+            case '/settings':
+              page = SettingsScreen();
+              break;
+            default:
+              page = CourseListScreen();
+          }
+          return MaterialPageRoute(builder: (_) => page);
+        },
+      ),
       bottomNavigationBar: CustomBottomAppBar(),
       floatingActionButton: Stack(
         alignment: Alignment.center,
@@ -79,13 +99,11 @@ class MainScreen extends StatelessWidget {
             ),
           ),
           FloatingActionButton(
+            heroTag: 'uniqueHeroTag', // Add unique heroTag
             backgroundColor: Colors.blue,
             shape: CircleBorder(),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => CourseListScreen()),
-              );
+              Navigator.pushNamed(context, '/courses');
             },
             child: Icon(Icons.storefront, color: Colors.white, size: 30),
           ),
