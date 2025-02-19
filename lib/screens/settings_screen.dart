@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../widgets/custom_bottom_app_bar.dart';
+import 'theme_selection_screen.dart'; // Import the ThemeSelectionScreen
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -52,47 +52,19 @@ class SettingsScreen extends StatelessWidget {
           ),
           _buildSettingsSection([
             _buildSettingsTile('Account', CupertinoIcons.person, const Color.fromARGB(255, 249, 248, 248)),
-            _buildSettingsTile('Stile', CupertinoIcons.paintbrush, const Color.fromARGB(255, 255, 255, 255)),
+            _buildSettingsTile('Stile', CupertinoIcons.paintbrush, const Color.fromARGB(255, 255, 255, 255), onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ThemeSelectionScreen(),
+                ),
+              );
+            }),
             _buildSettingsTile('Spazio e Dati', CupertinoIcons.folder, const Color.fromARGB(255, 255, 255, 255)),
             _buildSettingsTile('Backup', CupertinoIcons.cloud_upload, const Color.fromARGB(255, 255, 255, 255)),
           ]),
         ],
       ),
-      bottomNavigationBar: CustomBottomAppBar(
-        onAnchorPressed: () {
-          if (ModalRoute.of(context)?.settings.name != '/') {
-            Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
-          }
-        },
-        onDocumentsPressed: () {
-          // Do nothing
-        },
-      ),
-      floatingActionButton: Stack(
-        alignment: Alignment.center,
-        children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue.withOpacity(0.3), // Effetto alone
-            ),
-          ),
-          FloatingActionButton(
-            heroTag: 'uniqueHeroTag', // Add unique heroTag
-            backgroundColor: Colors.blue,
-            shape: CircleBorder(),
-            onPressed: () {
-              if (ModalRoute.of(context)?.settings.name != '/') {
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
-              }
-            },
-            child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
-          ),
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 
@@ -111,7 +83,7 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSettingsTile(String title, IconData icon, Color iconColor, {String? subtitle, Widget? trailing}) {
+  Widget _buildSettingsTile(String title, IconData icon, Color iconColor, {String? subtitle, Widget? trailing, void Function()? onTap}) {
     return Column(
       children: [
         ListTile(
@@ -119,7 +91,7 @@ class SettingsScreen extends StatelessWidget {
           title: Text(title, style: TextStyle(color: Colors.white, fontFamily: 'SF Pro')),
           subtitle: subtitle != null ? Text(subtitle, style: TextStyle(color: Colors.grey, fontFamily: 'SF Pro')) : null,
           trailing: trailing ?? Icon(CupertinoIcons.chevron_forward, color: Colors.grey, size: 20),
-          onTap: () {},
+          onTap: onTap,
         ),
         Divider(color: Colors.grey.shade800, height: 1, thickness: 0.5),
       ],

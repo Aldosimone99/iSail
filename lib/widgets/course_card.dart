@@ -58,7 +58,7 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pillColor = _getBorderColor().withOpacity(0.2);
+    final pillColor = _getBorderColor().withAlpha(50);
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins

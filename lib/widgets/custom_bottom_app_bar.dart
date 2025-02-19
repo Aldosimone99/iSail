@@ -5,10 +5,10 @@ class CustomBottomAppBar extends StatelessWidget {
   final VoidCallback onDocumentsPressed;
 
   const CustomBottomAppBar({
-    Key? key,
+    super.key, // Convert 'key' to a super parameter
     required this.onAnchorPressed,
     required this.onDocumentsPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

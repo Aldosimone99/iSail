@@ -110,7 +110,7 @@ class HomeScreen extends StatelessWidget {
             height: 70,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.blue.withOpacity(0.3), // Effetto alone
+              color: Colors.blue.withAlpha(77), // Replace withOpacity with withAlpha (77 is approximately 30% opacity)
             ),
           ),
           FloatingActionButton(
