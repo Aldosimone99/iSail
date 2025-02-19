@@ -54,66 +54,9 @@ class MyApp extends StatelessWidget {
               ),
               dividerColor: Color(0xFF38383A), // Separator
             ),
-            home: Scaffold(
-              body: Stack(
-                children: [
-                  Navigator(
-                    initialRoute: snapshot.data == true ? '/welcome' : '/',
-                    onGenerateRoute: (settings) {
-                      Widget page;
-                      switch (settings.name) {
-                        case '/welcome':
-                          page = WelcomeScreen();
-                          break;
-                        case '/settings':
-                          page = SettingsScreen();
-                          break;
-                        default:
-                          page = CourseListScreen();
-                      }
-                      return MaterialPageRoute(builder: (_) => page);
-                    },
-                  ),
-                ],
-              ),
-              bottomNavigationBar: CustomBottomAppBar(
-                onAnchorPressed: () {
-                  if (ModalRoute.of(context)?.settings.name != '/') {
-                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
-                  }
-                },
-                onDocumentsPressed: () {
-                  // Do nothing
-                },
-              ),
-              floatingActionButton: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.blue.withOpacity(0.3), // Effetto alone
-                    ),
-                  ),
-                  FloatingActionButton(
-                    heroTag: 'uniqueHeroTag', // Add unique heroTag
-                    backgroundColor: Colors.blue,
-                    shape: CircleBorder(),
-                    onPressed: () {
-                      if (ModalRoute.of(context)?.settings.name != '/') {
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
-                      }
-                    },
-                    child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
-                  ),
-                ],
-              ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            ),
+            home: HomeScreen(initialRoute: snapshot.data == true ? '/welcome' : '/'),
             routes: {
-              '/settings': (context) => MainScreen(initialPage: '/settings'),
+              '/settings': (context) => SettingsScreen(),
             },
           );
         }
@@ -122,26 +65,68 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MainScreen extends StatelessWidget {
-  final String initialPage;
+class HomeScreen extends StatelessWidget {
+  final String initialRoute;
 
-  const MainScreen({super.key, this.initialPage = '/'});
+  const HomeScreen({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      initialRoute: initialPage,
-      onGenerateRoute: (settings) {
-        Widget page;
-        switch (settings.name) {
-          case '/settings':
-            page = SettingsScreen();
-            break;
-          default:
-            page = CourseListScreen();
-        }
-        return MaterialPageRoute(builder: (_) => page);
-      },
+    return Scaffold(
+      body: Navigator(
+        initialRoute: initialRoute,
+        onGenerateRoute: (settings) {
+          Widget page;
+          switch (settings.name) {
+            case '/welcome':
+              page = WelcomeScreen();
+              break;
+            case '/settings':
+              page = SettingsScreen();
+              break;
+            default:
+              page = CourseListScreen();
+          }
+          return MaterialPageRoute(builder: (_) => page);
+        },
+      ),
+      bottomNavigationBar: CustomBottomAppBar(
+        onAnchorPressed: () {
+          if (ModalRoute.of(context)?.settings.name != '/') {
+            Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
+          }
+        },
+        onDocumentsPressed: () {
+          if (ModalRoute.of(context)?.settings.name != '/settings') {
+            Navigator.pushNamed(context, '/settings'); // Navigate to settings screen
+          }
+        },
+      ),
+      floatingActionButton: Stack(
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: 70,
+            height: 70,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.blue.withOpacity(0.3), // Effetto alone
+            ),
+          ),
+          FloatingActionButton(
+            heroTag: 'uniqueHeroTag', // Add unique heroTag
+            backgroundColor: Colors.blue,
+            shape: CircleBorder(),
+            onPressed: () {
+              if (ModalRoute.of(context)?.settings.name != '/') {
+                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
+              }
+            },
+            child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
