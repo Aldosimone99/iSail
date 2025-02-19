@@ -55,8 +55,37 @@ class MyApp extends StatelessWidget {
               dividerColor: Color(0xFF38383A), // Separator
             ),
             home: Scaffold(
-              body: snapshot.data == true ? WelcomeScreen() : MainScreen(),
-              bottomNavigationBar: CustomBottomAppBar(),
+              body: Stack(
+                children: [
+                  Navigator(
+                    initialRoute: snapshot.data == true ? '/welcome' : '/',
+                    onGenerateRoute: (settings) {
+                      Widget page;
+                      switch (settings.name) {
+                        case '/welcome':
+                          page = WelcomeScreen();
+                          break;
+                        case '/settings':
+                          page = SettingsScreen();
+                          break;
+                        default:
+                          page = CourseListScreen();
+                      }
+                      return MaterialPageRoute(builder: (_) => page);
+                    },
+                  ),
+                ],
+              ),
+              bottomNavigationBar: CustomBottomAppBar(
+                onAnchorPressed: () {
+                  if (ModalRoute.of(context)?.settings.name != '/') {
+                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
+                  }
+                },
+                onDocumentsPressed: () {
+                  // Do nothing
+                },
+              ),
               floatingActionButton: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -100,21 +129,19 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Navigator(
-        initialRoute: initialPage,
-        onGenerateRoute: (settings) {
-          Widget page;
-          switch (settings.name) {
-            case '/settings':
-              page = SettingsScreen();
-              break;
-            default:
-              page = CourseListScreen();
-          }
-          return MaterialPageRoute(builder: (_) => page);
-        },
-      ),
+    return Navigator(
+      initialRoute: initialPage,
+      onGenerateRoute: (settings) {
+        Widget page;
+        switch (settings.name) {
+          case '/settings':
+            page = SettingsScreen();
+            break;
+          default:
+            page = CourseListScreen();
+        }
+        return MaterialPageRoute(builder: (_) => page);
+      },
     );
   }
 }

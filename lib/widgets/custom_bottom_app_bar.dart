@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomBottomAppBar extends StatelessWidget {
-  const CustomBottomAppBar({super.key});
+  final VoidCallback onAnchorPressed;
+  final VoidCallback onDocumentsPressed;
+
+  const CustomBottomAppBar({
+    Key? key,
+    required this.onAnchorPressed,
+    required this.onDocumentsPressed,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +22,7 @@ class CustomBottomAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.edit_document, "Documenti", context, isSelected: ModalRoute.of(context)?.settings.name == '/'), // Replaced Home with Courses
+            _buildNavItem(Icons.edit_document, "Documenti", context, isSelected: ModalRoute.of(context)?.settings.name == '/', onPressed: onDocumentsPressed), // Replaced Home with Courses
             _buildNavItem(Icons.store, "Centri", context),
             SizedBox(width: 50), // Spazio per il FAB
             _buildNavItem(Icons.search, "Cerca", context),
@@ -26,9 +33,9 @@ class CustomBottomAppBar extends StatelessWidget {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, BuildContext context, {bool isSelected = false}) {
+  Widget _buildNavItem(IconData icon, String label, BuildContext context, {bool isSelected = false, VoidCallback? onPressed}) {
     return GestureDetector(
-      onTap: () {
+      onTap: onPressed ?? () {
         if (label == "Documenti" && ModalRoute.of(context)?.settings.name != '/') {
           Navigator.pushNamed(context, '/');
         } else if (label == "Impostazioni" && ModalRoute.of(context)?.settings.name != '/settings') {
