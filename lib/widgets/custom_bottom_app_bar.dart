@@ -12,6 +12,8 @@ class CustomBottomAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentRoute = ModalRoute.of(context)?.settings.name;
+
     return BottomAppBar(
       color: Color(0xFF181A1E), // Sfondo navbar
       shape: CircularNotchedRectangle(),
@@ -22,11 +24,11 @@ class CustomBottomAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.edit_document, "Documenti", context, isSelected: ModalRoute.of(context)?.settings.name == '/', onPressed: onDocumentsPressed), // Replaced Home with Courses
+            _buildNavItem(Icons.edit_document, "Documenti", context, isSelected: currentRoute == '/', onPressed: onDocumentsPressed), // Replaced Home with Courses
             _buildNavItem(Icons.store, "Centri", context),
             SizedBox(width: 50), // Spazio per il FAB
             _buildNavItem(Icons.search, "Cerca", context),
-            _buildNavItem(Icons.settings, "Impostazioni", context, isSelected: ModalRoute.of(context)?.settings.name == '/settings'), // Replaced Profile with Settings
+            _buildNavItem(Icons.settings, "Impostazioni", context, isSelected: currentRoute == '/settings'), // Replaced Profile with Settings
           ],
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/settings_screen.dart'; // Import SettingsScreen
+import 'screens/documents_screen.dart'; // Import DocumentsScreenn
 import 'widgets/custom_bottom_app_bar.dart';
 
 void main() {
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
             home: HomeScreen(initialRoute: snapshot.data == true ? '/welcome' : '/'),
             routes: {
               '/settings': (context) => SettingsScreen(),
+              '/documents': (context) => DocumentsScreen(), // Add DocumentsScreen route
             },
           );
         }
@@ -84,6 +86,9 @@ class HomeScreen extends StatelessWidget {
             case '/settings':
               page = SettingsScreen();
               break;
+            case '/documents':
+              page = DocumentsScreen();
+              break;
             default:
               page = CourseListScreen();
           }
@@ -92,13 +97,11 @@ class HomeScreen extends StatelessWidget {
       ),
       bottomNavigationBar: CustomBottomAppBar(
         onAnchorPressed: () {
-          if (ModalRoute.of(context)?.settings.name != '/') {
-            Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
-          }
+          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
         },
         onDocumentsPressed: () {
-          if (ModalRoute.of(context)?.settings.name != '/settings') {
-            Navigator.pushNamed(context, '/settings'); // Navigate to settings screen
+          if (ModalRoute.of(context)?.settings.name != '/documents') {
+            Navigator.pushNamed(context, '/documents'); // Navigate to documents screen
           }
         },
       ),
@@ -118,9 +121,7 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: Colors.blue,
             shape: CircleBorder(),
             onPressed: () {
-              if (ModalRoute.of(context)?.settings.name != '/') {
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
-              }
+              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
             },
             child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
           ),
