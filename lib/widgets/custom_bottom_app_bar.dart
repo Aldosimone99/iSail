@@ -11,15 +11,15 @@ class CustomBottomAppBar extends StatelessWidget {
       notchMargin: 10.0,
       child: Container(
         height: 70,
-        padding: EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.storefront, "Courses", context, isSelected: ModalRoute.of(context)?.settings.name == '/'), // Replaced Home with Courses
-            _buildNavItem(Icons.search, "Search", context),
+            _buildNavItem(Icons.edit_document, "Documenti", context, isSelected: ModalRoute.of(context)?.settings.name == '/'), // Replaced Home with Courses
+            _buildNavItem(Icons.store, "Centri", context),
             SizedBox(width: 50), // Spazio per il FAB
-            _buildNavItem(Icons.shopping_cart, "Cart", context),
-            _buildNavItem(Icons.settings, "Settings", context, isSelected: ModalRoute.of(context)?.settings.name == '/settings'), // Replaced Profile with Settings
+            _buildNavItem(Icons.search, "Cerca", context),
+            _buildNavItem(Icons.settings, "Impostazioni", context, isSelected: ModalRoute.of(context)?.settings.name == '/settings'), // Replaced Profile with Settings
           ],
         ),
       ),
