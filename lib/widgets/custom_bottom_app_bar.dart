@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class CustomBottomAppBar extends StatelessWidget {
   const CustomBottomAppBar({super.key});
 
@@ -14,11 +15,11 @@ class CustomBottomAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.storefront, "Courses", context, isSelected: true), // Replaced Home with Courses
+            _buildNavItem(Icons.storefront, "Courses", context, isSelected: ModalRoute.of(context)?.settings.name == '/'), // Replaced Home with Courses
             _buildNavItem(Icons.search, "Search", context),
             SizedBox(width: 50), // Spazio per il FAB
             _buildNavItem(Icons.shopping_cart, "Cart", context),
-            _buildNavItem(Icons.settings, "Settings", context), // Replaced Profile with Settings
+            _buildNavItem(Icons.settings, "Settings", context, isSelected: ModalRoute.of(context)?.settings.name == '/settings'), // Replaced Profile with Settings
           ],
         ),
       ),
@@ -28,9 +29,9 @@ class CustomBottomAppBar extends StatelessWidget {
   Widget _buildNavItem(IconData icon, String label, BuildContext context, {bool isSelected = false}) {
     return GestureDetector(
       onTap: () {
-        if (label == "Courses") {
-          Navigator.pushNamed(context, '/courses');
-        } else if (label == "Settings") {
+        if (label == "Courses" && ModalRoute.of(context)?.settings.name != '/') {
+          Navigator.pushNamed(context, '/');
+        } else if (label == "Settings" && ModalRoute.of(context)?.settings.name != '/settings') {
           Navigator.pushNamed(context, '/settings');
         }
         // Add other navigation logic here if needed

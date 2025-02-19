@@ -33,9 +33,9 @@ class _CourseListScreenState extends State<CourseListScreen> {
     final prefs = await SharedPreferences.getInstance();
     final userName = prefs.getString('userName') ?? 'Utente';
     final hour = DateTime.now().hour;
-    if (hour < 12) {
+    if (hour >= 6 && hour < 12) {
       _greeting = 'Buongiorno $userName';
-    } else if (hour < 18) {
+    } else if (hour >= 12 && hour < 18) {
       _greeting = 'Buon Pomeriggio $userName';
     } else {
       _greeting = 'Buonasera $userName';

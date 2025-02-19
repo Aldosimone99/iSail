@@ -56,8 +56,7 @@ class MyApp extends StatelessWidget {
             ),
             home: snapshot.data == true ? WelcomeScreen() : MainScreen(),
             routes: {
-              '/courses': (context) => CourseListScreen(),
-              '/settings': (context) => SettingsScreen(),
+              '/settings': (context) => MainScreen(initialPage: '/settings'),
             },
           );
         }
@@ -67,18 +66,18 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
+  final String initialPage;
+
+  const MainScreen({super.key, this.initialPage = '/'});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Navigator(
+        initialRoute: initialPage,
         onGenerateRoute: (settings) {
           Widget page;
           switch (settings.name) {
-            case '/courses':
-              page = CourseListScreen();
-              break;
             case '/settings':
               page = SettingsScreen();
               break;
@@ -105,7 +104,7 @@ class MainScreen extends StatelessWidget {
             backgroundColor: Colors.blue,
             shape: CircleBorder(),
             onPressed: () {
-              Navigator.pushNamed(context, '/courses');
+              // Do nothing if already on the homepage
             },
             child: Icon(Icons.storefront, color: Colors.white, size: 30),
           ),
