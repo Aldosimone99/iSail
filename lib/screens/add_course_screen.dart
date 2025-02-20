@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/course.dart';
+import 'dart:ui'; // Add this import for ImageFilter
 
 class AddCourseScreen extends StatefulWidget {
   final Function(Course) onAddCourse;
@@ -109,62 +110,83 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Aggiungi Corso'),
-        backgroundColor: Color(0xFF1C1C1E), // Set AppBar background color for dark mode
+        automaticallyImplyLeading: false, // Remove the back arrow
+        backgroundColor: Colors.transparent, // Set AppBar background color to transparent
+        elevation: 0, // Remove AppBar shadow
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
+            child: Container(
+              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+            ),
+          ),
+        ),
+        title: Align(
+          alignment: Alignment.centerLeft, // Align the title text to the left
+          child: Text(
+            'Aggiungi Corso',
+            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0), // Add the missing padding argument
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: _showPredefinedCoursesDialog,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Set button color for dark mode
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0), // Add the missing padding argument
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Center the content vertically
+            children: [
+              SizedBox(height: 20), // Add some space above the button
+              ElevatedButton(
+                onPressed: _showPredefinedCoursesDialog,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue, // Set button color for dark mode
+                ),
+                child: Text('Seleziona un corso predefinito'),
               ),
-              child: Text('Seleziona un corso predefinito'),
-            ),
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Nome Corso',
-                labelStyle: TextStyle(color: Colors.white), // Set label text color for dark mode
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Set border color for dark mode
+              SizedBox(height: 20), // Add some space below the button
+              TextField(
+                controller: _nameController,
+                decoration: InputDecoration(
+                  hintText: 'Nome Corso',
+                  filled: true,
+                  fillColor: Color(0xFF2C2C2E), // Light gray color
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30), // Make the borders more rounded
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue), // Set focused border color for dark mode
-                ),
+                style: TextStyle(color: Colors.white), // Set text color for dark mode
               ),
-              style: TextStyle(color: Colors.white), // Set text color for dark mode
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _deadlineController,
-              decoration: InputDecoration(
-                labelText: 'Scadenza (YYYY-MM-DD)',
-                labelStyle: TextStyle(color: Colors.white), // Set label text color for dark mode
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.calendar_today, color: Colors.white), // Set icon color for dark mode
-                  onPressed: () => _selectDate(context),
+              SizedBox(height: 20),
+              TextField(
+                controller: _deadlineController,
+                decoration: InputDecoration(
+                  hintText: 'Scadenza (YYYY-MM-DD)',
+                  filled: true,
+                  fillColor: Color(0xFF2C2C2E), // Light gray color
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.calendar_today, color: Colors.white), // Set icon color for dark mode
+                    onPressed: () => _selectDate(context),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30), // Make the borders more rounded
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white), // Set border color for dark mode
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.blue), // Set focused border color for dark mode
-                ),
+                style: TextStyle(color: Colors.white), // Set text color for dark mode
               ),
-              style: TextStyle(color: Colors.white), // Set text color for dark mode
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _addCourse,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue, // Set button color for dark mode
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _addCourse,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue, // Set button color for dark mode
+                ),
+                child: Text('Aggiungi Corso'),
               ),
-              child: Text('Aggiungi Corso'),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

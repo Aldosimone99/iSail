@@ -80,12 +80,6 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
     });
   }
 
-  void _deleteCourse(int index) {
-    setState(() {
-      _courses.removeAt(index);
-      _saveCourses();
-    });
-  }
 
   void _sortCourses() {
     setState(() {
@@ -189,33 +183,6 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
     );
   }
 
-  void _showDeleteConfirmationDialog(int index) {
-    showCupertinoDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CupertinoAlertDialog(
-          title: Text('Conferma Eliminazione'),
-          content: Text('Sei sicuro di voler eliminare questo corso?'),
-          actions: [
-            CupertinoDialogAction(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Annulla'),
-            ),
-            CupertinoDialogAction(
-              onPressed: () {
-                _deleteCourse(index);
-                Navigator.of(context).pop();
-              },
-              isDestructiveAction: true,
-              child: Text('Elimina'),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
