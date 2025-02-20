@@ -48,26 +48,36 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    showCupertinoModalPopup(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(primary: Colors.blue, onPrimary: Colors.white),
-            dialogBackgroundColor: Color(0xFF1C1C1E),
+      builder: (BuildContext context) {
+        return Container(
+          height: 250,
+          color: Color(0xFF1C1C1E),
+          child: Column(
+            children: [
+              Expanded( // Wrap CupertinoDatePicker with Expanded
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.date,
+                  initialDateTime: DateTime.now(),
+                  onDateTimeChanged: (DateTime newDateTime) {
+                    setState(() {
+                      _deadlineController.text = newDateTime.toLocal().toString().split(' ')[0];
+                    });
+                  },
+                ),
+              ),
+              CupertinoButton(
+                child: Text('OK', style: TextStyle(color: Colors.blue)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
-          child: child!,
         );
       },
     );
-    if (picked != null) {
-      setState(() {
-        _deadlineController.text = picked.toLocal().toString().split(' ')[0];
-      });
-    }
   }
 
   void _showPredefinedCoursesDialog() {
@@ -121,37 +131,42 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _showPredefinedCoursesDialog,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              ),
-              child: Text('Seleziona un corso predefinito'),
+      body: SafeArea( // Wrap SingleChildScrollView with SafeArea
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: SingleChildScrollView(
+            clipBehavior: Clip.none, // Ignore overflow
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _showPredefinedCoursesDialog,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueAccent,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  ),
+                  child: Text('Seleziona un corso predefinito'),
+                ),
+                SizedBox(height: 20),
+                _buildTextField(_nameController, 'Nome Corso'),
+                SizedBox(height: 20),
+                _buildTextField(_deadlineController, 'Scadenza (YYYY-MM-DD)',
+                    isDateField: true, context: context),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _addCourse,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                  ),
+                  child: Text('Aggiungi Corso'),
+                ),
+              ],
             ),
-            SizedBox(height: 20),
-            _buildTextField(_nameController, 'Nome Corso'),
-            SizedBox(height: 20),
-            _buildTextField(_deadlineController, 'Scadenza (YYYY-MM-DD)',
-                isDateField: true, context: context),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _addCourse,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              ),
-              child: Text('Aggiungi Corso'),
-            ),
-          ],
+          ),
         ),
       ),
     );
