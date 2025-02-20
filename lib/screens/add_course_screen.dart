@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import '../models/course.dart';
-import 'dart:ui'; // Add this import for ImageFilter
+import 'dart:ui'; // Import per effetto blur
 
 class AddCourseScreen extends StatefulWidget {
   final Function(Course) onAddCourse;
@@ -8,7 +9,6 @@ class AddCourseScreen extends StatefulWidget {
   const AddCourseScreen({super.key, required this.onAddCourse});
 
   @override
-  // ignore: library_private_types_in_public_api
   _AddCourseScreenState createState() => _AddCourseScreenState();
 }
 
@@ -39,6 +39,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   final TextEditingController _deadlineController = TextEditingController();
 
   void _addCourse() {
+    if (_nameController.text.isEmpty || _deadlineController.text.isEmpty) return;
     final name = _selectedCourse?.name ?? _nameController.text;
     final deadline = DateTime.parse(_deadlineController.text);
     final course = Course(name: name, deadline: deadline);
@@ -50,18 +51,13 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000), // Allow any date
-      lastDate: DateTime(2101), // Allow any date
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.dark().copyWith(
-            colorScheme: ColorScheme.dark(
-              primary: Colors.blue, // Set primary color for dark mode
-              onPrimary: Colors.white, // Set text color on primary color for dark mode
-              surface: Color(0xFF1C1C1E), // Set surface color for dark mode
-              onSurface: Colors.white, // Set text color on surface color for dark mode
-            ),
-            dialogBackgroundColor: Color(0xFF1C1C1E), // Set dialog background color for dark mode
+            colorScheme: ColorScheme.dark(primary: Colors.blue, onPrimary: Colors.white),
+            dialogBackgroundColor: Color(0xFF1C1C1E),
           ),
           child: child!,
         );
@@ -75,120 +71,113 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
   }
 
   void _showPredefinedCoursesDialog() {
-    showDialog(
+    showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Color(0xFF1C1C1E), // Set dialog background color for dark mode
-          title: Text('Seleziona un corso predefinito', style: TextStyle(color: Colors.white)), // Set title text color for dark mode
-          content: SizedBox(
-            width: double.maxFinite,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _predefinedCourses.length,
-              itemBuilder: (BuildContext context, int index) {
-                final course = _predefinedCourses[index];
-                return ListTile(
-                  title: Text(course.name, style: TextStyle(color: Colors.white)), // Set list item text color for dark mode
-                  onTap: () {
-                    setState(() {
-                      _selectedCourse = course;
-                      _nameController.text = course.name;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                );
-              },
-            ),
-          ),
-        );
-      },
+      builder: (BuildContext context) => CupertinoActionSheet(
+        title: Text('Seleziona un corso'),
+        actions: _predefinedCourses.map((course) {
+          return CupertinoActionSheetAction(
+            child: Text(course.name),
+            onPressed: () {
+              setState(() {
+                _selectedCourse = course;
+                _nameController.text = course.name;
+              });
+              Navigator.pop(context);
+            },
+          );
+        }).toList(),
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('Annulla'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black, // Sfondo nero OLED
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Remove the back arrow
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent, // Set AppBar background color to transparent
-        elevation: 0, // Remove AppBar shadow
+        elevation: 0,
         flexibleSpace: ClipRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Container(
               color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
             ),
           ),
         ),
         title: Align(
-          alignment: Alignment.centerLeft, // Align the title text to the left
+          alignment: Alignment.centerLeft,
           child: Text(
             'Aggiungi Corso',
-            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
+            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0), // Add the missing padding argument
-          child: Column(
-            mainAxisSize: MainAxisSize.min, // Center the content vertically
-            children: [
-              SizedBox(height: 20), // Add some space above the button
-              ElevatedButton(
-                onPressed: _showPredefinedCoursesDialog,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Set button color for dark mode
-                ),
-                child: Text('Seleziona un corso predefinito'),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _showPredefinedCoursesDialog,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
-              SizedBox(height: 20), // Add some space below the button
-              TextField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  hintText: 'Nome Corso',
-                  filled: true,
-                  fillColor: Color(0xFF2C2C2E), // Light gray color
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30), // Make the borders more rounded
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                style: TextStyle(color: Colors.white), // Set text color for dark mode
+              child: Text('Seleziona un corso predefinito'),
+            ),
+            SizedBox(height: 20),
+            _buildTextField(_nameController, 'Nome Corso'),
+            SizedBox(height: 20),
+            _buildTextField(_deadlineController, 'Scadenza (YYYY-MM-DD)',
+                isDateField: true, context: context),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _addCourse,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
               ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _deadlineController,
-                decoration: InputDecoration(
-                  hintText: 'Scadenza (YYYY-MM-DD)',
-                  filled: true,
-                  fillColor: Color(0xFF2C2C2E), // Light gray color
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.calendar_today, color: Colors.white), // Set icon color for dark mode
-                    onPressed: () => _selectDate(context),
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30), // Make the borders more rounded
-                    borderSide: BorderSide.none,
-                  ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                style: TextStyle(color: Colors.white), // Set text color for dark mode
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _addCourse,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue, // Set button color for dark mode
-                ),
-                child: Text('Aggiungi Corso'),
-              ),
-            ],
-          ),
+              child: Text('Aggiungi Corso'),
+            ),
+          ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String hintText,
+      {bool isDateField = false, BuildContext? context}) {
+    return TextField(
+      controller: controller,
+      readOnly: isDateField,
+      onTap: isDateField ? () => _selectDate(context!) : null,
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: TextStyle(color: Colors.grey[400]),
+        filled: true,
+        fillColor: Color(0xFF2C2C2E),
+        suffixIcon: isDateField
+            ? Icon(Icons.calendar_today, color: Colors.white)
+            : null,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      ),
+      style: TextStyle(color: Colors.white),
     );
   }
 }

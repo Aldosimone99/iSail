@@ -80,6 +80,12 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
     });
   }
 
+  void _deleteCourse(int index) {
+    setState(() {
+      _courses.removeAt(index);
+      _saveCourses();
+    });
+  }
 
   void _sortCourses() {
     setState(() {
@@ -183,6 +189,33 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
     );
   }
 
+  void _showDeleteConfirmationDialog(int index) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Conferma Eliminazione'),
+          content: Text('Sei sicuro di voler eliminare questo corso?'),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Annulla'),
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                _deleteCourse(index);
+                Navigator.of(context).pop();
+              },
+              isDestructiveAction: true,
+              child: Text('Elimina'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -290,23 +323,26 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
                           Positioned(
                             top: 0,
                             right: 0,
-                            child: Container(
-                              width: 30, // Set smaller width
-                              height: 30, // Set smaller height
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.2),
-                                    spreadRadius: 1,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 3), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Icon(Icons.close, color: Colors.red, size: 18), // Center the icon
+                            child: GestureDetector(
+                              onTap: () => _showDeleteConfirmationDialog(index),
+                              child: Container(
+                                width: 30, // Set smaller width
+                                height: 30, // Set smaller height
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      spreadRadius: 1,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 3), // changes position of shadow
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Icon(Icons.close, color: Colors.red, size: 18), // Center the icon
+                                ),
                               ),
                             ),
                           ),
