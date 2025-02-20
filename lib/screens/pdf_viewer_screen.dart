@@ -3,6 +3,7 @@ import 'package:flutter/services.dart'; // Import services for asset loading
 import 'package:flutter_pdfview/flutter_pdfview.dart'; // Import flutter_pdfview
 import 'dart:io'; // Import dart:io for file operations
 import 'package:path_provider/path_provider.dart'; // Import path_provider for temporary directory
+import 'dart:ui'; // Import dart:ui for ImageFilter
 
 class PdfViewerScreen extends StatefulWidget {
   final String assetPath;
@@ -46,7 +47,24 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        automaticallyImplyLeading: false, // Remove the back arrow
+        backgroundColor: Colors.transparent, // Set AppBar background color to transparent
+        elevation: 0,
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+            ),
+          ),
+        ),
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            widget.title,
+            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
       ),
       body: Stack(
         children: [
