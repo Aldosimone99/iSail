@@ -27,7 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black, // Make the AppBar black (OLED)
-        title: Text('Benvenuto su iSail'),
+        title: Text('Benvenuto su SailSafe'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -35,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Benvenuto su iSail, inserisci il tuo nome per continuare',
+              'Benvenuto su SailSafe, inserisci il tuo nome per continuare',
               style: TextStyle(fontSize: 18, color: Colors.white),
               textAlign: TextAlign.center,
             ),

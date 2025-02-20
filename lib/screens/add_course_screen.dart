@@ -102,7 +102,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     return Scaffold(
       backgroundColor: Colors.black, // Sfondo nero OLED
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        automaticallyImplyLeading: false, // Remove the back arrow
         backgroundColor: Colors.transparent, // Set AppBar background color to transparent
         elevation: 0,
         flexibleSpace: ClipRect(
