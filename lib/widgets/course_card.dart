@@ -28,9 +28,20 @@ class CourseCard extends StatelessWidget {
     if (dueDate.isBefore(now.add(Duration(days: 180)))) {
       return Color(0xFFFEE9E8); // Light red background for due within 6 months
     } else if (dueDate.isBefore(now.add(Duration(days: 365)))) {
-      return Colors.yellow.withAlpha(50); // Light yellow background for due between 6 months and a year
+      return Color(0xFFFDF5D5); // Light yellow background for due between 6 months and a year
     } else {
-      return Colors.blue.withAlpha(50); // Light blue background for due after a year
+      return Color(0xFFE0F7F1); // Light green background for due after a year
+    }
+  }
+
+  Color _getPillColor() {
+    final now = DateTime.now();
+    if (dueDate.isBefore(now.add(Duration(days: 180)))) {
+      return Colors.red.withAlpha(50); // Light red for due within 6 months
+    } else if (dueDate.isBefore(now.add(Duration(days: 365)))) {
+      return Color(0xFFF4C34D).withAlpha(50); // Light yellow for due between 6 months and a year
+    } else {
+      return Colors.green.withAlpha(50); // Light green for due after a year
     }
   }
 
@@ -58,14 +69,14 @@ class CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pillColor = _getBorderColor().withAlpha(50);
+    final pillColor = _getPillColor();
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.2), // Remove the red shadow
             spreadRadius: 1,
             blurRadius: 5,
             offset: Offset(0, 3), // changes position of shadow
@@ -76,7 +87,7 @@ class CourseCard extends StatelessWidget {
         color: _getBackgroundColor(), // Set the background color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: _getBorderColor(), width: 2),
+          // Remove the colored border
         ),
         child: Padding(
           padding: const EdgeInsets.all(12.0), // Slightly increase padding
@@ -91,14 +102,14 @@ class CourseCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
-                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : Colors.white, // Set text color to red if due within 6 months
+                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) ? Color(0xFFF4C34D) : Colors.green), // Set text color based on due date
                       ),
                     ),
                     SizedBox(height: 6), // Slightly increase spacing
                     Text(
                       description,
                       style: TextStyle(
-                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : Color(0xFFEBEBF5), // Set text color to red if due within 6 months
+                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) ? Color(0xFFF4C34D) : Colors.green), // Set text color based on due date
                         fontSize: 15,
                       ),
                     ),
@@ -116,7 +127,7 @@ class CourseCard extends StatelessWidget {
                   _getCountdownText(),
                   style: TextStyle(
                     fontSize: 15,
-                    color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : Colors.white, // Set text color to red if due within 6 months
+                    color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) ? Color(0xFFF4C34D) : Colors.green), // Set text color based on due date
                   ),
                   textAlign: TextAlign.center,
                 ),

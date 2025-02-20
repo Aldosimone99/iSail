@@ -51,6 +51,20 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       initialDate: DateTime.now(),
       firstDate: DateTime(2000), // Allow any date
       lastDate: DateTime(2101), // Allow any date
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: Colors.blue, // Set primary color for dark mode
+              onPrimary: Colors.white, // Set text color on primary color for dark mode
+              surface: Color(0xFF1C1C1E), // Set surface color for dark mode
+              onSurface: Colors.white, // Set text color on surface color for dark mode
+            ),
+            dialogBackgroundColor: Color(0xFF1C1C1E), // Set dialog background color for dark mode
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null) {
       setState(() {
@@ -64,7 +78,8 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Seleziona un corso predefinito'),
+          backgroundColor: Color(0xFF1C1C1E), // Set dialog background color for dark mode
+          title: Text('Seleziona un corso predefinito', style: TextStyle(color: Colors.white)), // Set title text color for dark mode
           content: SizedBox(
             width: double.maxFinite,
             child: ListView.builder(
@@ -73,7 +88,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
               itemBuilder: (BuildContext context, int index) {
                 final course = _predefinedCourses[index];
                 return ListTile(
-                  title: Text(course.name),
+                  title: Text(course.name, style: TextStyle(color: Colors.white)), // Set list item text color for dark mode
                   onTap: () {
                     setState(() {
                       _selectedCourse = course;
@@ -95,32 +110,58 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Aggiungi Corso'),
+        backgroundColor: Color(0xFF1C1C1E), // Set AppBar background color for dark mode
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0), // Add the missing padding argument
         child: Column(
           children: [
             ElevatedButton(
               onPressed: _showPredefinedCoursesDialog,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Set button color for dark mode
+              ),
               child: Text('Seleziona un corso predefinito'),
             ),
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(labelText: 'Nome Corso'),
+              decoration: InputDecoration(
+                labelText: 'Nome Corso',
+                labelStyle: TextStyle(color: Colors.white), // Set label text color for dark mode
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white), // Set border color for dark mode
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue), // Set focused border color for dark mode
+                ),
+              ),
+              style: TextStyle(color: Colors.white), // Set text color for dark mode
             ),
+            SizedBox(height: 20),
             TextField(
               controller: _deadlineController,
               decoration: InputDecoration(
                 labelText: 'Scadenza (YYYY-MM-DD)',
+                labelStyle: TextStyle(color: Colors.white), // Set label text color for dark mode
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.calendar_today),
+                  icon: Icon(Icons.calendar_today, color: Colors.white), // Set icon color for dark mode
                   onPressed: () => _selectDate(context),
                 ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white), // Set border color for dark mode
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.blue), // Set focused border color for dark mode
+                ),
               ),
+              style: TextStyle(color: Colors.white), // Set text color for dark mode
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _addCourse,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue, // Set button color for dark mode
+              ),
               child: Text('Aggiungi Corso'),
             ),
           ],

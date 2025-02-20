@@ -180,13 +180,13 @@ class _CourseListScreenState extends State<CourseListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFD5EAFD), // Set AppBar background color to specified color
+        backgroundColor: Color(0xFF1C1C1E), // Set AppBar background color to specified color
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               _greeting,
-              style: TextStyle(fontSize: 24, color: Colors.blue, fontWeight: FontWeight.bold), // Increase the font size, set color to blue, and make bold
+              style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
             ),
             Container(
               decoration: BoxDecoration(
