@@ -67,7 +67,7 @@ class MyApp extends StatelessWidget {
               '/welcome': (context) => WelcomeScreen(),
               '/settings': (context) => SettingsScreen(),
               '/documents': (context) => DocumentsScreen(),
-              '/add_course': (context) => AddCourseScreen(onAddCourse: (Course ) {  },), // Add route for AddCourseScreen
+              '/add_course': (context) => AddCourseScreen(onAddCourse: (course) {  },), // Add route for AddCourseScreen
             },
           );
         }
@@ -82,12 +82,11 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.initialRoute});
 
   @override
-  _MainScreenState createState() => _MainScreenState();
+  MainScreenState createState() => MainScreenState(); // Change _MainScreenState to MainScreenState
 }
 
-class _MainScreenState extends State<MainScreen> {
+class MainScreenState extends State<MainScreen> { // Change _MainScreenState to MainScreenState
   late PageController _pageController;
-  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -110,7 +109,6 @@ class _MainScreenState extends State<MainScreen> {
 
   void _onPageChanged(int index) {
     setState(() {
-      _currentIndex = index;
     });
   }
 
@@ -124,7 +122,8 @@ class _MainScreenState extends State<MainScreen> {
       body: PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged,
-        children: [
+        physics: NeverScrollableScrollPhysics(), // Disable swipe gesture
+        children: [ // Move 'children' to the end
           Navigator(
             onGenerateRoute: (settings) {
               return MaterialPageRoute(
@@ -154,7 +153,6 @@ class _MainScreenState extends State<MainScreen> {
             },
           ),
         ],
-        physics: NeverScrollableScrollPhysics(), // Disable swipe gesture
       ),
       bottomNavigationBar: CustomBottomAppBar(
         onAnchorPressed: () {
@@ -199,7 +197,7 @@ class NoSwipePageView extends StatelessWidget {
   final ValueChanged<int> onPageChanged;
   final List<Widget> children;
 
-  const NoSwipePageView({
+  const NoSwipePageView({super.key, 
     required this.controller,
     required this.onPageChanged,
     required this.children,

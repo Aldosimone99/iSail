@@ -9,10 +9,10 @@ class AddCourseScreen extends StatefulWidget {
   const AddCourseScreen({super.key, required this.onAddCourse});
 
   @override
-  _AddCourseScreenState createState() => _AddCourseScreenState();
+  AddCourseScreenState createState() => AddCourseScreenState(); // Change _AddCourseScreenState to AddCourseScreenState
 }
 
-class _AddCourseScreenState extends State<AddCourseScreen> {
+class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourseScreenState to AddCourseScreenState
   final List<Course> _predefinedCourses = [
     Course(name: 'PSSR (Personal Safety and Social Responsibilities)', deadline: DateTime.now()),
     Course(name: 'Sopravvivenza e Salvataggio', deadline: DateTime.now()),
@@ -119,7 +119,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Container(
-              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+              color: Color(0xFF1C1C1E).withAlpha(128), // Replace withOpacity with withAlpha (128 is approximately 50% opacity)
             ),
           ),
         ),

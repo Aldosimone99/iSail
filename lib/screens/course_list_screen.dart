@@ -231,7 +231,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
             child: Container(
-              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+              color: Color(0xFF1C1C1E).withAlpha(128), // Replace withOpacity with withAlpha (128 is approximately 50% opacity)
             ),
           ),
         ),
@@ -283,7 +283,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
+                          color: Colors.black.withAlpha(51), // Replace withOpacity with withAlpha (51 is approximately 20% opacity)
                           spreadRadius: 1,
                           blurRadius: 5,
                           offset: Offset(0, 3), // changes position of shadow
@@ -376,11 +376,11 @@ class ShakeTransition extends StatelessWidget {
   final bool enabled;
 
   const ShakeTransition({
-    Key? key,
+    super.key,
     required this.child,
     required this.controller,
     required this.enabled,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

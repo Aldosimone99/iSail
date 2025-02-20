@@ -5,7 +5,7 @@ class CustomBottomAppBar extends StatelessWidget {
   final VoidCallback onDocumentsPressed;
   final VoidCallback onSettingsPressed;
 
-  const CustomBottomAppBar({
+  const CustomBottomAppBar({super.key, 
     required this.onAnchorPressed,
     required this.onDocumentsPressed,
     required this.onSettingsPressed,

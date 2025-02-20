@@ -12,10 +12,10 @@ class PdfViewerScreen extends StatefulWidget {
   const PdfViewerScreen({super.key, required this.assetPath, required this.title});
 
   @override
-  _PdfViewerScreenState createState() => _PdfViewerScreenState();
+  PdfViewerScreenState createState() => PdfViewerScreenState();
 }
 
-class _PdfViewerScreenState extends State<PdfViewerScreen> {
+class PdfViewerScreenState extends State<PdfViewerScreen> {
   bool _isLoading = true;
   String _errorMessage = '';
   String? _pdfPath;
@@ -71,7 +71,7 @@ class _PdfViewerScreenState extends State<PdfViewerScreen> {
           if (_errorMessage.isEmpty && _pdfPath != null)
             PDFView(
               filePath: _pdfPath!,
-              onRender: (_pages) {
+              onRender: (pages) {
                 setState(() {
                   _isLoading = false;
                 });
