@@ -12,16 +12,6 @@ class CourseCard extends StatelessWidget {
     required this.dueDate,
   });
 
-  Color _getBorderColor() {
-    final now = DateTime.now();
-    if (dueDate.isBefore(now.add(Duration(days: 180)))) {
-      return Colors.redAccent; // Neon red for due within 6 months
-    } else if (dueDate.isBefore(now.add(Duration(days: 365)))) {
-      return Colors.yellowAccent; // Yellow for due between 6 months and a year
-    } else {
-      return Colors.blueAccent; // Blue for due after a year
-    }
-  }
 
   Color _getBackgroundColor() {
     final now = DateTime.now();
@@ -70,6 +60,16 @@ class CourseCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pillColor = _getPillColor();
+    final borderColor = dueDate.isBefore(DateTime.now().add(Duration(days: 180))) 
+        ? Colors.red 
+        : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) 
+            ? Color(0xFFF4C34D) 
+            : Colors.green);
+    final pillTextColor = dueDate.isBefore(DateTime.now().add(Duration(days: 180))) 
+        ? Colors.red // Red text color for red boxes
+        : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) 
+            ? Color.fromARGB(255, 171, 130, 10) // Dark golden color for yellow boxes
+            : borderColor);
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
@@ -83,56 +83,58 @@ class CourseCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Card(
-        color: _getBackgroundColor(), // Set the background color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          // Remove the colored border
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0), // Slightly increase padding
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) ? Color(0xFFF4C34D) : Colors.green), // Set text color based on due date
-                      ),
-                    ),
-                    SizedBox(height: 6), // Slightly increase spacing
-                    Text(
-                      description,
-                      style: TextStyle(
-                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) ? Color(0xFFF4C34D) : Colors.green), // Set text color based on due date
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
-                decoration: BoxDecoration(
-                  color: pillColor,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                constraints: BoxConstraints(maxWidth: 130), // Slightly increase the width of the pill
-                child: Text(
-                  _getCountdownText(),
+      child: AspectRatio(
+        aspectRatio: 1.2, // Increase the width and height of the rectangular card
+        child: Card(
+          color: _getBackgroundColor(), // Set the background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: borderColor, width: 3), // Increase border thickness
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0), // Slightly increase padding
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
                   style: TextStyle(
-                    fontSize: 15,
-                    color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : (dueDate.isBefore(DateTime.now().add(Duration(days: 365))) ? Color(0xFFF4C34D) : Colors.green), // Set text color based on due date
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: borderColor, // Set text color based on due date
                   ),
-                  textAlign: TextAlign.center,
+                  maxLines: 2, // Limit to 2 lines
+                  overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
                 ),
-              ),
-            ],
+                SizedBox(height: 6), // Slightly increase spacing
+                Text(
+                  description,
+                  style: TextStyle(
+                    color: borderColor, // Set text color based on due date
+                    fontSize: 15,
+                  ),
+                ),
+                Spacer(), // Push the countdown text to the bottom
+                Center(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
+                    decoration: BoxDecoration(
+                      color: pillColor,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    constraints: BoxConstraints(minWidth: 100), // Allow the pill to expand freely
+                    child: Text(
+                      _getCountdownText(),
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: pillTextColor, // Set text color based on due date
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

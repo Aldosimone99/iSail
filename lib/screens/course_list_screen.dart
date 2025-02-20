@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import 'dart:ui'; // Import for blur effect
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:isail/screens/add_course_screen.dart';
@@ -180,7 +181,16 @@ class _CourseListScreenState extends State<CourseListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF1C1C1E), // Set AppBar background color to specified color
+        backgroundColor: Colors.transparent, // Set AppBar background color to transparent
+        elevation: 0, // Remove AppBar shadow
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
+            child: Container(
+              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+            ),
+          ),
+        ),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -232,7 +242,13 @@ class _CourseListScreenState extends State<CourseListScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Two cards per row
+                crossAxisSpacing: 0.0, // Increase horizontal spacing between cards
+                mainAxisSpacing: 0.0, // Increase vertical spacing between cards
+                childAspectRatio: 1.2, // Adjust aspect ratio for larger rectangular cards
+              ),
               itemCount: filteredCourses.length,
               itemBuilder: (context, index) {
                 final course = filteredCourses[index];
@@ -252,13 +268,10 @@ class _CourseListScreenState extends State<CourseListScreen> {
                     }
                     return false;
                   },
-                  child: SizedBox(
-                    width: double.infinity, // Ensure the course card occupies the entire width
-                    child: CourseCard(
-                      title: course.name,
-                      description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
-                      dueDate: course.deadline,
-                    ),
+                  child: CourseCard(
+                    title: course.name,
+                    description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
+                    dueDate: course.deadline,
                   ),
                 );
               },

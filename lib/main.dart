@@ -37,9 +37,10 @@ class MyApp extends StatelessWidget {
             title: 'iSail',
             theme: ThemeData(
               brightness: Brightness.dark,
-              scaffoldBackgroundColor: Color(0xFF1C1C1E), // Change background color to specified color
+              scaffoldBackgroundColor: Color(0xFF000000), // Change background color to OLED black
               appBarTheme: AppBarTheme(
-                backgroundColor: Color(0xFF1C1C1E), // Set AppBar background color to specified color
+                backgroundColor: Colors.transparent, // Set AppBar background color to transparent
+                elevation: 0, // Remove AppBar shadow
                 titleTextStyle: TextStyle(color: Colors.blue, fontFamily: 'SF Pro', fontSize: 20), // Change text color to blue
                 iconTheme: IconThemeData(color: Colors.black), // Set AppBar icon color to black
               ),
