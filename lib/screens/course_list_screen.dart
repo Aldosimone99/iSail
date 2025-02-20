@@ -17,17 +17,29 @@ class CourseListScreen extends StatefulWidget {
   _CourseListScreenState createState() => _CourseListScreenState();
 }
 
-class _CourseListScreenState extends State<CourseListScreen> {
+class _CourseListScreenState extends State<CourseListScreen> with SingleTickerProviderStateMixin {
   final List<Course> _courses = [];
   String _greeting = '';
   String _searchQuery = '';
   String _sortCriteria = 'name';
+  bool _isDeleteMode = false;
+  AnimationController? _controller;
 
   @override
   void initState() {
     super.initState();
     _loadUserName();
     _loadCourses();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
 
   void _loadUserName() async {
@@ -90,6 +102,38 @@ class _CourseListScreenState extends State<CourseListScreen> {
   }
 
   void _showSortOptions(BuildContext context) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: Text('Ordina'),
+            onPressed: () {
+              Navigator.pop(context);
+              _showOrderOptions(context);
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text('Elimina'),
+            onPressed: () {
+              setState(() {
+                _isDeleteMode = true;
+              });
+              Navigator.pop(context);
+            },
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text('Annulla'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showOrderOptions(BuildContext context) {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -191,93 +235,107 @@ class _CourseListScreenState extends State<CourseListScreen> {
             ),
           ),
         ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        title: Align(
+          alignment: Alignment.centerLeft, // Align the greeting text to the left
+          child: Text(
+            _greeting,
+            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
+          ),
+        ),
+      ),
+      body: GestureDetector(
+        onTap: () {
+          if (_isDeleteMode) {
+            setState(() {
+              _isDeleteMode = false;
+            });
+          }
+        },
+        child: Column(
           children: [
-            Text(
-              _greeting,
-              style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white, // Set background color to white
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: Offset(0, 3), // changes position of shadow
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Cerca...',
+                        filled: true,
+                        fillColor: Color(0xFF2C2C2E), // Light gray color
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30), // Make the borders more rounded
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _searchQuery = value;
+                        });
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 8), // Add some space between the search bar and the button
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white, // Set background color to white
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                      icon: Icon(Icons.more_vert, color: Colors.black), // Use three dots icon and set color to black
+                      onPressed: () => _showSortOptions(context),
+                    ),
                   ),
                 ],
               ),
-              child: IconButton(
-                icon: Icon(Icons.swap_vert, color: Colors.black), // Use up and down arrows icon and set color to black
-                onPressed: () => _showSortOptions(context),
+            ),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // Two cards per row
+                  crossAxisSpacing: 0.0, // Increase horizontal spacing between cards
+                  mainAxisSpacing: 0.0, // Increase vertical spacing between cards
+                  childAspectRatio: 1.2, // Adjust aspect ratio for larger rectangular cards
+                ),
+                itemCount: filteredCourses.length,
+                itemBuilder: (context, index) {
+                  final course = filteredCourses[index];
+                  return ShakeTransition(
+                    controller: _controller,
+                    enabled: _isDeleteMode,
+                    child: Stack(
+                      children: [
+                        CourseCard(
+                          title: course.name,
+                          description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
+                          dueDate: course.deadline,
+                        ),
+                        if (_isDeleteMode)
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: IconButton(
+                              icon: Icon(Icons.close, color: Colors.red),
+                              onPressed: () => _showDeleteConfirmationDialog(index),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ],
         ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Cerca...',
-                filled: true,
-                fillColor: Color(0xFF2C2C2E), // Light gray color
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30), // Make the borders more rounded
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
-            ),
-          ),
-          Expanded(
-            child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Two cards per row
-                crossAxisSpacing: 0.0, // Increase horizontal spacing between cards
-                mainAxisSpacing: 0.0, // Increase vertical spacing between cards
-                childAspectRatio: 1.2, // Adjust aspect ratio for larger rectangular cards
-              ),
-              itemCount: filteredCourses.length,
-              itemBuilder: (context, index) {
-                final course = filteredCourses[index];
-                return Dismissible(
-                  key: Key(course.name),
-                  background: Container(
-                    color: Colors.red,
-                    alignment: Alignment.centerRight,
-                    padding: EdgeInsets.only(right: 20),
-                    child: Icon(Icons.delete, color: Colors.white),
-                  ),
-                  direction: DismissDirection.endToStart, // Allow only left swipe
-                  confirmDismiss: (direction) async {
-                    if (direction == DismissDirection.endToStart) {
-                      _showDeleteConfirmationDialog(index);
-                      return false;
-                    }
-                    return false;
-                  },
-                  child: CourseCard(
-                    title: course.name,
-                    description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
-                    dueDate: course.deadline,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         shape: CircleBorder(), // Make the button round
@@ -290,6 +348,33 @@ class _CourseListScreenState extends State<CourseListScreen> {
         },
         child: Icon(Icons.add),
       ),
+    );
+  }
+}
+
+class ShakeTransition extends StatelessWidget {
+  final Widget child;
+  final AnimationController? controller;
+  final bool enabled;
+
+  const ShakeTransition({
+    Key? key,
+    required this.child,
+    required this.controller,
+    required this.enabled,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller!,
+      builder: (context, child) {
+        return Transform.rotate(
+          angle: enabled ? 0.02 * controller!.value : 0.0, // Rotate slightly to mimic iOS shake
+          child: child,
+        );
+      },
+      child: child,
     );
   }
 }
