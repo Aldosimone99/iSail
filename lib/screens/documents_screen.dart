@@ -7,9 +7,16 @@ class DocumentsScreen extends StatelessWidget {
   Future<List<Map<String, String>>> _loadPdfFiles() async {
     // List the PDF files you have added to your project with custom names
     return [
-      {'path': 'assets/documents/document1.pdf', 'name': 'Colreg'},
-      {'path': 'assets/documents/document2.pdf', 'name': 'Document 2'},
-      {'path': 'assets/documents/document3.pdf', 'name': 'Document 3'},
+      {'path': 'assets/documents/document1.pdf', 'name': 'COLREG (International Regulations for Preventing Collisions at Sea) - ITA'},
+      {'path': 'assets/documents/document2.pdf', 'name': 'COLREG (International Regulations for Preventing Collisions at Sea) - ENG'},
+      {'path': 'assets/documents/document3.pdf', 'name': 'MLC (Maritime Labour Convention) - ITA'},
+      {'path': 'assets/documents/document4.pdf', 'name': 'MLC (Maritime Labour Convention) - ENG'},
+      {'path': 'assets/documents/document5.pdf', 'name': 'MARPOL Convention - ITA'},
+      {'path': 'assets/documents/document6.pdf', 'name': 'MARPOL Convention - ENG'},
+      {'path': 'assets/documents/document7.pdf', 'name': 'SOLAS Convention - ITA'},
+      {'path': 'assets/documents/document8.pdf', 'name': 'SOLAS Convention - ENG'},
+
+
     ];
   }
 
