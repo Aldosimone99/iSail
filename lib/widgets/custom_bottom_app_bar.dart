@@ -7,7 +7,7 @@ class CustomBottomAppBar extends StatelessWidget {
   const CustomBottomAppBar({
     super.key, // Convert 'key' to a super parameter
     required this.onAnchorPressed,
-    required this.onDocumentsPressed,
+    required this.onDocumentsPressed, required Null Function() onSettingsPressed,
   });
 
   @override

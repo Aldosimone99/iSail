@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/settings_screen.dart'; // Import SettingsScreen
-import 'screens/documents_screen.dart'; // Import DocumentsScreenn
+import 'screens/documents_screen.dart'; // Import DocumentsScreen
+import 'screens/add_course_screen.dart'; // Import AddCourseScreen
 import 'widgets/custom_bottom_app_bar.dart';
 
 void main() {
@@ -61,10 +62,12 @@ class MyApp extends StatelessWidget {
               ),
               dividerColor: Color(0xFF38383A), // Separator
             ),
-            home: HomeScreen(initialRoute: snapshot.data == true ? '/welcome' : '/'),
+            home: MainScreen(initialRoute: snapshot.data == true ? '/welcome' : '/'),
             routes: {
+              '/welcome': (context) => WelcomeScreen(),
               '/settings': (context) => SettingsScreen(),
-              '/documents': (context) => DocumentsScreen(), // Add DocumentsScreen route
+              '/documents': (context) => DocumentsScreen(),
+              '/add_course': (context) => AddCourseScreen(onAddCourse: (Course ) {  },), // Add route for AddCourseScreen
             },
           );
         }
@@ -73,42 +76,95 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   final String initialRoute;
 
-  const HomeScreen({super.key, required this.initialRoute});
+  const MainScreen({super.key, required this.initialRoute});
+
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  late PageController _pageController;
+  int _currentIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _getPageIndex(widget.initialRoute));
+  }
+
+  int _getPageIndex(String route) {
+    switch (route) {
+      case '/welcome':
+        return 0;
+      case '/settings':
+        return 1;
+      case '/documents':
+        return 2;
+      default:
+        return 3;
+    }
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  void _onItemTapped(int index) {
+    _pageController.jumpToPage(index);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Navigator(
-        initialRoute: initialRoute,
-        onGenerateRoute: (settings) {
-          Widget page;
-          switch (settings.name) {
-            case '/welcome':
-              page = WelcomeScreen();
-              break;
-            case '/settings':
-              page = SettingsScreen();
-              break;
-            case '/documents':
-              page = DocumentsScreen();
-              break;
-            default:
-              page = CourseListScreen();
-          }
-          return MaterialPageRoute(builder: (_) => page);
-        },
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+        children: [
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => WelcomeScreen(),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => SettingsScreen(),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => DocumentsScreen(),
+              );
+            },
+          ),
+          Navigator(
+            onGenerateRoute: (settings) {
+              return MaterialPageRoute(
+                builder: (context) => CourseListScreen(),
+              );
+            },
+          ),
+        ],
+        physics: NeverScrollableScrollPhysics(), // Disable swipe gesture
       ),
       bottomNavigationBar: CustomBottomAppBar(
         onAnchorPressed: () {
-          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
+          _onItemTapped(3); // Navigate to home screen
         },
         onDocumentsPressed: () {
-          if (ModalRoute.of(context)?.settings.name != '/documents') {
-            Navigator.pushNamed(context, '/documents'); // Navigate to documents screen
-          }
+          _onItemTapped(2); // Navigate to documents screen
+        },
+        onSettingsPressed: () {
+          _onItemTapped(1); // Navigate to settings screen
         },
       ),
       floatingActionButton: Stack(
@@ -127,13 +183,38 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: Colors.blue,
             shape: CircleBorder(),
             onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false); // Navigate to home screen
+              _onItemTapped(3); // Navigate to home screen
             },
             child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
           ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+}
+
+class NoSwipePageView extends StatelessWidget {
+  final PageController controller;
+  final ValueChanged<int> onPageChanged;
+  final List<Widget> children;
+
+  const NoSwipePageView({
+    required this.controller,
+    required this.onPageChanged,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PageView.builder(
+      controller: controller,
+      onPageChanged: onPageChanged,
+      itemCount: children.length,
+      itemBuilder: (context, index) {
+        return children[index];
+      },
+      physics: NeverScrollableScrollPhysics(), // Disable swipe gesture
     );
   }
 }
