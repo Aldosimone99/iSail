@@ -323,9 +323,24 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
                           Positioned(
                             top: 0,
                             right: 0,
-                            child: IconButton(
-                              icon: Icon(Icons.close, color: Colors.red),
-                              onPressed: () => _showDeleteConfirmationDialog(index),
+                            child: Container(
+                              width: 30, // Set smaller width
+                              height: 30, // Set smaller height
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    spreadRadius: 1,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 3), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Icon(Icons.close, color: Colors.red, size: 18), // Center the icon
+                              ),
                             ),
                           ),
                       ],
