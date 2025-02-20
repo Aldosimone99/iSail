@@ -4,12 +4,12 @@ import 'pdf_viewer_screen.dart';
 class DocumentsScreen extends StatelessWidget {
   const DocumentsScreen({super.key});
 
-  Future<List<String>> _loadPdfFiles() async {
-    // List the PDF files you have added to your project
+  Future<List<Map<String, String>>> _loadPdfFiles() async {
+    // List the PDF files you have added to your project with custom names
     return [
-      'assets/documents/document1.pdf',
-      'assets/documents/document2.pdf',
-      'assets/documents/document3.pdf',
+      {'path': 'assets/documents/document1.pdf', 'name': 'Colreg'},
+      {'path': 'assets/documents/document2.pdf', 'name': 'Document 2'},
+      {'path': 'assets/documents/document3.pdf', 'name': 'Document 3'},
     ];
   }
 
@@ -19,7 +19,7 @@ class DocumentsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Documenti'),
       ),
-      body: FutureBuilder<List<String>>(
+      body: FutureBuilder<List<Map<String, String>>>(
         future: _loadPdfFiles(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -33,8 +33,9 @@ class DocumentsScreen extends StatelessWidget {
             return ListView.builder(
               itemCount: pdfFiles.length,
               itemBuilder: (context, index) {
-                final pdfPath = pdfFiles[index];
-                final pdfName = pdfPath.split('/').last;
+                final pdfFile = pdfFiles[index];
+                final pdfPath = pdfFile['path']!;
+                final pdfName = pdfFile['name']!;
                 return ListTile(
                   title: Text(pdfName),
                   onTap: () {
