@@ -26,7 +26,7 @@ class CourseCard extends StatelessWidget {
   Color _getBackgroundColor() {
     final now = DateTime.now();
     if (dueDate.isBefore(now.add(Duration(days: 180)))) {
-      return Colors.red.withAlpha(50); // Light red background for due within 6 months
+      return Color(0xFFFEE9E8); // Light red background for due within 6 months
     } else if (dueDate.isBefore(now.add(Duration(days: 365)))) {
       return Colors.yellow.withAlpha(50); // Light yellow background for due between 6 months and a year
     } else {
@@ -62,6 +62,16 @@ class CourseCard extends StatelessWidget {
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
       child: Card(
         color: _getBackgroundColor(), // Set the background color
         shape: RoundedRectangleBorder(
@@ -78,12 +88,19 @@ class CourseCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Colors.white), // Slightly increase font size
+                      style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : Colors.white, // Set text color to red if due within 6 months
+                      ),
                     ),
                     SizedBox(height: 6), // Slightly increase spacing
                     Text(
                       description,
-                      style: TextStyle(color: Color(0xFFEBEBF5), fontSize: 15), // Slightly increase font size
+                      style: TextStyle(
+                        color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : Color(0xFFEBEBF5), // Set text color to red if due within 6 months
+                        fontSize: 15,
+                      ),
                     ),
                   ],
                 ),
@@ -97,7 +114,10 @@ class CourseCard extends StatelessWidget {
                 constraints: BoxConstraints(maxWidth: 130), // Slightly increase the width of the pill
                 child: Text(
                   _getCountdownText(),
-                  style: TextStyle(fontSize: 15, color: Colors.white), // Slightly increase font size
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: dueDate.isBefore(DateTime.now().add(Duration(days: 180))) ? Colors.red : Colors.white, // Set text color to red if due within 6 months
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),

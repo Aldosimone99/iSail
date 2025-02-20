@@ -37,11 +37,16 @@ class MyApp extends StatelessWidget {
             title: 'iSail',
             theme: ThemeData(
               brightness: Brightness.dark,
-              scaffoldBackgroundColor: Colors.black, // System Background (OLED black)
+              scaffoldBackgroundColor: Color(0xFFD5EAFD), // Change background color to specified color
+              appBarTheme: AppBarTheme(
+                backgroundColor: Color(0xFFD5EAFD), // Set AppBar background color to specified color
+                titleTextStyle: TextStyle(color: Colors.blue, fontFamily: 'SF Pro', fontSize: 20), // Change text color to blue
+                iconTheme: IconThemeData(color: Colors.black), // Set AppBar icon color to black
+              ),
               colorScheme: ColorScheme.dark(
                 primary: Colors.white, // Cambia il colore primario in bianco
                 secondary: Colors.white, // Cambia il colore secondario in bianco
-                surface: Color(0xFF2C2C2E), // Secondary Background
+                surface: Color.fromARGB(255, 255, 255, 255), // Secondary Background
               ),
               textTheme: TextTheme(
                 bodyLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label

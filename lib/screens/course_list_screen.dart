@@ -180,21 +180,29 @@ class _CourseListScreenState extends State<CourseListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black, // Make the AppBar black (OLED)
+        backgroundColor: Color(0xFFD5EAFD), // Set AppBar background color to specified color
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               _greeting,
-              style: TextStyle(fontSize: 24), // Increase the font size
+              style: TextStyle(fontSize: 24, color: Colors.blue, fontWeight: FontWeight.bold), // Increase the font size, set color to blue, and make bold
             ),
             Container(
               decoration: BoxDecoration(
-                color: Color(0xFF2C2C2E), // Same color as the search bar
+                color: Colors.white, // Set background color to white
                 shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
               ),
               child: IconButton(
-                icon: Icon(Icons.swap_vert), // Use up and down arrows icon
+                icon: Icon(Icons.swap_vert, color: Colors.black), // Use up and down arrows icon and set color to black
                 onPressed: () => _showSortOptions(context),
               ),
             ),
