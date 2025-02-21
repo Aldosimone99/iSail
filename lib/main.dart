@@ -134,7 +134,9 @@ class MainScreenState extends State<MainScreen> {
           shape: BoxShape.circle,
           color: Colors.blue.withAlpha(77), // Semi-transparent blue background
         ),
+        padding: EdgeInsets.all(8), // Add padding to create space around the button
         child: FloatingActionButton(
+          heroTag: 'uniqueAnchorButton', // Provide a unique tag
           onPressed: () => _onItemTapped(3),
           backgroundColor: Colors.blue,
           shape: CircleBorder(), // Make the button circular
