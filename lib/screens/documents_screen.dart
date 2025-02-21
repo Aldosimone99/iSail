@@ -24,6 +24,8 @@ class DocumentsScreen extends StatelessWidget {
       {'path': 'assets/documents/document14.pdf', 'title': 'ISPS Code 🇬🇧', 'subtitle': 'International Ship and Port Facility Security Code'},
       {'path': 'assets/documents/document15.pdf', 'title': 'Load Line Convention 🇮🇹', 'subtitle': 'Convenzione sul bordo libero'},
       {'path': 'assets/documents/document16.pdf', 'title': 'Load Line Convention 🇬🇧', 'subtitle': 'Load Lines Convention'},
+      {'path': 'assets/documents/document17.pdf', 'title': 'IMDG Code 🇮🇹', 'subtitle': 'Codice marittimo internazionale delle merci pericolose'},
+      {'path': 'assets/documents/document18.pdf', 'title': 'IMDG Code 🇬🇧', 'subtitle': 'International Maritime Dangerous Goods Code'},
     ];
   }
 
