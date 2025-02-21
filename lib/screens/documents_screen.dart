@@ -8,18 +8,22 @@ class DocumentsScreen extends StatelessWidget {
   Future<List<Map<String, String>>> _loadPdfFiles() async {
     // List the PDF files you have added to your project with custom names
     return [
-  {'path': 'assets/documents/document1.pdf', 'title': 'COLREG 🇮🇹', 'subtitle': 'Regolamento internazionale per prevenire gli abbordi in mare'},
+      {'path': 'assets/documents/document1.pdf', 'title': 'COLREG 🇮🇹', 'subtitle': 'Regolamento internazionale per prevenire gli abbordi in mare'},
       {'path': 'assets/documents/document2.pdf', 'title': 'COLREG 🇬🇧', 'subtitle': 'Collision Regulations'},
-      {'path': 'assets/documents/document3.pdf', 'title': 'MLC 🇮🇹', 'subtitle': 'Maritime Labour Convention'},
+      {'path': 'assets/documents/document3.pdf', 'title': 'MLC 🇮🇹', 'subtitle': 'Convenzione sul lavoro marittimo'},
       {'path': 'assets/documents/document4.pdf', 'title': 'MLC 🇬🇧', 'subtitle': 'Maritime Labour Convention'},
       {'path': 'assets/documents/document5.pdf', 'title': 'MARPOL 🇮🇹', 'subtitle': 'Convenzione internazionale per la prevenzione dell’inquinamento causato da navi '},
       {'path': 'assets/documents/document6.pdf', 'title': 'MARPOL 🇬🇧', 'subtitle': 'Marine Pollution Convention'},
-      {'path': 'assets/documents/document7.pdf', 'title': 'SOLAS 🇮🇹', 'subtitle': 'Safety of Life at Sea'},
+      {'path': 'assets/documents/document7.pdf', 'title': 'SOLAS 🇮🇹', 'subtitle': 'Convenzione internazionale per la salvaguardia della vita umana in mare'},
       {'path': 'assets/documents/document8.pdf', 'title': 'SOLAS 🇬🇧', 'subtitle': 'Safety of Life at Sea'},
-      {'path': 'assets/documents/document9.pdf', 'title': 'STCW 🇮🇹', 'subtitle': 'Standards of Training, Certification and Watchkeeping for Seafarers'},
+      {'path': 'assets/documents/document9.pdf', 'title': 'STCW 🇮🇹', 'subtitle': 'Convenzione internazionale sugli standard di formazione, certificazione e tenuta della guardia per i marittimi'},
       {'path': 'assets/documents/document10.pdf', 'title': 'STCW 🇬🇧', 'subtitle': 'Standards of Training, Certification and Watchkeeping for Seafarers'},
-      {'path': 'assets/documents/document11.pdf', 'title': 'ISM Code 🇮🇹', 'subtitle': 'International Safety Management Code'},
+      {'path': 'assets/documents/document11.pdf', 'title': 'ISM Code 🇮🇹', 'subtitle': 'Codice internazionale di gestione della sicurezza'},
       {'path': 'assets/documents/document12.pdf', 'title': 'ISM Code 🇬🇧', 'subtitle': 'International Safety Management Code'},
+      {'path': 'assets/documents/document13.pdf', 'title': 'ISPS Code 🇮🇹', 'subtitle': 'Codice internazionale per la sicurezza delle navi e delle strutture portuali'},
+      {'path': 'assets/documents/document14.pdf', 'title': 'ISPS Code 🇬🇧', 'subtitle': 'International Ship and Port Facility Security Code'},
+      {'path': 'assets/documents/document15.pdf', 'title': 'Load Line Convention 🇮🇹', 'subtitle': 'Convenzione sul bordo libero'},
+      {'path': 'assets/documents/document16.pdf', 'title': 'Load Line Convention 🇬🇧', 'subtitle': 'Load Lines Convention'},
     ];
   }
 

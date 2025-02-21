@@ -60,6 +60,16 @@ flutter:
     - assets/documents/document4.pdf
     - assets/documents/document5.pdf
     - assets/documents/document6.pdf
+    - assets/documents/document7.pdf
+    - assets/documents/document8.pdf
+    - assets/documents/document9.pdf
+    - assets/documents/document10.pdf
+    - assets/documents/document11.pdf
+    - assets/documents/document12.pdf
+    - assets/documents/document13.pdf
+    - assets/documents/document14.pdf
+    - assets/documents/document15.pdf
+    - assets/documents/document16.pdf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
