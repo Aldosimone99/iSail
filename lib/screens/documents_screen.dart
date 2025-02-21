@@ -8,14 +8,18 @@ class DocumentsScreen extends StatelessWidget {
   Future<List<Map<String, String>>> _loadPdfFiles() async {
     // List the PDF files you have added to your project with custom names
     return [
-      {'path': 'assets/documents/document1.pdf', 'name': 'COLREG - ITA'},
-      {'path': 'assets/documents/document2.pdf', 'name': 'COLREG - ENG'},
-      {'path': 'assets/documents/document3.pdf', 'name': 'MLC (Maritime Labour Convention) - ITA'},
-      {'path': 'assets/documents/document4.pdf', 'name': 'MLC (Maritime Labour Convention) - ENG'},
-      {'path': 'assets/documents/document5.pdf', 'name': 'MARPOL Convention - ITA'},
-      {'path': 'assets/documents/document6.pdf', 'name': 'MARPOL Convention - ENG'},
-      {'path': 'assets/documents/document7.pdf', 'name': 'SOLAS Convention - ITA'},
-      {'path': 'assets/documents/document8.pdf', 'name': 'SOLAS Convention - ENG'},
+  {'path': 'assets/documents/document1.pdf', 'title': 'COLREG 🇮🇹', 'subtitle': 'Regolamento internazionale per prevenire gli abbordi in mare'},
+      {'path': 'assets/documents/document2.pdf', 'title': 'COLREG 🇬🇧', 'subtitle': 'Collision Regulations'},
+      {'path': 'assets/documents/document3.pdf', 'title': 'MLC 🇮🇹', 'subtitle': 'Maritime Labour Convention'},
+      {'path': 'assets/documents/document4.pdf', 'title': 'MLC 🇬🇧', 'subtitle': 'Maritime Labour Convention'},
+      {'path': 'assets/documents/document5.pdf', 'title': 'MARPOL 🇮🇹', 'subtitle': 'Convenzione internazionale per la prevenzione dell’inquinamento causato da navi '},
+      {'path': 'assets/documents/document6.pdf', 'title': 'MARPOL 🇬🇧', 'subtitle': 'Marine Pollution Convention'},
+      {'path': 'assets/documents/document7.pdf', 'title': 'SOLAS 🇮🇹', 'subtitle': 'Safety of Life at Sea'},
+      {'path': 'assets/documents/document8.pdf', 'title': 'SOLAS 🇬🇧', 'subtitle': 'Safety of Life at Sea'},
+      {'path': 'assets/documents/document9.pdf', 'title': 'STCW 🇮🇹', 'subtitle': 'Standards of Training, Certification and Watchkeeping for Seafarers'},
+      {'path': 'assets/documents/document10.pdf', 'title': 'STCW 🇬🇧', 'subtitle': 'Standards of Training, Certification and Watchkeeping for Seafarers'},
+      {'path': 'assets/documents/document11.pdf', 'title': 'ISM Code 🇮🇹', 'subtitle': 'International Safety Management Code'},
+      {'path': 'assets/documents/document12.pdf', 'title': 'ISM Code 🇬🇧', 'subtitle': 'International Safety Management Code'},
     ];
   }
 
@@ -65,7 +69,8 @@ class DocumentsScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final pdfFile = pdfFiles[index];
                 final pdfPath = pdfFile['path']!;
-                final pdfName = pdfFile['name']!;
+                final pdfName = pdfFile['title']!; // Change 'name' to 'title'
+                final pdfSubtitle = pdfFile['subtitle']!; // Add subtitle
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -106,6 +111,17 @@ class DocumentsScreen extends StatelessWidget {
                             ),
                             textAlign: TextAlign.center, // Center the text horizontally
                             overflow: TextOverflow.visible, // Ensure the text is fully readable
+                          ),
+                          SizedBox(height: 8), // Add some space between title and subtitle
+                          Text(
+                            pdfSubtitle,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[700], // Set text color to gray
+                            ),
+                            textAlign: TextAlign.center, // Center the text horizontally
+                            maxLines: 3, // Limit to a maximum of 3 lines
+                            overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines
                           ),
                           Spacer(), // Push the text to the bottom
                           Center(
