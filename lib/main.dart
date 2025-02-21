@@ -89,11 +89,13 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   late PageController _pageController;
+  final ValueNotifier<int> _currentPage = ValueNotifier<int>(0);
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _getPageIndex(widget.initialRoute));
+    _currentPage.value = _getPageIndex(widget.initialRoute);
   }
 
   int _getPageIndex(String route) {
@@ -107,6 +109,7 @@ class MainScreenState extends State<MainScreen> {
 
   void _onItemTapped(int index) {
     setState(() {
+      _currentPage.value = index;
     });
     _pageController.jumpToPage(index);
   }
@@ -118,6 +121,7 @@ class MainScreenState extends State<MainScreen> {
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
+            _currentPage.value = index;
           });
         },
         physics: NeverScrollableScrollPhysics(),
@@ -129,26 +133,33 @@ class MainScreenState extends State<MainScreen> {
           LogbookScreen(), // Add LogbookScreen to PageView
         ],
       ),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Colors.blue.withAlpha(77), // Semi-transparent blue background
-        ),
-        padding: EdgeInsets.all(8), // Add padding to create space around the button
-        child: FloatingActionButton(
-          heroTag: 'uniqueAnchorButton', // Provide a unique tag
-          onPressed: () => _onItemTapped(3),
-          backgroundColor: Colors.blue,
-          shape: CircleBorder(), // Make the button circular
-          child: Icon(Icons.anchor),
-        ),
+      floatingActionButton: ValueListenableBuilder<int>(
+        valueListenable: _currentPage,
+        builder: (context, pageIndex, child) {
+          return pageIndex == 0
+              ? SizedBox.shrink()
+              : FloatingActionButton(
+                  heroTag: 'uniqueAnchorButton', // Provide a unique tag
+                  onPressed: () => _onItemTapped(3),
+                  backgroundColor: Colors.blue,
+                  shape: CircleBorder(), // Make the button circular
+                  child: Icon(Icons.anchor),
+                );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: CustomBottomAppBar(
-        onAnchorPressed: () => _onItemTapped(3),
-        onDocumentsPressed: () => _onItemTapped(2),
-        onSettingsPressed: () => _onItemTapped(1),
-        onLogbookPressed: () => _onItemTapped(4), // Updated
+      bottomNavigationBar: ValueListenableBuilder<int>(
+        valueListenable: _currentPage,
+        builder: (context, pageIndex, child) {
+          return pageIndex == 0
+              ? SizedBox.shrink()
+              : CustomBottomAppBar(
+                  onAnchorPressed: () => _onItemTapped(3),
+                  onDocumentsPressed: () => _onItemTapped(2),
+                  onSettingsPressed: () => _onItemTapped(1),
+                  onLogbookPressed: () => _onItemTapped(4), // Updated
+                );
+        },
       ),
     );
   }

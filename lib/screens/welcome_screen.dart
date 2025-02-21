@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'course_list_screen.dart';
+import '../main.dart'; // Import MainScreen
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -18,7 +18,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     await prefs.setString('userName', _nameController.text);
     // ignore: use_build_context_synchronously
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => CourseListScreen()),
+      MaterialPageRoute(builder: (context) => MainScreen(initialRoute: '/')),
     );
   }
 
@@ -27,16 +27,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.black, // Make the AppBar black (OLED)
-        title: Text('Benvenuto su SailSafe'),
+        title: Text(''), // Removed content
       ),
+      // Removed BottomAppBar if it exists
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Benvenuto su SailSafe, inserisci il tuo nome per continuare',
-              style: TextStyle(fontSize: 18, color: Colors.white),
+              'Benvenuto su SailSafe',
+              style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Inserisci il tuo nome per continuare',
+              style: TextStyle(fontSize: 18, color: Colors.white), // Subtitle
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
@@ -47,7 +54,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _submitName,
-              child: Text('Continua'),
+              child: Text(
+                'Continua',
+                style: TextStyle(color: Colors.black), // Changed text color to black
+              ),
             ),
           ],
         ),
