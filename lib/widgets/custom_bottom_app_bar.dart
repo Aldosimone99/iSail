@@ -4,14 +4,14 @@ class CustomBottomAppBar extends StatelessWidget {
   final VoidCallback onAnchorPressed;
   final VoidCallback onDocumentsPressed;
   final VoidCallback onSettingsPressed;
-  final VoidCallback onSearchPressed; // Aggiunto
+  final VoidCallback onLogbookPressed; // Updated
 
   const CustomBottomAppBar({
     super.key,
     required this.onAnchorPressed,
     required this.onDocumentsPressed,
     required this.onSettingsPressed,
-    required this.onSearchPressed, // Ora è obbligatorio
+    required this.onLogbookPressed, // Updated
   });
 
   @override
@@ -29,7 +29,7 @@ class CustomBottomAppBar extends StatelessWidget {
             _buildNavItem(Icons.edit_document, "Convenzioni", onDocumentsPressed),
             _buildNavItem(Icons.store, "Centri", () {}), // Placeholder
             SizedBox(width: 50), // Spazio per il FloatingActionButton
-            _buildNavItem(Icons.search, "Cerca", onSearchPressed), // Usa il parametro corretto
+            _buildNavItem(Icons.book, "Logbook", onLogbookPressed), // Updated
             _buildNavItem(Icons.settings, "Impostazioni", onSettingsPressed), 
           ],
         ),

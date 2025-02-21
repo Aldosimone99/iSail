@@ -6,6 +6,7 @@ import 'screens/welcome_screen.dart';
 import 'screens/settings_screen.dart'; // Import SettingsScreen
 import 'screens/documents_screen.dart'; // Import DocumentsScreen
 import 'screens/add_course_screen.dart'; // Import AddCourseScreen
+import 'screens/logbook_screen.dart'; // Import LogbookScreen
 import 'widgets/custom_bottom_app_bar.dart';
 
 void main() {
@@ -68,6 +69,7 @@ class MyApp extends StatelessWidget {
               '/settings': (context) => SettingsScreen(),
               '/documents': (context) => DocumentsScreen(),
               '/add_course': (context) => AddCourseScreen(onAddCourse: (course) {  },), // Add route for AddCourseScreen
+              '/logbook': (context) => LogbookScreen(), // Add route for LogbookScreen
             },
           );
         }
@@ -87,7 +89,6 @@ class MainScreen extends StatefulWidget {
 
 class MainScreenState extends State<MainScreen> {
   late PageController _pageController;
-  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -106,7 +107,6 @@ class MainScreenState extends State<MainScreen> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _currentIndex = index;
     });
     _pageController.jumpToPage(index);
   }
@@ -118,7 +118,6 @@ class MainScreenState extends State<MainScreen> {
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
-            _currentIndex = index;
           });
         },
         physics: NeverScrollableScrollPhysics(),
@@ -127,6 +126,7 @@ class MainScreenState extends State<MainScreen> {
           SettingsScreen(),
           DocumentsScreen(),
           CourseListScreen(),
+          LogbookScreen(), // Add LogbookScreen to PageView
         ],
       ),
       floatingActionButton: Container(
@@ -148,9 +148,7 @@ class MainScreenState extends State<MainScreen> {
         onAnchorPressed: () => _onItemTapped(3),
         onDocumentsPressed: () => _onItemTapped(2),
         onSettingsPressed: () => _onItemTapped(1),
-        onSearchPressed: () {
-          print("Pulsante Cerca premuto!");
-        },
+        onLogbookPressed: () => _onItemTapped(4), // Updated
       ),
     );
   }
