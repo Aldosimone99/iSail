@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 class CustomBottomAppBar extends StatelessWidget {
   final VoidCallback onAnchorPressed;
   final VoidCallback onDocumentsPressed;
+  final VoidCallback onSettingsPressed;
+  final VoidCallback onSearchPressed; // Aggiunto
 
   const CustomBottomAppBar({
-    super.key, // Convert 'key' to a super parameter
+    super.key,
     required this.onAnchorPressed,
-    required this.onDocumentsPressed, required Null Function() onSettingsPressed,
+    required this.onDocumentsPressed,
+    required this.onSettingsPressed,
+    required this.onSearchPressed, // Ora è obbligatorio
   });
 
   @override
   Widget build(BuildContext context) {
-    final currentRoute = ModalRoute.of(context)?.settings.name;
-
     return BottomAppBar(
-      color: Color(0xFF181A1E), // Sfondo navbar
+      color: Color(0xFF181A1E),
       shape: CircularNotchedRectangle(),
       notchMargin: 10.0,
       child: Container(
@@ -24,39 +26,25 @@ class CustomBottomAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.edit_document, "Convenzioni",context, isSelected: currentRoute == '/documents' ),
-            _buildNavItem(Icons.store, "Centri", context),
-            SizedBox(width: 50), // Spazio per il FAB
-            _buildNavItem(Icons.search, "Cerca", context),
-            _buildNavItem(Icons.settings, "Impostazioni", context, isSelected: currentRoute == '/settings'), // Replaced Profile with Settings
+            _buildNavItem(Icons.edit_document, "Convenzioni", onDocumentsPressed),
+            _buildNavItem(Icons.store, "Centri", () {}), // Placeholder
+            SizedBox(width: 50), // Spazio per il FloatingActionButton
+            _buildNavItem(Icons.search, "Cerca", onSearchPressed), // Usa il parametro corretto
+            _buildNavItem(Icons.settings, "Impostazioni", onSettingsPressed), 
           ],
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, BuildContext context, {bool isSelected = false, VoidCallback? onPressed}) {
+  Widget _buildNavItem(IconData icon, String label, VoidCallback onPressed) {
     return GestureDetector(
-      onTap: onPressed ?? () {
-        if (label == "Convenzioni" && ModalRoute.of(context)?.settings.name != '/documents') {
-          Navigator.pushNamed(context, '/documents'); // Navigate to DocumentsScreen
-        } else if (label == "Impostazioni" && ModalRoute.of(context)?.settings.name != '/settings') {
-          Navigator.pushNamed(context, '/settings');
-        }
-        // Add other navigation logic here if needed
-      },
+      onTap: onPressed,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: isSelected ? Colors.blue : Colors.white, size: 24),
-          Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Colors.blue : Colors.white,
-              fontSize: 12,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
+          Icon(icon, color: Colors.white, size: 24),
+          Text(label, style: TextStyle(color: Colors.white, fontSize: 12)),
         ],
       ),
     );

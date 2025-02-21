@@ -82,11 +82,12 @@ class MainScreen extends StatefulWidget {
   const MainScreen({super.key, required this.initialRoute});
 
   @override
-  MainScreenState createState() => MainScreenState(); // Change _MainScreenState to MainScreenState
+  MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> { // Change _MainScreenState to MainScreenState
+class MainScreenState extends State<MainScreen> {
   late PageController _pageController;
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -96,23 +97,17 @@ class MainScreenState extends State<MainScreen> { // Change _MainScreenState to 
 
   int _getPageIndex(String route) {
     switch (route) {
-      case '/welcome':
-        return 0;
-      case '/settings':
-        return 1;
-      case '/documents':
-        return 2;
-      default:
-        return 3;
+      case '/welcome': return 0;
+      case '/settings': return 1;
+      case '/documents': return 2;
+      default: return 3;
     }
   }
 
-  void _onPageChanged(int index) {
-    setState(() {
-    });
-  }
-
   void _onItemTapped(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
     _pageController.jumpToPage(index);
   }
 
@@ -121,98 +116,40 @@ class MainScreenState extends State<MainScreen> { // Change _MainScreenState to 
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        onPageChanged: _onPageChanged,
-        physics: NeverScrollableScrollPhysics(), // Disable swipe gesture
-        children: [ // Move 'children' to the end
-          Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => WelcomeScreen(),
-              );
-            },
-          ),
-          Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => SettingsScreen(),
-              );
-            },
-          ),
-          Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => DocumentsScreen(),
-              );
-            },
-          ),
-          Navigator(
-            onGenerateRoute: (settings) {
-              return MaterialPageRoute(
-                builder: (context) => CourseListScreen(),
-              );
-            },
-          ),
-        ],
-      ),
-      bottomNavigationBar: CustomBottomAppBar(
-        onAnchorPressed: () {
-          _onItemTapped(3); // Navigate to home screen
+        onPageChanged: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
         },
-        onDocumentsPressed: () {
-          _onItemTapped(2); // Navigate to documents screen
-        },
-        onSettingsPressed: () {
-          _onItemTapped(1); // Navigate to settings screen
-        },
-      ),
-      floatingActionButton: Stack(
-        alignment: Alignment.center,
+        physics: NeverScrollableScrollPhysics(),
         children: [
-          Container(
-            width: 70,
-            height: 70,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.blue.withAlpha(77), // Replace withOpacity with withAlpha (77 is approximately 30% opacity)
-            ),
-          ),
-          FloatingActionButton(
-            heroTag: 'uniqueHeroTag', // Add unique heroTag
-            backgroundColor: Colors.blue,
-            shape: CircleBorder(),
-            onPressed: () {
-              _onItemTapped(3); // Navigate to home screen
-            },
-            child: Icon(Icons.anchor, color: Colors.white, size: 30), // Replaced storefront icon with anchor icon
-          ),
+          WelcomeScreen(),
+          SettingsScreen(),
+          DocumentsScreen(),
+          CourseListScreen(),
         ],
+      ),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.blue.withAlpha(77), // Semi-transparent blue background
+        ),
+        child: FloatingActionButton(
+          onPressed: () => _onItemTapped(3),
+          backgroundColor: Colors.blue,
+          shape: CircleBorder(), // Make the button circular
+          child: Icon(Icons.anchor),
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
-  }
-}
-
-class NoSwipePageView extends StatelessWidget {
-  final PageController controller;
-  final ValueChanged<int> onPageChanged;
-  final List<Widget> children;
-
-  const NoSwipePageView({super.key, 
-    required this.controller,
-    required this.onPageChanged,
-    required this.children,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: controller,
-      onPageChanged: onPageChanged,
-      itemCount: children.length,
-      itemBuilder: (context, index) {
-        return children[index];
-      },
-      physics: NeverScrollableScrollPhysics(), // Disable swipe gesture
+      bottomNavigationBar: CustomBottomAppBar(
+        onAnchorPressed: () => _onItemTapped(3),
+        onDocumentsPressed: () => _onItemTapped(2),
+        onSettingsPressed: () => _onItemTapped(1),
+        onSearchPressed: () {
+          print("Pulsante Cerca premuto!");
+        },
+      ),
     );
   }
 }
