@@ -24,7 +24,7 @@ class CustomBottomAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.edit_document, "Documenti", context, isSelected: currentRoute == '/', onPressed: onDocumentsPressed), // Replaced Home with Courses
+            _buildNavItem(Icons.edit_document, "Convenzioni",context, isSelected: currentRoute == '/documents' ),
             _buildNavItem(Icons.store, "Centri", context),
             SizedBox(width: 50), // Spazio per il FAB
             _buildNavItem(Icons.search, "Cerca", context),
@@ -38,8 +38,8 @@ class CustomBottomAppBar extends StatelessWidget {
   Widget _buildNavItem(IconData icon, String label, BuildContext context, {bool isSelected = false, VoidCallback? onPressed}) {
     return GestureDetector(
       onTap: onPressed ?? () {
-        if (label == "Documenti" && ModalRoute.of(context)?.settings.name != '/') {
-          Navigator.pushNamed(context, '/');
+        if (label == "Convenzioni" && ModalRoute.of(context)?.settings.name != '/documents') {
+          Navigator.pushNamed(context, '/documents'); // Navigate to DocumentsScreen
         } else if (label == "Impostazioni" && ModalRoute.of(context)?.settings.name != '/settings') {
           Navigator.pushNamed(context, '/settings');
         }
