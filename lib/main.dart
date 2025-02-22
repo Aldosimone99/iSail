@@ -138,25 +138,12 @@ class MainScreenState extends State<MainScreen> {
         builder: (context, pageIndex, child) {
           return pageIndex == 0
               ? SizedBox.shrink()
-              : Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue.withOpacity(0.3), // Circular background color
-                      ),
-                    ),
-                    FloatingActionButton(
-                      heroTag: 'uniqueAnchorButton', // Provide a unique tag
-                      onPressed: () => _onItemTapped(3),
-                      backgroundColor: Colors.blue,
-                      shape: CircleBorder(), // Make the button circular
-                      child: Icon(Icons.anchor),
-                    ),
-                  ],
+              : FloatingActionButton(
+                  heroTag: 'uniqueAnchorButton', // Provide a unique tag
+                  onPressed: () => _onItemTapped(3),
+                  backgroundColor: Colors.blue,
+                  shape: CircleBorder(), // Make the button circular
+                  child: Icon(Icons.anchor),
                 );
         },
       ),

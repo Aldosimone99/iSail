@@ -222,12 +222,12 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
           alignment: Alignment.centerLeft, // Align the title text to the left
           child: Text(
             'Diario di Bordo',
-            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
+            style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.more_vert, color: Colors.white),
+            icon: Icon(Icons.more_vert, color: Colors.grey[300]),
             onPressed: () => _showMenuOptions(context),
           ),
         ],
@@ -241,7 +241,12 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
           }
         },
         child: _logbookEntries.isEmpty
-            ? Center(child: Text('Nessun imbarco presente', style: TextStyle(color: Colors.white)))
+            ? Center(
+                child: Text(
+                  'Nessun imbarco presente',
+                  style: TextStyle(color: Colors.grey[300], fontSize: 24, fontWeight: FontWeight.bold), // Match font size and style
+                ),
+              )
             : GridView.builder(
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2, // Two boxes per row

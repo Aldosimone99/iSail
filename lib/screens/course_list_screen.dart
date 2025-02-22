@@ -239,7 +239,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
           alignment: Alignment.centerLeft, // Align the greeting text to the left
           child: Text(
             _greeting,
-            style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
+            style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
           ),
         ),
       ),
@@ -251,107 +251,118 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
             });
           }
         },
-        child: Column(
+        child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Cerca...',
-                        filled: true,
-                        fillColor: Color(0xFF2C2C2E), // Light gray color
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30), // Make the borders more rounded
-                          borderSide: BorderSide.none,
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Cerca...',
+                            filled: true,
+                            fillColor: Color(0xFF2C2C2E), // Light gray color
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30), // Make the borders more rounded
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _searchQuery = value;
+                            });
+                          },
                         ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       ),
-                      onChanged: (value) {
-                        setState(() {
-                          _searchQuery = value;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(width: 8), // Add some space between the search bar and the button
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white, // Set background color to white
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withAlpha(51), // Replace withOpacity with withAlpha (51 is approximately 20% opacity)
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: Offset(0, 3), // changes position of shadow
+                      SizedBox(width: 8), // Add some space between the search bar and the button
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white, // Set background color to white
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(51), // Replace withOpacity with withAlpha (51 is approximately 20% opacity)
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(0, 3), // changes position of shadow
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: IconButton(
-                      icon: Icon(Icons.more_vert, color: Colors.black), // Use three dots icon and set color to black
-                      onPressed: () => _showSortOptions(context),
-                    ),
+                        child: IconButton(
+                          icon: Icon(Icons.more_vert, color: Colors.black), // Use three dots icon and set color to black
+                          onPressed: () => _showSortOptions(context),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // Two cards per row
-                  crossAxisSpacing: 0.0, // Increase horizontal spacing between cards
-                  mainAxisSpacing: 0.0, // Increase vertical spacing between cards
-                  childAspectRatio: 1.2, // Adjust aspect ratio for larger rectangular cards
                 ),
-                itemCount: filteredCourses.length,
-                itemBuilder: (context, index) {
-                  final course = filteredCourses[index];
-                  return ShakeTransition(
-                    controller: _controller,
-                    enabled: _isDeleteMode,
-                    child: Stack(
-                      children: [
-                        CourseCard(
-                          title: course.name,
-                          description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
-                          dueDate: course.deadline,
-                        ),
-                        if (_isDeleteMode)
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: GestureDetector(
-                              onTap: () => _showDeleteConfirmationDialog(index),
-                              child: Container(
-                                width: 30, // Set smaller width
-                                height: 30, // Set smaller height
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      spreadRadius: 1,
-                                      blurRadius: 5,
-                                      offset: Offset(0, 3), // changes position of shadow
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Two cards per row
+                      crossAxisSpacing: 0.0, // Increase horizontal spacing between cards
+                      mainAxisSpacing: 0.0, // Increase vertical spacing between cards
+                      childAspectRatio: 1.2, // Adjust aspect ratio for larger rectangular cards
+                    ),
+                    itemCount: filteredCourses.length,
+                    itemBuilder: (context, index) {
+                      final course = filteredCourses[index];
+                      return ShakeTransition(
+                        controller: _controller,
+                        enabled: _isDeleteMode,
+                        child: Stack(
+                          children: [
+                            CourseCard(
+                              title: course.name,
+                              description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
+                              dueDate: course.deadline,
+                            ),
+                            if (_isDeleteMode)
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () => _showDeleteConfirmationDialog(index),
+                                  child: Container(
+                                    width: 30, // Set smaller width
+                                    height: 30, // Set smaller height
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2),
+                                          spreadRadius: 1,
+                                          blurRadius: 5,
+                                          offset: Offset(0, 3), // changes position of shadow
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Icon(Icons.close, color: Colors.red, size: 18), // Center the icon
+                                    child: Center(
+                                      child: Icon(Icons.close, color: Colors.red, size: 18), // Center the icon
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  );
-                },
-              ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
+            if (_courses.isEmpty)
+              Center(
+                child: Text(
+                  'Nessun Corso Aggiunto',
+                  style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Set color to light gray
+                ),
+              ),
           ],
         ),
       ),
