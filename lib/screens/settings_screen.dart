@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'theme_selection_screen.dart'; // Import the ThemeSelectionScreen
+import 'account_screen.dart'; // Import the AccountScreen
+import 'dart:ui'; // Import for blur effect
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -12,53 +13,64 @@ class SettingsScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            backgroundColor: Colors.black,
-            pinned: true,
-            expandedHeight: 70.0, // Reduced height
-            automaticallyImplyLeading: false, // Remove back arrow
-            flexibleSpace: FlexibleSpaceBar(
-              title: Align(
-                alignment: Alignment.bottomLeft, // Align title to the bottom left
-                child: Padding(
-                  padding: EdgeInsets.only(left: 16, bottom: 0), // Increase bottom padding to move text down
-                  child: Text(
-                    'Impostazioni',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, fontFamily: 'SF Pro'), // Reduced font size
-                  ),
+            automaticallyImplyLeading: false, // Remove the back arrow
+            backgroundColor: Colors.transparent, // Set AppBar background color to transparent
+            elevation: 0, // Remove AppBar shadow
+            flexibleSpace: ClipRect(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
+                child: Container(
+                  color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
                 ),
               ),
-              centerTitle: false, // Ensure title is not centered
             ),
+            title: Align(
+              alignment: Alignment.centerLeft, // Align the title text to the left
+              child: Text(
+                'Impostazioni',
+                style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
+              ),
+            ),
+            pinned: true,
+            expandedHeight: 50.0, // Match the height with DocumentsScreen
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Reduced padding
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cerca...',
-                  filled: true,
-                  fillColor: Color(0xFF2C2C2E), // Light gray color
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30), // Make the borders more rounded
-                    borderSide: BorderSide.none,
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Cerca...',
+                        filled: true,
+                        fillColor: Color(0xFF2C2C2E), // Light gray color
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30), // Make the borders more rounded
+                          borderSide: BorderSide.none,
+                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      ),
+                      onChanged: (value) {
+                        // Handle search query change
+                      },
+                    ),
                   ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                ),
-                onChanged: (value) {
-                  // Handle search query change
-                },
+                ],
               ),
             ),
           ),
           _buildSettingsSection([
-            _buildSettingsTile('Account', CupertinoIcons.person, const Color.fromARGB(255, 249, 248, 248)),
-            _buildSettingsTile('Stile', CupertinoIcons.paintbrush, const Color.fromARGB(255, 255, 255, 255), onTap: () {
+            _buildSettingsTile('Account', CupertinoIcons.person, const Color.fromARGB(255, 249, 248, 248), onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ThemeSelectionScreen(),
+                  builder: (context) => AccountScreen(),
                 ),
               );
+            }),
+            _buildSettingsTile('Lingua', CupertinoIcons.globe, const Color.fromARGB(255, 255, 255, 255), onTap: () {
+              // Handle language selection
             }),
             _buildSettingsTile('Spazio e Dati', CupertinoIcons.folder, const Color.fromARGB(255, 255, 255, 255)),
             _buildSettingsTile('Backup', CupertinoIcons.cloud_upload, const Color.fromARGB(255, 255, 255, 255)),
