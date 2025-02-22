@@ -9,6 +9,7 @@ import 'screens/add_course_screen.dart'; // Import AddCourseScreen
 import 'screens/logbook_screen.dart'; // Import LogbookScreen
 import 'screens/countdown_screen.dart'; // Import CountdownScreen
 import 'widgets/custom_bottom_app_bar.dart';
+import 'widgets/countdown_widget.dart'; // Import CountdownWidget
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,58 +24,44 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  Future<bool> _isFirstTime() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userName') == null;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      future: _isFirstTime(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else {
-          return MaterialApp(
-            title: 'SailSafe', // Changed app name
-            theme: ThemeData(
-              brightness: Brightness.dark,
-              scaffoldBackgroundColor: Color(0xFF000000), // Change background color to OLED black
-              appBarTheme: AppBarTheme(
-                backgroundColor: Colors.transparent, // Set AppBar background color to transparent
-                elevation: 0, // Remove AppBar shadow
-                titleTextStyle: TextStyle(color: Colors.blue, fontFamily: 'SF Pro', fontSize: 20), // Change text color to blue
-                iconTheme: IconThemeData(color: Colors.black), // Set AppBar icon color to black
-              ),
-              colorScheme: ColorScheme.dark(
-                primary: Colors.white, // Cambia il colore primario in bianco
-                secondary: Colors.white, // Cambia il colore secondario in bianco
-                surface: Color.fromARGB(255, 255, 255, 255), // Secondary Background
-              ),
-              textTheme: TextTheme(
-                bodyLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
-                bodyMedium: TextStyle(color: Color(0xFFEBEBF5), fontFamily: 'SF Pro'), // Secondary Label
-                headlineLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
-                headlineMedium: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
-                headlineSmall: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
-                titleLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
-                titleMedium: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
-                titleSmall: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
-              ),
-              dividerColor: Color(0xFF38383A), // Separator
-            ),
-            home: MainScreen(initialRoute: snapshot.data == true ? '/welcome' : '/'),
-            routes: {
-              '/welcome': (context) => WelcomeScreen(),
-              '/settings': (context) => SettingsScreen(),
-              '/documents': (context) => DocumentsScreen(),
-              '/add_course': (context) => AddCourseScreen(onAddCourse: (course) {  },), // Add route for AddCourseScreen
-              '/logbook': (context) => LogbookScreen(), // Add route for LogbookScreen
-              '/countdown': (context) => CountdownScreen(), // Add route for CountdownScreen
-            },
-          );
-        }
+    return MaterialApp(
+      title: 'SailSafe', // Changed app name
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Color(0xFF000000), // Change background color to OLED black
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.transparent, // Set AppBar background color to transparent
+          elevation: 0, // Remove AppBar shadow
+          titleTextStyle: TextStyle(color: Colors.blue, fontFamily: 'SF Pro', fontSize: 20), // Change text color to blue
+          iconTheme: IconThemeData(color: Colors.black), // Set AppBar icon color to black
+        ),
+        colorScheme: ColorScheme.dark(
+          primary: Colors.white, // Cambia il colore primario in bianco
+          secondary: Colors.white, // Cambia il colore secondario in bianco
+          surface: Color.fromARGB(255, 255, 255, 255), // Secondary Background
+        ),
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+          bodyMedium: TextStyle(color: Color(0xFFEBEBF5), fontFamily: 'SF Pro'), // Secondary Label
+          headlineLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+          headlineMedium: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+          headlineSmall: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+          titleLarge: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+          titleMedium: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+          titleSmall: TextStyle(color: Color(0xFFFFFFFF), fontFamily: 'SF Pro'), // Label
+        ),
+        dividerColor: Color(0xFF38383A), // Separator
+      ),
+      home: WelcomeScreen(), // Always show WelcomeScreen on app start
+      routes: {
+        '/welcome': (context) => WelcomeScreen(),
+        '/settings': (context) => SettingsScreen(),
+        '/documents': (context) => DocumentsScreen(),
+        '/add_course': (context) => AddCourseScreen(onAddCourse: (course) {  },), // Add route for AddCourseScreen
+        '/logbook': (context) => LogbookScreen(), // Add route for LogbookScreen
+        '/countdown': (context) => CountdownScreen(), // Add route for CountdownScreen
       },
     );
   }
@@ -178,6 +165,22 @@ class MainScreenState extends State<MainScreen> {
                   onCountdownPressed: () => _onItemTapped(3), // Add Countdown callback
                 );
         },
+      ),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('iSail Home'),
+      ),
+      body: Center(
+        child: CountdownWidget(),
       ),
     );
   }

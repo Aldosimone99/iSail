@@ -65,7 +65,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
+                  SizedBox(
                     height: 200,
                     child: CupertinoDatePicker(
                       initialDateTime: initialDate,

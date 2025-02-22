@@ -33,7 +33,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/backgrounds/welcome_background.jpg
+    - assets/welcome_background.jpg
     - assets/documents/document1.pdf
     - assets/documents/document2.pdf
     - assets/documents/document3.pdf
