@@ -2,12 +2,19 @@ import 'package:flutter/material.dart';
 import 'dart:ui'; // Import for blur effect
 import 'pdf_viewer_screen.dart';
 
-class DocumentsScreen extends StatelessWidget {
+class DocumentsScreen extends StatefulWidget {
   const DocumentsScreen({super.key});
+
+  @override
+  _DocumentsScreenState createState() => _DocumentsScreenState();
+}
+
+class _DocumentsScreenState extends State<DocumentsScreen> {
+  String _searchQuery = '';
 
   Future<List<Map<String, String>>> _loadPdfFiles() async {
     // List the PDF files you have added to your project with custom names
-    return [
+    List<Map<String, String>> pdfFiles = [
       {'path': 'assets/documents/document1.pdf', 'title': 'COLREG 🇮🇹', 'subtitle': 'Regolamento internazionale per prevenire gli abbordi in mare'},
       {'path': 'assets/documents/document2.pdf', 'title': 'COLREG 🇬🇧', 'subtitle': 'Collision Regulations'},
       {'path': 'assets/documents/document3.pdf', 'title': 'MLC 🇮🇹', 'subtitle': 'Convenzione sul lavoro marittimo'},
@@ -27,6 +34,8 @@ class DocumentsScreen extends StatelessWidget {
       {'path': 'assets/documents/document17.pdf', 'title': 'IMDG Code 🇮🇹', 'subtitle': 'Codice marittimo internazionale delle merci pericolose'},
       {'path': 'assets/documents/document18.pdf', 'title': 'IMDG Code 🇬🇧', 'subtitle': 'International Maritime Dangerous Goods Code'},
     ];
+    pdfFiles.sort((a, b) => a['title']!.compareTo(b['title']!));
+    return pdfFiles;
   }
 
   @override
@@ -62,98 +71,134 @@ class DocumentsScreen extends StatelessWidget {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text('Nessun documento disponibile.'));
           } else {
-            final pdfFiles = snapshot.data!;
-            return GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Two boxes per row
-                crossAxisSpacing: 10.0, // Increase horizontal spacing between cards
-                mainAxisSpacing: 20.0, // Increase vertical spacing between cards
-                childAspectRatio: 1.2, // Adjust the aspect ratio to match course boxes
-              ),
-              padding: EdgeInsets.all(10),
-              itemCount: pdfFiles.length,
-              itemBuilder: (context, index) {
-                final pdfFile = pdfFiles[index];
-                final pdfPath = pdfFile['path']!;
-                final pdfName = pdfFile['title']!; // Change 'name' to 'title'
-                final pdfSubtitle = pdfFile['subtitle']!; // Add subtitle
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PdfViewerScreen(
-                          assetPath: pdfPath,
-                          title: pdfName,
+            var pdfFiles = snapshot.data!;
+            pdfFiles = pdfFiles.where((pdfFile) {
+              return pdfFile['title']!.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+                     pdfFile['subtitle']!.toLowerCase().contains(_searchQuery.toLowerCase());
+            }).toList();
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Cerca...',
+                            filled: true,
+                            fillColor: Color(0xFF2C2C2E), // Light gray color
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30), // Make the borders more rounded
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _searchQuery = value;
+                            });
+                          },
                         ),
                       ),
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300], // Light gray background color
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[600]!, width: 4), // Increase border thickness
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26, // Darker shadow color
-                          blurRadius: 6, // Increase blur radius for a more pronounced shadow
-                          offset: Offset(4, 4), // Offset the shadow to the bottom right
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0), // Slightly increase padding
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center, // Center the text vertically
-                        children: [
-                          Text(
-                            pdfName,
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800], // Set text color to dark gray
-                            ),
-                            textAlign: TextAlign.center, // Center the text horizontally
-                            overflow: TextOverflow.visible, // Ensure the text is fully readable
-                          ),
-                          SizedBox(height: 8), // Add some space between title and subtitle
-                          Text(
-                            pdfSubtitle,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[700], // Set text color to gray
-                            ),
-                            textAlign: TextAlign.center, // Center the text horizontally
-                            maxLines: 3, // Limit to a maximum of 3 lines
-                            overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines
-                          ),
-                          Spacer(), // Push the text to the bottom
-                          Center(
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
-                              decoration: BoxDecoration(
-                                color: Colors.grey[600]!.withAlpha(50), // Light gray background color
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              constraints: BoxConstraints(minWidth: 100), // Allow the pill to expand freely
-                              child: Text(
-                                'Apri PDF',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.grey[800], // Set text color to dark gray
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ],
                   ),
-                );
-              },
+                ),
+                Expanded(
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // Two boxes per row
+                      crossAxisSpacing: 10.0, // Increase horizontal spacing between cards
+                      mainAxisSpacing: 20.0, // Increase vertical spacing between cards
+                      childAspectRatio: 1.2, // Adjust the aspect ratio to match course boxes
+                    ),
+                    padding: EdgeInsets.all(10),
+                    itemCount: pdfFiles.length,
+                    itemBuilder: (context, index) {
+                      final pdfFile = pdfFiles[index];
+                      final pdfPath = pdfFile['path']!;
+                      final pdfName = pdfFile['title']!; // Change 'name' to 'title'
+                      final pdfSubtitle = pdfFile['subtitle']!; // Add subtitle
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PdfViewerScreen(
+                                assetPath: pdfPath,
+                                title: pdfName,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300], // Light gray background color
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey[600]!, width: 4), // Increase border thickness
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26, // Darker shadow color
+                                blurRadius: 6, // Increase blur radius for a more pronounced shadow
+                                offset: Offset(4, 4), // Offset the shadow to the bottom right
+                              ),
+                            ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0), // Slightly increase padding
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center, // Center the text vertically
+                              children: [
+                                Text(
+                                  pdfName,
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[800], // Set text color to dark gray
+                                  ),
+                                  textAlign: TextAlign.center, // Center the text horizontally
+                                  overflow: TextOverflow.visible, // Ensure the text is fully readable
+                                ),
+                                SizedBox(height: 8), // Add some space between title and subtitle
+                                Text(
+                                  pdfSubtitle,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[700], // Set text color to gray
+                                  ),
+                                  textAlign: TextAlign.center, // Center the text horizontally
+                                  maxLines: 3, // Limit to a maximum of 3 lines
+                                  overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines
+                                ),
+                                Spacer(), // Push the text to the bottom
+                                Center(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[600]!.withAlpha(50), // Light gray background color
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    constraints: BoxConstraints(minWidth: 100), // Allow the pill to expand freely
+                                    child: Text(
+                                      'Apri PDF',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.grey[800], // Set text color to dark gray
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             );
           }
         },
