@@ -4,14 +4,16 @@ class CustomBottomAppBar extends StatelessWidget {
   final VoidCallback onAnchorPressed;
   final VoidCallback onDocumentsPressed;
   final VoidCallback onSettingsPressed;
-  final VoidCallback onLogbookPressed; // Updated
+  final VoidCallback onLogbookPressed;
+  final VoidCallback onCountdownPressed; // Add Countdown callback
 
   const CustomBottomAppBar({
     super.key,
     required this.onAnchorPressed,
     required this.onDocumentsPressed,
     required this.onSettingsPressed,
-    required this.onLogbookPressed, // Updated
+    required this.onLogbookPressed,
+    required this.onCountdownPressed, // Add Countdown callback
   });
 
   @override
@@ -27,10 +29,10 @@ class CustomBottomAppBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildNavItem(Icons.edit_document, "Convenzioni", onDocumentsPressed),
-            _buildNavItem(Icons.store, "Centri", () {}), // Placeholder
+            _buildNavItem(Icons.timer, "Countdown", onCountdownPressed), // Update to Countdown
             SizedBox(width: 50), // Spazio per il FloatingActionButton
-            _buildNavItem(Icons.book, "Logbook", onLogbookPressed), // Updated
-            _buildNavItem(Icons.settings, "Impostazioni", onSettingsPressed), 
+            _buildNavItem(Icons.book, "Logbook", onLogbookPressed),
+            _buildNavItem(Icons.settings, "Impostazioni", onSettingsPressed),
           ],
         ),
       ),

@@ -7,6 +7,7 @@ import 'screens/settings_screen.dart'; // Import SettingsScreen
 import 'screens/documents_screen.dart'; // Import DocumentsScreen
 import 'screens/add_course_screen.dart'; // Import AddCourseScreen
 import 'screens/logbook_screen.dart'; // Import LogbookScreen
+import 'screens/countdown_screen.dart'; // Import CountdownScreen
 import 'widgets/custom_bottom_app_bar.dart';
 
 void main() {
@@ -70,6 +71,7 @@ class MyApp extends StatelessWidget {
               '/documents': (context) => DocumentsScreen(),
               '/add_course': (context) => AddCourseScreen(onAddCourse: (course) {  },), // Add route for AddCourseScreen
               '/logbook': (context) => LogbookScreen(), // Add route for LogbookScreen
+              '/countdown': (context) => CountdownScreen(), // Add route for CountdownScreen
             },
           );
         }
@@ -103,7 +105,8 @@ class MainScreenState extends State<MainScreen> {
       case '/welcome': return 0;
       case '/settings': return 1;
       case '/documents': return 2;
-      default: return 3;
+      case '/countdown': return 3; // Add CountdownScreen index
+      default: return 4;
     }
   }
 
@@ -129,6 +132,7 @@ class MainScreenState extends State<MainScreen> {
           WelcomeScreen(),
           SettingsScreen(),
           DocumentsScreen(),
+          CountdownScreen(), // Add CountdownScreen to PageView
           CourseListScreen(),
           LogbookScreen(), // Add LogbookScreen to PageView
         ],
@@ -151,7 +155,7 @@ class MainScreenState extends State<MainScreen> {
                     ),
                     FloatingActionButton(
                       heroTag: 'uniqueAnchorButton', // Provide a unique tag
-                      onPressed: () => _onItemTapped(3),
+                      onPressed: () => _onItemTapped(4),
                       backgroundColor: Colors.blue,
                       shape: CircleBorder(), // Make the button circular
                       child: Icon(Icons.anchor),
@@ -167,10 +171,11 @@ class MainScreenState extends State<MainScreen> {
           return pageIndex == 0
               ? SizedBox.shrink()
               : CustomBottomAppBar(
-                  onAnchorPressed: () => _onItemTapped(3),
+                  onAnchorPressed: () => _onItemTapped(4),
                   onDocumentsPressed: () => _onItemTapped(2),
                   onSettingsPressed: () => _onItemTapped(1),
-                  onLogbookPressed: () => _onItemTapped(4), // Updated
+                  onLogbookPressed: () => _onItemTapped(5), // Updated
+                  onCountdownPressed: () => _onItemTapped(3), // Add Countdown callback
                 );
         },
       ),

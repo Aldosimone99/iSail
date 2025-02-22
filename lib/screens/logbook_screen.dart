@@ -221,7 +221,7 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
         title: Align(
           alignment: Alignment.centerLeft, // Align the title text to the left
           child: Text(
-            'Diario di Bordo',
+            'Registro Imbarchi',
             style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
           ),
         ),
