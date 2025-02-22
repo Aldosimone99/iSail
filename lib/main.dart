@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           return CircularProgressIndicator();
         } else {
           return MaterialApp(
-            title: 'SailSafe',
+            title: 'SailSafe', // Changed app name
             theme: ThemeData(
               brightness: Brightness.dark,
               scaffoldBackgroundColor: Color(0xFF000000), // Change background color to OLED black

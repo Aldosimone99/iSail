@@ -6,6 +6,8 @@ import 'dart:convert'; // Import for JSON encoding/decoding
 import 'package:flutter/cupertino.dart'; // Import for Cupertino widgets
 
 class LogbookScreen extends StatefulWidget {
+  const LogbookScreen({super.key});
+
   @override
   _LogbookScreenState createState() => _LogbookScreenState();
 }
@@ -359,10 +361,10 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
           if (result != null) {
             _addLogbookEntry(result);
           }
-        },
-        child: Icon(Icons.add, color: Colors.black), // Set icon color to black
+        }, // Set icon color to black
         backgroundColor: Colors.white, // Set button background color to white
-        shape: CircleBorder(), // Ensure the button is round
+        shape: CircleBorder(),
+        child: Icon(Icons.add, color: Colors.black), // Ensure the button is round
       ),
     );
   }
