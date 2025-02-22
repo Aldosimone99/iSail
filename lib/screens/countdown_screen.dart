@@ -107,7 +107,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
         _countdownMessage = 'L\'imbarco è già terminato';
       } else {
         final remainingDays = _endDate!.difference(now).inDays;
-        _countdownMessage = 'Mancano $remainingDays giorni per andare a casa';
+        _countdownMessage = 'Mancano\n$remainingDays\n giorni\nper tornare a casa';
       }
     } else {
       _countdownMessage = 'Seleziona le date di inizio e fine imbarco';
@@ -138,9 +138,9 @@ class _CountdownScreenState extends State<CountdownScreen> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start, // Align children to the start
           children: [
-            SizedBox(height: 80), // Add more space above the circle
+            SizedBox(height: 50), // Increase the height to move the circle slightly lower
             Container(
               width: 200,
               height: 200,
@@ -151,17 +151,49 @@ class _CountdownScreenState extends State<CountdownScreen> {
               child: Center(
                 child: Text(
                   '🔙🏠',
-                  style: TextStyle(fontSize: 48), // Increase font size
+                  style: TextStyle(fontSize: 68), // Increase font size
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
             SizedBox(height: 20),
-            Text(
-              _countdownMessage,
-              style: TextStyle(fontSize: 24, color: Colors.white),
-              textAlign: TextAlign.center,
-            ),
+            if (_startDate != null && _endDate != null)
+              Column(
+                children: [
+                  Text(
+                    'Mancano',
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 0), // Further reduce spacing
+                    child: Text(
+                      '${_endDate!.difference(DateTime.now()).inDays}',
+                      style: TextStyle(fontSize: 68, color: Colors.white, fontWeight: FontWeight.bold), // Increase font size and make bold
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 0), // Further reduce spacing
+                    child: Text(
+                      'giorni',
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Text(
+                    'per tornare a casa',
+                    style: TextStyle(fontSize: 24, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              )
+            else
+              Text(
+                _countdownMessage,
+                style: TextStyle(fontSize: 24, color: Colors.white),
+                textAlign: TextAlign.center,
+              ),
             SizedBox(height: 20),
             if (_isEditMode || _startDate == null || _endDate == null)
               Row(
@@ -199,6 +231,11 @@ class _CountdownScreenState extends State<CountdownScreen> {
             if (_endDate != null)
               Text(
                 'Data di fine: ${DateFormat('dd/MM/yyyy').format(_endDate!)}',
+                style: TextStyle(fontSize: 18, color: Colors.white),
+              ),
+            if (_startDate != null && _endDate != null)
+              Text(
+                'Giorni totali: ${_endDate!.difference(_startDate!).inDays}',
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
           ],
