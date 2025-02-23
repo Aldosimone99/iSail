@@ -65,7 +65,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 child: Container(
                   width: 300, // Set a fixed width to make the box narrower
                   padding: const EdgeInsets.all(16.0),
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha(128), // 0.5 * 255 = 128
                   child: _userName == null
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -114,7 +114,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 height: 80,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Colors.blue.withOpacity(0.3), // Circular background color
+                                  color: Colors.blue.withAlpha((0.3 * 255).toInt()), // Circular background color
                                 ),
                                 child: Center(
                                   child: Icon(

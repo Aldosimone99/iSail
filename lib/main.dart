@@ -7,7 +7,7 @@ import 'screens/documents_screen.dart'; // Import DocumentsScreen
 import 'screens/add_course_screen.dart'; // Import AddCourseScreen
 import 'screens/logbook_screen.dart'; // Import LogbookScreen
 import 'screens/countdown_screen.dart'; // Import CountdownScreen
-import 'widgets/custom_bottom_app_bar.dart';
+import 'widgets/custom_bottom_app_bar.dart'; // Import CustomBottomAppBar
 import 'widgets/countdown_widget.dart'; // Import CountdownWidget
 
 void main() {
@@ -136,7 +136,7 @@ class MainScreenState extends State<MainScreen> {
                       height: 80,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.blue.withOpacity(0.3), // Circular background color
+                        color: Colors.blue.withAlpha((0.3 * 255).toInt()), // Circular background color
                       ),
                     ),
                     FloatingActionButton(

@@ -5,10 +5,10 @@ class CountdownWidget extends StatefulWidget {
   const CountdownWidget({super.key});
 
   @override
-  _CountdownWidgetState createState() => _CountdownWidgetState();
+  CountdownWidgetState createState() => CountdownWidgetState();
 }
 
-class _CountdownWidgetState extends State<CountdownWidget> {
+class CountdownWidgetState extends State<CountdownWidget> {
   DateTime? _endDate;
   String _countdownMessage = 'Seleziona le date di fine imbarco';
 
@@ -48,7 +48,7 @@ class _CountdownWidgetState extends State<CountdownWidget> {
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.blue.withOpacity(0.3),
+        color: Colors.blue.withAlpha((0.3 * 255).toInt()),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Column(

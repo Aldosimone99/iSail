@@ -335,7 +335,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
                                       shape: BoxShape.circle,
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.2),
+                                          color: Colors.black.withAlpha(51), // 0.2 * 255 = 51
                                           spreadRadius: 1,
                                           blurRadius: 5,
                                           offset: Offset(0, 3), // changes position of shadow

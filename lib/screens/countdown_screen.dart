@@ -8,10 +8,10 @@ class CountdownScreen extends StatefulWidget {
   const CountdownScreen({super.key});
 
   @override
-  _CountdownScreenState createState() => _CountdownScreenState();
+  CountdownScreenState createState() => CountdownScreenState();
 }
 
-class _CountdownScreenState extends State<CountdownScreen> {
+class CountdownScreenState extends State<CountdownScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
   String _countdownMessage = 'Seleziona le date di inizio e fine imbarco';
@@ -146,7 +146,7 @@ class _CountdownScreenState extends State<CountdownScreen> {
               height: 200,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.blue.withOpacity(0.3), // Circular background color
+                color: Colors.blue.withAlpha((0.3 * 255).toInt()), // Circular background color
               ),
               child: Center(
                 child: Text(

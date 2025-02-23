@@ -6,10 +6,10 @@ class DocumentsScreen extends StatefulWidget {
   const DocumentsScreen({super.key});
 
   @override
-  _DocumentsScreenState createState() => _DocumentsScreenState();
+  DocumentsScreenState createState() => DocumentsScreenState();
 }
 
-class _DocumentsScreenState extends State<DocumentsScreen> {
+class DocumentsScreenState extends State<DocumentsScreen> {
   String _searchQuery = '';
 
   Future<List<Map<String, String>>> _loadPdfFiles() async {
@@ -49,7 +49,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
             child: Container(
-              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+              color: Color(0xFF1C1C1E).withAlpha((0.5 * 255).toInt()), // Set semi-transparent background color
             ),
           ),
         ),

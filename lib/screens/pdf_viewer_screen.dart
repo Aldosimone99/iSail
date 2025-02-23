@@ -54,7 +54,7 @@ class PdfViewerScreenState extends State<PdfViewerScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
             child: Container(
-              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+              color: Color(0xFF1C1C1E).withAlpha((0.5 * 255).toInt()), // Set semi-transparent background color
             ),
           ),
         ),

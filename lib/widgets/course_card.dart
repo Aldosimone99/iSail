@@ -76,7 +76,7 @@ class CourseCard extends StatelessWidget {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2), // Remove the red shadow
+            color: Colors.black.withAlpha((0.2 * 255).toInt()), // Remove the red shadow
             spreadRadius: 1,
             blurRadius: 5,
             offset: Offset(0, 3), // changes position of shadow

@@ -9,10 +9,10 @@ class LogbookScreen extends StatefulWidget {
   const LogbookScreen({super.key});
 
   @override
-  _LogbookScreenState createState() => _LogbookScreenState();
+  LogbookScreenState createState() => LogbookScreenState();
 }
 
-class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderStateMixin {
+class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderStateMixin {
   List<Map<String, String>> _logbookEntries = [];
   bool _isDeleteMode = false;
   String _sortCriteria = 'title';
@@ -214,7 +214,7 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
             child: Container(
-              color: Color(0xFF1C1C1E).withOpacity(0.5), // Set semi-transparent background color
+              color: Color(0xFF1C1C1E).withAlpha((0.5 * 255).toInt()), // Set semi-transparent background color
             ),
           ),
         ),
@@ -338,7 +338,7 @@ class _LogbookScreenState extends State<LogbookScreen> with SingleTickerProvider
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
+                                      color: Colors.black.withAlpha((0.2 * 255).toInt()),
                                       spreadRadius: 1,
                                       blurRadius: 5,
                                       offset: Offset(0, 3), // changes position of shadow
