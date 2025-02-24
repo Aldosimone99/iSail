@@ -78,6 +78,7 @@ class CountdownScreenState extends State<CountdownScreen> {
                             _endDate = newDate;
                           }
                           _updateCountdownMessage();
+                          _saveDates(); // Automatically save dates when changed
                         });
                       },
                     ),
@@ -85,7 +86,6 @@ class CountdownScreenState extends State<CountdownScreen> {
                   CupertinoButton(
                     child: Text('OK', style: TextStyle(color: Colors.black)),
                     onPressed: () {
-                      _saveDates();
                       Navigator.of(context).pop();
                     },
                   ),
@@ -102,16 +102,17 @@ class CountdownScreenState extends State<CountdownScreen> {
     if (_startDate != null && _endDate != null) {
       final now = DateTime.now();
       if (now.isBefore(_startDate!)) {
-        _countdownMessage = 'L\'imbarco non è ancora iniziato';
+        _countdownMessage = 'Imbarco non iniziato';
       } else if (now.isAfter(_endDate!)) {
-        _countdownMessage = 'L\'imbarco è già terminato';
+        _countdownMessage = 'Imbarco completato, bentornato a casa🏠';
       } else {
-        final remainingDays = _endDate!.difference(now).inDays;
+        final remainingDays = _endDate!.difference(now).inDays + 1; // Add 1 to include the current day
         _countdownMessage = 'Mancano\n$remainingDays\n giorni\nper tornare a casa';
       }
     } else {
       _countdownMessage = 'Seleziona le date di inizio e fine imbarco';
     }
+    setState(() {}); // Ensure the UI is updated
   }
 
   @override
@@ -158,36 +159,49 @@ class CountdownScreenState extends State<CountdownScreen> {
             ),
             SizedBox(height: 20),
             if (_startDate != null && _endDate != null)
-              Column(
-                children: [
-                  Text(
-                    'Mancano',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 0), // Further reduce spacing
-                    child: Text(
-                      '${_endDate!.difference(DateTime.now()).inDays}',
-                      style: TextStyle(fontSize: 68, color: Colors.white, fontWeight: FontWeight.bold), // Increase font size and make bold
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 0), // Further reduce spacing
-                    child: Text(
-                      'giorni',
+              if (DateTime.now().isBefore(_startDate!))
+                Text(
+                  'Imbarco non iniziato',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                  textAlign: TextAlign.center,
+                )
+              else if (DateTime.now().isAfter(_endDate!))
+                Text(
+                  'Imbarco completato, bentornato a casa',
+                  style: TextStyle(fontSize: 24, color: Colors.white),
+                  textAlign: TextAlign.center,
+                )
+              else
+                Column(
+                  children: [
+                    Text(
+                      'Mancano',
                       style: TextStyle(fontSize: 24, color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
-                  ),
-                  Text(
-                    'per tornare a casa',
-                    style: TextStyle(fontSize: 24, color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              )
+                    Padding(
+                      padding: EdgeInsets.only(top: 0), // Further reduce spacing
+                      child: Text(
+                        '${_endDate!.difference(DateTime.now()).inDays + 1}', // Add 1 to include the current day
+                        style: TextStyle(fontSize: 68, color: Colors.white, fontWeight: FontWeight.bold), // Increase font size and make bold
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(top: 0), // Further reduce spacing
+                      child: Text(
+                        'giorni',
+                        style: TextStyle(fontSize: 24, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Text(
+                      'per tornare a casa',
+                      style: TextStyle(fontSize: 24, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                )
             else
               Text(
                 _countdownMessage,
