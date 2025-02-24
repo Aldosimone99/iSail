@@ -241,17 +241,26 @@ class CountdownScreenState extends State<CountdownScreen> {
               Text(
                 'Data di inizio: ${DateFormat('dd/MM/yyyy').format(_startDate!)}',
                 style: TextStyle(fontSize: 18, color: Colors.white),
+                textAlign: TextAlign.center,
               ),
             if (_endDate != null)
               Text(
                 'Data di fine: ${DateFormat('dd/MM/yyyy').format(_endDate!)}',
                 style: TextStyle(fontSize: 18, color: Colors.white),
+                textAlign: TextAlign.center,
               ),
             if (_startDate != null && _endDate != null)
-              Text(
-                'Giorni totali: ${_endDate!.difference(_startDate!).inDays}',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
+              _endDate!.difference(_startDate!).inDays < 0
+                ? Text(
+                    'Errore: la data di inizio imbarco è successiva alla data di fine imbarco',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  )
+                : Text(
+                    'Giorni totali: ${_endDate!.difference(_startDate!).inDays}',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    textAlign: TextAlign.center,
+                  ),
           ],
         ),
       ),
