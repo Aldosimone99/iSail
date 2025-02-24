@@ -11,6 +11,7 @@ import 'screens/logbook_screen.dart'; // Import LogbookScreen
 import 'screens/countdown_screen.dart'; // Import CountdownScreen
 import 'widgets/custom_bottom_app_bar.dart'; // Import CustomBottomAppBar
 import 'widgets/countdown_widget.dart'; // Import CountdownWidget
+import 'package:timezone/data/latest_all.dart' as tz;
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -50,11 +51,14 @@ void main() async {
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onSelectNotification: (String? payload) async {
+      _logger.info('Notification selected with payload: $payload'); // Debug log
       if (payload != null) {
         _logger.info('Notification payload: $payload'); // Debug log
       }
     },
   );
+
+  tz.initializeTimeZones();
 
   // Request permissions for iOS
   await flutterLocalNotificationsPlugin
@@ -70,7 +74,7 @@ void main() async {
     statusBarBrightness: Brightness.dark, // Icone chiare su sfondo scuro
     statusBarIconBrightness: Brightness.light,
   ));
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

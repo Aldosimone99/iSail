@@ -63,5 +63,7 @@
 	<string>We need your location to show notifications</string>
 	<key>NSLocationUsageDescription</key>
 	<string>We need your location to show notifications</string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

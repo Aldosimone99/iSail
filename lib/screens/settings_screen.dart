@@ -4,8 +4,26 @@ import 'account_screen.dart'; // Import the AccountScreen
 import 'dart:ui'; // Import for blur effect
 import 'notifications_screen.dart'; // Import the NotificationsScreen
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    setState(() {
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {

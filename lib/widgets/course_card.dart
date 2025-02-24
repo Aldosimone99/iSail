@@ -12,7 +12,6 @@ class CourseCard extends StatelessWidget {
     required this.dueDate,
   });
 
-
   Color _getBackgroundColor() {
     final now = DateTime.now();
     if (dueDate.isBefore(now.add(Duration(days: 180)))) {

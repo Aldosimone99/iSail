@@ -6,8 +6,12 @@ import 'dart:ui'; // Import for blur effect
 // ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 import 'package:isail/screens/add_course_screen.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // Import for notifications
+import 'package:timezone/timezone.dart' as tz; // Import for timezone
+import 'package:logging/logging.dart'; // Import logging package
 import '../models/course.dart';
 import '../widgets/course_card.dart';
+import '../main.dart'; // Import the main.dart file to access the notification plugin
 
 class CourseListScreen extends StatefulWidget {
   const CourseListScreen({super.key});
@@ -24,6 +28,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
   String _sortCriteria = 'name';
   bool _isDeleteMode = false;
   AnimationController? _controller;
+  final Logger _logger = Logger('CourseListLogger'); // Initialize logger
 
   @override
   void initState() {
@@ -64,6 +69,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
       setState(() {
         _courses.addAll(coursesJson.map((json) => Course.fromJson(json)).toList());
       });
+      _checkExpiringCourses(); // Ensure this is called after loading courses
     }
   }
 
@@ -217,6 +223,76 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
     );
   }
 
+  void _checkExpiringCourses() {
+    final now = DateTime.now();
+    for (var course in _courses) {
+      final daysRemaining = course.deadline.difference(now).inDays;
+      if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30) {
+        _scheduleNotification(
+          id: course.hashCode,
+          title: 'Corso in scadenza',
+          body: 'Il corso "${course.name}" sta per scadere tra $daysRemaining giorni. Ricordati di completarlo!',
+          scheduledDate: _nextInstanceOfEightAM(),
+        );
+      } else if (daysRemaining <= 7 && daysRemaining > 0) {
+        for (int i = 0; i <= daysRemaining; i++) {
+          _scheduleNotification(
+            id: course.hashCode + i,
+            title: 'Corso in scadenza',
+            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di completarlo!',
+            scheduledDate: _nextInstanceOfEightAM().add(Duration(days: i)),
+          );
+        }
+      } else if (daysRemaining <= 90 && daysRemaining > 0) {
+        for (int i = 0; i <= daysRemaining; i += 7) {
+          _scheduleNotification(
+            id: course.hashCode + i,
+            title: 'Corso in scadenza',
+            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di completarlo!',
+            scheduledDate: _nextInstanceOfEightAM().add(Duration(days: i)),
+          );
+        }
+      } else if (daysRemaining <= 365 && daysRemaining > 0) {
+        for (int i = 0; i <= daysRemaining; i += 30) {
+          _scheduleNotification(
+            id: course.hashCode + i,
+            title: 'Corso in scadenza',
+            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di completarlo!',
+            scheduledDate: _nextInstanceOfEightAM().add(Duration(days: i)),
+          );
+        }
+      }
+    }
+  }
+
+  tz.TZDateTime _nextInstanceOfEightAM() {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 8);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
+  Future<void> _scheduleNotification({required int id, required String title, required String body, required tz.TZDateTime scheduledDate}) async {
+    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      scheduledDate,
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredCourses = _courses.where((course) {
@@ -242,6 +318,12 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
             style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: _testNotifications, // Add button to test notifications
+          ),
+        ],
       ),
       body: GestureDetector(
         onTap: () {
@@ -319,7 +401,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
                             CourseCard(
                               title: course.name,
                               description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
-                              dueDate: course.deadline,
+                              dueDate: course.deadline, // Ensure dueDate is passed correctly
                             ),
                             if (_isDeleteMode)
                               Positioned(
@@ -378,6 +460,19 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void _testNotifications() {
+    for (var course in _courses) {
+      final daysRemaining = course.deadline.difference(DateTime.now()).inDays;
+      _logger.info('Testing notification for course: ${course.name}, expiring in $daysRemaining days'); // Debug log
+      _scheduleNotification(
+        id: course.hashCode,
+        title: 'Test Notifica Corso',
+        body: 'Il corso "${course.name}" scade tra $daysRemaining giorni.',
+        scheduledDate: tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)), // Schedule for 5 seconds from now
+      );
+    }
   }
 }
 
