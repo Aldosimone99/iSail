@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:logging/logging.dart'; // Import logging package
 import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
 import 'screens/settings_screen.dart'; // Import SettingsScreen
@@ -10,8 +12,59 @@ import 'screens/countdown_screen.dart'; // Import CountdownScreen
 import 'widgets/custom_bottom_app_bar.dart'; // Import CustomBottomAppBar
 import 'widgets/countdown_widget.dart'; // Import CountdownWidget
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+final Logger _logger = Logger('MainLogger'); // Initialize logger
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+    onDidReceiveLocalNotification: (int id, String? title, String? body, String? payload) async {
+      // Handle foreground notification
+      _logger.info('Received local notification: $title - $body');
+      showDialog(
+        context: navigatorKey.currentContext!,
+        builder: (BuildContext context) => AlertDialog(
+          title: Text(title ?? ''),
+          content: Text(body ?? ''),
+          actions: [
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  );
+  final InitializationSettings initializationSettings = InitializationSettings(
+    iOS: initializationSettingsIOS,
+  );
+
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onSelectNotification: (String? payload) async {
+      if (payload != null) {
+        _logger.info('Notification payload: $payload'); // Debug log
+      }
+    },
+  );
+
+  // Request permissions for iOS
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+      ?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,  // Necessario su iOS
     statusBarBrightness: Brightness.dark, // Icone chiare su sfondo scuro
@@ -26,6 +79,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'SailSafe', // Changed app name
       theme: ThemeData(
         brightness: Brightness.dark,
@@ -183,4 +237,12 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+void showNotification() async {
+  var iOSDetails = IOSNotificationDetails();
+  var generalNotificationDetails = NotificationDetails(iOS: iOSDetails);
+
+  await flutterLocalNotificationsPlugin.show(
+      0, 'Titolo Notifica', 'Contenuto Notifica', generalNotificationDetails);
 }

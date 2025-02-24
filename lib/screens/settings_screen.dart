@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'account_screen.dart'; // Import the AccountScreen
 import 'dart:ui'; // Import for blur effect
+import 'notifications_screen.dart'; // Import the NotificationsScreen
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -74,6 +75,14 @@ class SettingsScreen extends StatelessWidget {
             }),
             _buildSettingsTile('Spazio e Dati', CupertinoIcons.folder, const Color.fromARGB(255, 255, 255, 255)),
             _buildSettingsTile('Backup', CupertinoIcons.cloud_upload, const Color.fromARGB(255, 255, 255, 255)),
+            _buildSettingsTile('Notifiche', CupertinoIcons.bell, const Color.fromARGB(255, 255, 255, 255), onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NotificationsScreen(),
+                ),
+              );
+            }),
           ]),
         ],
       ),
