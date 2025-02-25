@@ -16,18 +16,17 @@ class CourseListScreen extends StatefulWidget {
   const CourseListScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CourseListScreenState createState() => _CourseListScreenState();
+  CourseListScreenState createState() => CourseListScreenState();
 }
 
-class _CourseListScreenState extends State<CourseListScreen> with SingleTickerProviderStateMixin {
-  final List<Course> _courses = [];
+class CourseListScreenState extends State<CourseListScreen> with SingleTickerProviderStateMixin {
+  final List<Course> _courses = []; // Ensure this is defined
   String _greeting = '';
   String _searchQuery = '';
   String _sortCriteria = 'name';
   bool _isDeleteMode = false;
   AnimationController? _controller;
-// Initialize logger
+  final ValueNotifier<String> _userNameNotifier = ValueNotifier<String>('Utente'); // Add ValueNotifier
 
   @override
   void initState() {
@@ -38,18 +37,25 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
       duration: const Duration(milliseconds: 300),
       vsync: this,
     )..repeat(reverse: true);
+    _userNameNotifier.addListener(_updateGreeting); // Add listener to update greeting when username changes
   }
 
   @override
   void dispose() {
     _controller?.dispose();
+    _userNameNotifier.removeListener(_updateGreeting); // Remove listener when disposing
     super.dispose();
   }
 
   void _loadUserName() async {
     final prefs = await SharedPreferences.getInstance();
     final userName = prefs.getString('userName') ?? 'Utente';
+    _userNameNotifier.value = userName; // Update ValueNotifier
+  }
+
+  void _updateGreeting() {
     final hour = DateTime.now().hour;
+    final userName = _userNameNotifier.value;
     if (hour >= 6 && hour < 12) {
       _greeting = 'Buongiorno $userName';
     } else if (hour >= 12 && hour < 18) {
@@ -290,6 +296,10 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
     );
+  }
+
+  void updateUserName(String userName) {
+    _userNameNotifier.value = userName;
   }
 
   @override

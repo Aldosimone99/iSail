@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:isail/screens/course_list_screen.dart';
 import 'dart:ui'; // Import for blur effect
+import 'package:shared_preferences/shared_preferences.dart'; // Import for SharedPreferences
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
@@ -7,6 +9,7 @@ class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FocusNode focusNode = FocusNode();
+    final TextEditingController _usernameController = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -39,11 +42,18 @@ class AccountScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
+                  Text(
+                    'Per cambiare il tuo username, inserisci qui quello corretto.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 20),
                   TextField(
                     focusNode: focusNode,
+                    controller: _usernameController,
                     decoration: InputDecoration(
-                      labelText: focusNode.hasFocus ? null : 'Username',
-                      labelStyle: TextStyle(color: Colors.grey, fontFamily: 'SF Pro'),
+                      hintText: 'Username', // Use hintText instead of labelText
+                      hintStyle: TextStyle(color: Colors.grey, fontFamily: 'SF Pro'),
                       filled: true,
                       fillColor: Color(0xFF2C2C2E),
                       border: OutlineInputBorder(
@@ -57,14 +67,27 @@ class AccountScreen extends StatelessWidget {
                       // Handle username change
                     },
                     onTap: () {
-                      // Hide the label text when focused
+                      // Hide the hint text when focused
                       focusNode.requestFocus();
                     },
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () {
-                      // Save the new username
+                    onPressed: () async {
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('userName', _usernameController.text); // Save the new username
+                      // Notify the CourseListScreen
+                      final courseListScreenState = context.findAncestorStateOfType<CourseListScreenState>();
+                      courseListScreenState?.updateUserName(_usernameController.text);
+                      // Show confirmation message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Username aggiornato', style: TextStyle(color: Colors.white)),
+                          backgroundColor: Colors.black,
+                        ),
+                      );
+                      // Clear the input field
+                      _usernameController.clear();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
