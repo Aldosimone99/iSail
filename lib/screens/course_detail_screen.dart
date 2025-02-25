@@ -92,7 +92,19 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => FileViewerScreen(filePath: filePath, fileType: fileType),
+        builder: (context) => FileViewerScreen(
+          filePath: filePath,
+          fileType: fileType,
+          onDelete: () {
+            setState(() {
+              if (fileType == 'image') {
+                _imageFile = null;
+              } else if (fileType == 'pdf') {
+                _pdfPath = null;
+              }
+            });
+          },
+        ),
       ),
     );
   }
