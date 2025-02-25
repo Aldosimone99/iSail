@@ -103,10 +103,13 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             setState(() {
               if (fileType == 'image') {
                 _imageFile = null;
+                widget.course.imagePath = null; // Remove image path from course
               } else if (fileType == 'pdf') {
                 _pdfPath = null;
+                widget.course.pdfPath = null; // Remove PDF path from course
               }
             });
+            Navigator.of(context).pop(); // Close the FileViewerScreen
           },
         ),
       ),
@@ -196,7 +199,13 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start, // Align children to the left
             children: [
-              SizedBox(height: 50), // Add space above the circle
+              SizedBox(height: 16),
+              if (widget.course.imagePath != null)
+                GestureDetector(
+                  onTap: () => _openFile(context, widget.course.imagePath!, 'image'),
+                  child: Image.file(File(widget.course.imagePath!)),
+                ),
+              SizedBox(height: 16), // Reduce space above the text
               Center(
                 child: Column(
                   children: [
@@ -206,8 +215,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     ),
                     SizedBox(height: 8), // Add space between the text and the circle
                     Container(
-                      width: 150,
-                      height: 150,
+                      width: 120, // Reduce the width of the circle
+                      height: 120, // Reduce the height of the circle
                       decoration: BoxDecoration(
                         color: _getCircleColor(),
                         shape: BoxShape.circle,
@@ -224,11 +233,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              if (widget.course.imagePath != null)
-                GestureDetector(
-                  onTap: () => _openFile(context, widget.course.imagePath!, 'image'),
-                  child: Image.file(File(widget.course.imagePath!)),
-                ),
               if (widget.course.pdfPath != null)
                 GestureDetector(
                   onTap: () => _openFile(context, widget.course.pdfPath!, 'pdf'),
