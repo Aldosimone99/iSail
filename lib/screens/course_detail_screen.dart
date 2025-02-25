@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'dart:ui'; // Import for blur effect
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:io'; // Import for File class
 import 'package:flutter/cupertino.dart'; // Import for CupertinoActionSheet
 import '../models/course.dart';
+import 'file_viewer_screen.dart'; // Import for FileViewerScreen
 
 class CourseDetailScreen extends StatefulWidget {
   final Course course;
@@ -85,6 +85,15 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           ],
         );
       },
+    );
+  }
+
+  void _openFile(BuildContext context, String filePath, String fileType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FileViewerScreen(filePath: filePath, fileType: fileType),
+      ),
     );
   }
 
@@ -189,12 +198,18 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               ),
               SizedBox(height: 16),
               if (_imageFile != null)
-                Image.file(File(_imageFile!.path)),
+                GestureDetector(
+                  onTap: () => _openFile(context, _imageFile!.path, 'image'),
+                  child: Image.file(File(_imageFile!.path)),
+                ),
               if (_pdfPath != null)
-                SizedBox(
-                  height: 400,
-                  child: PDFView(
-                    filePath: _pdfPath,
+                GestureDetector(
+                  onTap: () => _openFile(context, _pdfPath!, 'pdf'),
+                  child: SizedBox(
+                    height: 400,
+                    child: PDFView(
+                      filePath: _pdfPath,
+                    ),
                   ),
                 ),
               // Add more details as needed
