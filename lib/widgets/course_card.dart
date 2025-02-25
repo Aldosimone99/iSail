@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import '../models/course.dart';
+import '../screens/course_detail_screen.dart';
 
 class CourseCard extends StatelessWidget {
   final String title;
   final String description;
   final DateTime dueDate;
+  final Course course; // Add course object
 
   const CourseCard({
     super.key,
     required this.title,
     required this.description,
     required this.dueDate,
+    required this.course, // Add course object
   });
 
   Color _getBackgroundColor() {
@@ -70,69 +74,78 @@ class CourseCard extends StatelessWidget {
             ? Color.fromARGB(255, 171, 130, 10) // Dark golden color for yellow boxes
             : borderColor);
     
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha((0.2 * 255).toInt()), // Remove the red shadow
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: Offset(0, 3), // changes position of shadow
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => CourseDetailScreen(course: course),
           ),
-        ],
-      ),
-      child: AspectRatio(
-        aspectRatio: 1.2, // Increase the width and height of the rectangular card
-        child: Card(
-          color: _getBackgroundColor(), // Set the background color
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide(color: borderColor, width: 3), // Increase border thickness
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0), // Slightly increase padding
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                    color: borderColor, // Set text color based on due date
-                  ),
-                  maxLines: 2, // Limit to 2 lines
-                  overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
-                ),
-                SizedBox(height: 6), // Slightly increase spacing
-                Text(
-                  description,
-                  style: TextStyle(
-                    color: borderColor, // Set text color based on due date
-                    fontSize: 15,
-                  ),
-                ),
-                Spacer(), // Push the countdown text to the bottom
-                Center(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
-                    decoration: BoxDecoration(
-                      color: pillColor,
-                      borderRadius: BorderRadius.circular(20),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha((0.2 * 255).toInt()), // Remove the red shadow
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: AspectRatio(
+          aspectRatio: 1.2, // Increase the width and height of the rectangular card
+          child: Card(
+            color: _getBackgroundColor(), // Set the background color
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: borderColor, width: 3), // Increase border thickness
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0), // Slightly increase padding
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                      color: borderColor, // Set text color based on due date
                     ),
-                    constraints: BoxConstraints(minWidth: 100), // Allow the pill to expand freely
-                    child: Text(
-                      _getCountdownText(),
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: pillTextColor, // Set text color based on due date
+                    maxLines: 2, // Limit to 2 lines
+                    overflow: TextOverflow.ellipsis, // Add ellipsis if text overflows
+                  ),
+                  SizedBox(height: 6), // Slightly increase spacing
+                  Text(
+                    description,
+                    style: TextStyle(
+                      color: borderColor, // Set text color based on due date
+                      fontSize: 15,
+                    ),
+                  ),
+                  Spacer(), // Push the countdown text to the bottom
+                  Center(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
+                      decoration: BoxDecoration(
+                        color: pillColor,
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      textAlign: TextAlign.center,
+                      constraints: BoxConstraints(minWidth: 100), // Allow the pill to expand freely
+                      child: Text(
+                        _getCountdownText(),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: pillTextColor, // Set text color based on due date
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

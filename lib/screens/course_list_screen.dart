@@ -407,6 +407,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
                               title: course.name,
                               description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
                               dueDate: course.deadline, // Ensure dueDate is passed correctly
+                              course: course, // Pass the course object
                             ),
                             if (_isDeleteMode)
                               Positioned(
