@@ -231,16 +231,16 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
         _scheduleNotification(
           id: course.hashCode,
           title: 'Corso in scadenza',
-          body: 'Il corso "${course.name}" sta per scadere tra $daysRemaining giorni. Ricordati di completarlo!',
-          scheduledDate: _nextInstanceOfEightAM(),
+          body: 'Il corso "${course.name}" sta per scadere tra $daysRemaining giorni. Ricordati di rinnovarlo!',
+          scheduledDate: _nextInstanceOfNoon(),
         );
       } else if (daysRemaining <= 7 && daysRemaining > 0) {
         for (int i = 0; i <= daysRemaining; i++) {
           _scheduleNotification(
             id: course.hashCode + i,
             title: 'Corso in scadenza',
-            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di completarlo!',
-            scheduledDate: _nextInstanceOfEightAM().add(Duration(days: i)),
+            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di rinnovarlo!',
+            scheduledDate: _nextInstanceOfNoon().add(Duration(days: i)),
           );
         }
       } else if (daysRemaining <= 90 && daysRemaining > 0) {
@@ -248,8 +248,8 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
           _scheduleNotification(
             id: course.hashCode + i,
             title: 'Corso in scadenza',
-            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di completarlo!',
-            scheduledDate: _nextInstanceOfEightAM().add(Duration(days: i)),
+            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di rinnovarlo!',
+            scheduledDate: _nextInstanceOfNoon().add(Duration(days: i)),
           );
         }
       } else if (daysRemaining <= 365 && daysRemaining > 0) {
@@ -257,17 +257,17 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
           _scheduleNotification(
             id: course.hashCode + i,
             title: 'Corso in scadenza',
-            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di completarlo!',
-            scheduledDate: _nextInstanceOfEightAM().add(Duration(days: i)),
+            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di rinnovarlo!',
+            scheduledDate: _nextInstanceOfNoon().add(Duration(days: i)),
           );
         }
       }
     }
   }
 
-  tz.TZDateTime _nextInstanceOfEightAM() {
+  tz.TZDateTime _nextInstanceOfNoon() {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 8);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 12);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(Duration(days: 1));
     }
