@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:isail/screens/add_course_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // Import for notifications
 import 'package:timezone/timezone.dart' as tz; // Import for timezone
-import 'package:logging/logging.dart'; // Import logging package
 import '../models/course.dart';
 import '../widgets/course_card.dart';
 import '../main.dart'; // Import the main.dart file to access the notification plugin
@@ -28,7 +27,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
   String _sortCriteria = 'name';
   bool _isDeleteMode = false;
   AnimationController? _controller;
-  final Logger _logger = Logger('CourseListLogger'); // Initialize logger
+// Initialize logger
 
   @override
   void initState() {
@@ -267,7 +266,7 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
 
   tz.TZDateTime _nextInstanceOfNoon() {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 12);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 10); // Change to 10 AM
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(Duration(days: 1));
     }
@@ -319,10 +318,6 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: _testNotifications, // Add button to test notifications
-          ),
         ],
       ),
       body: GestureDetector(
@@ -462,18 +457,6 @@ class _CourseListScreenState extends State<CourseListScreen> with SingleTickerPr
     );
   }
 
-  void _testNotifications() {
-    for (var course in _courses) {
-      final daysRemaining = course.deadline.difference(DateTime.now()).inDays;
-      _logger.info('Testing notification for course: ${course.name}, expiring in $daysRemaining days'); // Debug log
-      _scheduleNotification(
-        id: course.hashCode,
-        title: 'Test Notifica Corso',
-        body: 'Il corso "${course.name}" scade tra $daysRemaining giorni.',
-        scheduledDate: tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)), // Schedule for 5 seconds from now
-      );
-    }
-  }
 }
 
 class ShakeTransition extends StatelessWidget {
