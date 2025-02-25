@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/course.dart';
 import 'dart:ui'; // Import per effetto blur
+import 'dart:math'; // Import for generating random ID
 
 class AddCourseScreen extends StatefulWidget {
   final Function(Course) onAddCourse;
@@ -14,24 +15,24 @@ class AddCourseScreen extends StatefulWidget {
 
 class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourseScreenState to AddCourseScreenState
   final List<Course> _predefinedCourses = [
-    Course(name: 'PSSR (Personal Safety and Social Responsibilities)', deadline: DateTime.now()),
-    Course(name: 'Sopravvivenza e Salvataggio', deadline: DateTime.now()),
-    Course(name: 'Antincendio di Base', deadline: DateTime.now()),
-    Course(name: 'Primo Soccorso Elementare', deadline: DateTime.now()),
-    Course(name: 'Security Awareness', deadline: DateTime.now()),
-    Course(name: 'Antincendio Avanzato', deadline: DateTime.now()),
-    Course(name: 'MAMS (Marittimo Abilitato ai Mezzi di Salvataggio)', deadline: DateTime.now()),
-    Course(name: 'MABEV (Marittimo Abilitato ai Battelli di Emergenza Veloci)', deadline: DateTime.now()),
-    Course(name: 'High Voltage', deadline: DateTime.now()),
-    Course(name: 'IGF (International Gas Fuel)', deadline: DateTime.now()),
-    Course(name: 'ECDIS (Electronic Chart Display and Information System)', deadline: DateTime.now()),
-    Course(name: 'GMDSS (Global Maritime Distress and Safety System)', deadline: DateTime.now()),
-    Course(name: 'Corsi Radar', deadline: DateTime.now()),
-    Course(name: 'Security Duties', deadline: DateTime.now()),
-    Course(name: 'Ship Security Officer (SSO)', deadline: DateTime.now()),
-    Course(name: 'Crowd Management', deadline: DateTime.now()),
-    Course(name: 'Crisis Management', deadline: DateTime.now()),
-    Course(name: 'Leadership e Teamwork', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'PSSR (Personal Safety and Social Responsibilities)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Sopravvivenza e Salvataggio', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Antincendio di Base', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Primo Soccorso Elementare', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Security Awareness', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Antincendio Avanzato', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'MAMS (Marittimo Abilitato ai Mezzi di Salvataggio)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'MABEV (Marittimo Abilitato ai Battelli di Emergenza Veloci)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'High Voltage', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'IGF (International Gas Fuel)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'ECDIS (Electronic Chart Display and Information System)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'GMDSS (Global Maritime Distress and Safety System)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Corsi Radar', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Security Duties', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Ship Security Officer (SSO)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Crowd Management', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Crisis Management', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Leadership e Teamwork', deadline: DateTime.now()),
   ];
 
   Course? _selectedCourse;
@@ -42,7 +43,8 @@ class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourse
     if (_nameController.text.isEmpty || _deadlineController.text.isEmpty) return;
     final name = _selectedCourse?.name ?? _nameController.text;
     final deadline = DateTime.parse(_deadlineController.text);
-    final course = Course(name: name, deadline: deadline);
+    final id = Random().nextInt(1000000); // Generate a random ID
+    final course = Course(id: id, name: name, deadline: deadline); // Include the ID in the Course object
     widget.onAddCourse(course);
     Navigator.of(context).pop();
   }
