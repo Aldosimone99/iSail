@@ -167,12 +167,20 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             ),
           ),
         ),
-        title: Align(
-          alignment: Alignment.centerLeft, // Align the title text to the left
-          child: Text(
-            widget.course.name,
-            style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
-          ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start, // Align content to the left
+          crossAxisAlignment: CrossAxisAlignment.center, // Center align vertically
+          children: [
+            IconButton(
+              icon: Icon(CupertinoIcons.back, color: Colors.grey[300], size: 30), // Use the back arrow without the line and increase size
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            SizedBox(width: 1), // Reduce space between the icon and the title
+            Text(
+              widget.course.name,
+              style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
+            ),
+          ],
         ),
       ),
       body: SingleChildScrollView( // Wrap the Column in SingleChildScrollView

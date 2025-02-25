@@ -17,9 +17,33 @@ class FileViewerScreen extends StatelessWidget {
     Share.shareFiles([filePath]);
   }
 
-  void _deleteFile(BuildContext context) {
-    onDelete();
-    Navigator.of(context).pop();
+  void _confirmDelete(BuildContext context) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text('Conferma eliminazione'),
+          content: Text('Sei sicuro di voler eliminare questo file?'),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text('Annulla'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            CupertinoDialogAction(
+              child: Text('Elimina'),
+              isDestructiveAction: true,
+              onPressed: () {
+                onDelete();
+                Navigator.of(context).pop();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -76,7 +100,7 @@ class FileViewerScreen extends StatelessWidget {
                     ),
                     CupertinoButton(
                       child: Icon(CupertinoIcons.trash, color: Colors.white), // Replace 'x' icon with trash icon
-                      onPressed: () => _deleteFile(context),
+                      onPressed: () => _confirmDelete(context),
                     ),
                   ],
                 ),
