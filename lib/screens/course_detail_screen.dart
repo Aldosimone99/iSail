@@ -58,17 +58,17 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               alignment: Alignment.bottomCenter,
               child: SafeArea(
                 child: CupertinoActionSheet(
-                  title: Text('Carica il corso', style: TextStyle(color: Colors.white)), // White text color
+                  title: Text(_getLocalizedText(context, 'upload_course'), style: TextStyle(color: Colors.white)), // White text color
                   actions: <Widget>[
                     CupertinoActionSheetAction(
-                      child: Text('Seleziona dalla Galleria', style: TextStyle(color: Colors.white)), // White text color
+                      child: Text(_getLocalizedText(context, 'select_from_gallery'), style: TextStyle(color: Colors.white)), // White text color
                       onPressed: () {
                         _pickImage();
                         Navigator.of(context).pop();
                       },
                     ),
                     CupertinoActionSheetAction(
-                      child: Text('Seleziona da File', style: TextStyle(color: Colors.white)), // White text color
+                      child: Text(_getLocalizedText(context, 'select_from_files'), style: TextStyle(color: Colors.white)), // White text color
                       onPressed: () {
                         _pickPDF();
                         Navigator.of(context).pop();
@@ -76,7 +76,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     ),
                   ],
                   cancelButton: CupertinoActionSheetAction(
-                    child: Text('Annulla', style: TextStyle(color: Colors.white)), // White text color
+                    child: Text(_getLocalizedText(context, 'cancel'), style: TextStyle(color: Colors.white)), // White text color
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -146,19 +146,39 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     }
   }
 
-  String _getDaysRemaining() {
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'course_will_expire_in': isEnglish ? 'The course will expire in:' : 'Il corso scadrà tra:',
+      'expired': isEnglish ? 'Expired' : 'Scaduto',
+      'upload_course': isEnglish ? 'Upload Course' : 'Carica il corso',
+      'select_from_gallery': isEnglish ? 'Select from Gallery' : 'Seleziona dalla Galleria',
+      'select_from_files': isEnglish ? 'Select from Files' : 'Seleziona da File',
+      'cancel': isEnglish ? 'Cancel' : 'Annulla',
+      'year': isEnglish ? 'year' : 'anno',
+      'years': isEnglish ? 'years' : 'anni',
+      'month': isEnglish ? 'month' : 'mese',
+      'months': isEnglish ? 'months' : 'mesi',
+      'day': isEnglish ? 'day' : 'giorno',
+      'days': isEnglish ? 'days' : 'giorni',
+    };
+    return translations[key] ?? key;
+  }
+
+  List<String> _getDaysRemaining(BuildContext context) {
     final now = DateTime.now();
     final difference = widget.course.deadline.difference(now);
     if (difference.isNegative) {
-      return 'Scaduto';
+      return [_getLocalizedText(context, 'expired')];
     } else {
       final years = difference.inDays ~/ 365;
       final months = (difference.inDays % 365) ~/ 30;
       final days = (difference.inDays % 365) % 30;
-      final yearsText = years > 0 ? '$years ${years == 1 ? 'anno' : 'anni'}' : '';
-      final monthsText = months > 0 ? '$months ${months == 1 ? 'mese' : 'mesi'}' : '';
-      final daysText = days > 0 ? '$days ${days == 1 ? 'giorno' : 'giorni'}' : '';
-      return [yearsText, monthsText, daysText].where((text) => text.isNotEmpty).join(', ');
+      final yearsText = years > 0 ? '$years ${years == 1 ? _getLocalizedText(context, 'year') : _getLocalizedText(context, 'years')}' : '';
+      final monthsText = months > 0 ? '$months ${months == 1 ? _getLocalizedText(context, 'month') : _getLocalizedText(context, 'months')}' : '';
+      final daysText = days > 0 ? '$days ${days == 1 ? _getLocalizedText(context, 'day') : _getLocalizedText(context, 'days')}' : '';
+      return [yearsText, monthsText, daysText].where((text) => text.isNotEmpty).toList();
     }
   }
 
@@ -213,7 +233,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 child: Column(
                   children: [
                     Text(
-                      'Il corso scadrà tra:',
+                      _getLocalizedText(context, 'course_will_expire_in'),
                       style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 2), // Add space between the text and the circle
@@ -226,10 +246,13 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                         border: Border.all(color: _getBorderColor(), width: 3), // Add border
                       ),
                       child: Center(
-                        child: Text(
-                          _getDaysRemaining(),
-                          textAlign: TextAlign.center, // Center the text
-                          style: TextStyle(fontSize: 24, color: _getTextColor(), fontWeight: FontWeight.bold), // Use the same text color
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: _getDaysRemaining(context).map((text) => Text(
+                            text,
+                            textAlign: TextAlign.center, // Center the text
+                            style: TextStyle(fontSize: 24, color: _getTextColor(), fontWeight: FontWeight.bold), // Use the same text color
+                          )).toList(),
                         ),
                       ),
                     ),
