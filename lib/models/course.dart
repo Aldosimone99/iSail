@@ -11,11 +11,11 @@ class Course {
 
   factory Course.fromJson(Map<String, dynamic> json) {
     return Course(
-      id: json['id'],
-      name: json['name'],
-      deadline: DateTime.parse(json['deadline']),
-      imagePath: json['imagePath'], // Parse imagePath from JSON
-      pdfPath: json['pdfPath'], // Parse pdfPath from JSON
+      id: json['id'] ?? 0, // Provide a default value if id is null
+      name: json['name'] as String,
+      deadline: DateTime.parse(json['deadline'] as String),
+      imagePath: json['imagePath'] as String?,
+      pdfPath: json['pdfPath'] as String?,
     );
   }
 

@@ -66,7 +66,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     setState(() {});
   }
 
-  void _loadCourses() async {
+  Future<void> _loadCourses() async {
     final prefs = await SharedPreferences.getInstance();
     final String? coursesString = prefs.getString('courses');
     if (coursesString != null) {

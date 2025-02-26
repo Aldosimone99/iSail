@@ -18,7 +18,6 @@ class CourseDetailScreen extends StatefulWidget {
 }
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
-  XFile? _imageFile;
   String? _pdfPath;
 
   Future<void> _pickImage() async {
@@ -26,7 +25,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _imageFile = pickedFile;
         widget.course.imagePath = pickedFile.path; // Save image path to course
       });
     }
@@ -102,7 +100,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           onDelete: () {
             setState(() {
               if (fileType == 'image') {
-                _imageFile = null;
                 widget.course.imagePath = null; // Remove image path from course
               } else if (fileType == 'pdf') {
                 _pdfPath = null;
@@ -155,7 +152,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
     if (difference.isNegative) {
       return 'Scaduto';
     } else {
-      return '${difference.inDays} giorni';
+      final years = difference.inDays ~/ 365;
+      final months = (difference.inDays % 365) ~/ 30;
+      final days = (difference.inDays % 365) % 30;
+      return '${years > 0 ? '$years anni ' : ''}${months > 0 ? '$months mesi ' : ''}${days > 0 ? '$days giorni' : ''}';
     }
   }
 
@@ -215,8 +215,8 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                     ),
                     SizedBox(height: 8), // Add space between the text and the circle
                     Container(
-                      width: 120, // Reduce the width of the circle
-                      height: 120, // Reduce the height of the circle
+                      width: 140, // Increase the width of the circle
+                      height: 140, // Increase the height of the circle
                       decoration: BoxDecoration(
                         color: _getCircleColor(),
                         shape: BoxShape.circle,
@@ -225,6 +225,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       child: Center(
                         child: Text(
                           _getDaysRemaining(),
+                          textAlign: TextAlign.center, // Center the text
                           style: TextStyle(fontSize: 24, color: _getTextColor(), fontWeight: FontWeight.bold), // Use the same text color
                         ),
                       ),
