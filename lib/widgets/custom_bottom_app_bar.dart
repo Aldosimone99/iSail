@@ -16,6 +16,18 @@ class CustomBottomAppBar extends StatelessWidget {
     required this.onCountdownPressed, // Add Countdown callback
   });
 
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'conventions': isEnglish ? 'Conventions' : 'Convenzioni',
+      'countdown': isEnglish ? 'Countdown' : 'Countdown',
+      'logbook': isEnglish ? 'Logbook' : 'Logbook',
+      'settings': isEnglish ? 'Settings' : 'Impostazioni',
+    };
+    return translations[key] ?? key;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -28,11 +40,11 @@ class CustomBottomAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildNavItem(Icons.edit_document, "Convenzioni", onDocumentsPressed),
-            _buildNavItem(Icons.timer, "Countdown", onCountdownPressed), // Update to Countdown
+            _buildNavItem(Icons.edit_document, _getLocalizedText(context, 'conventions'), onDocumentsPressed),
+            _buildNavItem(Icons.timer, _getLocalizedText(context, 'countdown'), onCountdownPressed), // Update to Countdown
             SizedBox(width: 50), // Spazio per il FloatingActionButton
-            _buildNavItem(Icons.book, "Logbook", onLogbookPressed),
-            _buildNavItem(Icons.settings, "Impostazioni", onSettingsPressed),
+            _buildNavItem(Icons.book, _getLocalizedText(context, 'logbook'), onLogbookPressed),
+            _buildNavItem(Icons.settings, _getLocalizedText(context, 'settings'), onSettingsPressed),
           ],
         ),
       ),

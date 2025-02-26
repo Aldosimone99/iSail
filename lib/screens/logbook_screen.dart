@@ -69,14 +69,14 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Conferma Eliminazione'),
-          content: Text('Sei sicuro di voler eliminare questo imbarco?'),
+          title: Text(_getLocalizedText(context, 'confirm_deletion')),
+          content: Text(_getLocalizedText(context, 'confirm_delete_entry')),
           actions: [
             CupertinoDialogAction(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Annulla'),
+              child: Text(_getLocalizedText(context, 'cancel')),
             ),
             CupertinoDialogAction(
               onPressed: () {
@@ -84,7 +84,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
-              child: Text('Elimina'),
+              child: Text(_getLocalizedText(context, 'delete')),
             ),
           ],
         );
@@ -110,7 +110,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: Text('Ordina per titolo'),
+            child: Text(_getLocalizedText(context, 'sort_by_title')),
             onPressed: () {
               setState(() {
                 _sortCriteria = 'title';
@@ -120,7 +120,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Ordina per data di inizio (crescente)'),
+            child: Text(_getLocalizedText(context, 'sort_by_start_date_asc')),
             onPressed: () {
               setState(() {
                 _sortCriteria = 'startDate_asc';
@@ -130,7 +130,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Ordina per data di inizio (decrescente)'),
+            child: Text(_getLocalizedText(context, 'sort_by_start_date_desc')),
             onPressed: () {
               setState(() {
                 _sortCriteria = 'startDate_desc';
@@ -141,7 +141,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text('Annulla'),
+          child: Text(_getLocalizedText(context, 'cancel')),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -156,14 +156,14 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: Text('Ordina'),
+            child: Text(_getLocalizedText(context, 'sort')),
             onPressed: () {
               Navigator.pop(context);
               _showSortOptions(context);
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Elimina'),
+            child: Text(_getLocalizedText(context, 'delete')),
             onPressed: () {
               setState(() {
                 _isDeleteMode = true;
@@ -173,7 +173,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text('Annulla'),
+          child: Text(_getLocalizedText(context, 'cancel')),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -182,7 +182,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
     );
   }
 
-  String _calculateDuration(String startDate, String endDate) {
+  String _calculateDuration(String startDate, String endDate, BuildContext context) {
     final start = DateTime.parse(startDate);
     final end = DateTime.parse(endDate);
     int years = end.year - start.year;
@@ -200,7 +200,33 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
       months += 12;
     }
 
-    return '${years * 12 + months} mesi, $days giorni';
+    final totalMonths = years * 12 + months;
+    final monthsText = totalMonths == 1 ? _getLocalizedText(context, 'month') : _getLocalizedText(context, 'months');
+    final daysText = days == 1 ? _getLocalizedText(context, 'day') : _getLocalizedText(context, 'days');
+
+    return '$totalMonths $monthsText, $days $daysText';
+  }
+
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'logbook': isEnglish ? 'Logbook' : 'Registro Imbarchi',
+      'no_entries': isEnglish ? 'No entries available' : 'Nessun imbarco presente',
+      'confirm_deletion': isEnglish ? 'Confirm Deletion' : 'Conferma Eliminazione',
+      'confirm_delete_entry': isEnglish ? 'Are you sure you want to delete this entry?' : 'Sei sicuro di voler eliminare questo imbarco?',
+      'cancel': isEnglish ? 'Cancel' : 'Annulla',
+      'delete': isEnglish ? 'Delete' : 'Elimina',
+      'sort': isEnglish ? 'Sort' : 'Ordina',
+      'sort_by_title': isEnglish ? 'Sort by Title' : 'Ordina per titolo',
+      'sort_by_start_date_asc': isEnglish ? 'Sort by Start Date (Ascending)' : 'Ordina per data di inizio (crescente)',
+      'sort_by_start_date_desc': isEnglish ? 'Sort by Start Date (Descending)' : 'Ordina per data di inizio (decrescente)',
+      'months': isEnglish ? 'months' : 'mesi',
+      'month': isEnglish ? 'month' : 'mese',
+      'days': isEnglish ? 'days' : 'giorni',
+      'day': isEnglish ? 'day' : 'giorno',
+    };
+    return translations[key] ?? key;
   }
 
   @override
@@ -221,7 +247,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
         title: Align(
           alignment: Alignment.centerLeft, // Align the title text to the left
           child: Text(
-            'Registro Imbarchi',
+            _getLocalizedText(context, 'logbook'),
             style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
           ),
         ),
@@ -243,7 +269,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
         child: _logbookEntries.isEmpty
             ? Center(
                 child: Text(
-                  'Nessun imbarco presente',
+                  _getLocalizedText(context, 'no_entries'),
                   style: TextStyle(color: Colors.grey[300], fontSize: 24, fontWeight: FontWeight.bold), // Match font size and style
                 ),
               )
@@ -258,7 +284,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
                 itemCount: _logbookEntries.length,
                 itemBuilder: (context, index) {
                   final entry = _logbookEntries[index];
-                  final duration = _calculateDuration(entry['startDate']!, entry['endDate']!);
+                  final duration = _calculateDuration(entry['startDate']!, entry['endDate']!, context);
                   return ShakeTransition(
                     controller: _controller,
                     enabled: _isDeleteMode,
@@ -295,7 +321,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
                                 ),
                                 SizedBox(height: 8), // Add some space between title and subtitle
                                 Text(
-                                  'Da: ${entry['startDate']} A: ${entry['endDate']}',
+                                  '${_getLocalizedText(context, 'start_date')}: ${entry['startDate']} ${_getLocalizedText(context, 'end_date')}: ${entry['endDate']}',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey[700], // Set text color to gray
