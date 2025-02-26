@@ -38,25 +38,43 @@ class CourseCard extends StatelessWidget {
     }
   }
 
-  String _getCountdownText() {
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'due_in': isEnglish ? 'Due in' : 'Scade in',
+      'expired': isEnglish ? 'Expired' : 'Scaduto',
+      'due_today': isEnglish ? 'Due today' : 'Scade oggi',
+      'year': isEnglish ? 'year' : 'anno',
+      'years': isEnglish ? 'years' : 'anni',
+      'month': isEnglish ? 'month' : 'mese',
+      'months': isEnglish ? 'months' : 'mesi',
+      'day': isEnglish ? 'day' : 'giorno',
+      'days': isEnglish ? 'days' : 'giorni',
+    };
+    return translations[key] ?? key;
+  }
+
+  String _getCountdownText(BuildContext context) {
     final now = DateTime.now();
     final difference = dueDate.difference(now);
+
     if (difference.isNegative) {
-      return 'Scaduto';
+      return _getLocalizedText(context, 'expired');
     } else if (difference.inDays == 0) {
-      return 'Scade oggi';
+      return _getLocalizedText(context, 'due_today');
     } else if (difference.inDays >= 365) {
       final years = (difference.inDays / 365).floor();
       final remainingDays = difference.inDays % 365;
       final months = (remainingDays / 30).floor();
       final days = remainingDays % 30;
-      return 'Scade in $years ${years == 1 ? 'anno' : 'anni'}${months > 0 ? ', $months ${months == 1 ? 'mese' : 'mesi'}' : ''}${days > 0 ? ', $days ${days == 1 ? 'giorno' : 'giorni'}' : ''}';
+      return '${_getLocalizedText(context, 'due_in')} $years ${years == 1 ? _getLocalizedText(context, 'year') : _getLocalizedText(context, 'years')}${months > 0 ? ', $months ${months == 1 ? _getLocalizedText(context, 'month') : _getLocalizedText(context, 'months')}' : ''}${days > 0 ? ', $days ${days == 1 ? _getLocalizedText(context, 'day') : _getLocalizedText(context, 'days')}' : ''}';
     } else if (difference.inDays >= 30) {
       final months = (difference.inDays / 30).floor();
       final days = difference.inDays % 30;
-      return 'Scade in $months ${months == 1 ? 'mese' : 'mesi'}${days > 0 ? ', $days ${days == 1 ? 'giorno' : 'giorni'}' : ''}';
+      return '${_getLocalizedText(context, 'due_in')} $months ${months == 1 ? _getLocalizedText(context, 'month') : _getLocalizedText(context, 'months')}${days > 0 ? ', $days ${days == 1 ? _getLocalizedText(context, 'day') : _getLocalizedText(context, 'days')}' : ''}';
     } else {
-      return 'Scade in ${difference.inDays} ${difference.inDays == 1 ? 'giorno' : 'giorni'}';
+      return '${_getLocalizedText(context, 'due_in')} ${difference.inDays} ${difference.inDays == 1 ? _getLocalizedText(context, 'day') : _getLocalizedText(context, 'days')}';
     }
   }
 
@@ -135,7 +153,7 @@ class CourseCard extends StatelessWidget {
                       ),
                       constraints: BoxConstraints(minWidth: 100), // Allow the pill to expand freely
                       child: Text(
-                        _getCountdownText(),
+                        _getCountdownText(context), // Pass context to _getCountdownText
                         style: TextStyle(
                           fontSize: 15,
                           color: pillTextColor, // Set text color based on due date
