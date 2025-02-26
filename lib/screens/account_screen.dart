@@ -3,14 +3,48 @@ import 'package:isail/screens/course_list_screen.dart';
 import 'dart:ui'; // Import for blur effect
 import 'package:shared_preferences/shared_preferences.dart'; // Import for SharedPreferences
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final FocusNode focusNode = FocusNode();
-    final TextEditingController _usernameController = TextEditingController();
+  _AccountScreenState createState() => _AccountScreenState();
+}
 
+class _AccountScreenState extends State<AccountScreen> {
+  final FocusNode focusNode = FocusNode();
+  final TextEditingController _usernameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUsername();
+  }
+
+  Future<void> _loadUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    final username = prefs.getString('userName') ?? '';
+    setState(() {
+      _usernameController.text = username;
+    });
+  }
+
+  Future<void> _saveUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userName', _usernameController.text);
+  }
+
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'change_username': isEnglish ? 'To change your username, enter the correct one here.' : 'Per cambiare il tuo username, inserisci qui quello corretto.',
+      'save': isEnglish ? 'Save' : 'Salva',
+    };
+    return translations[key] ?? key;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: CustomScrollView(
@@ -43,7 +77,7 @@ class AccountScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Per cambiare il tuo username, inserisci qui quello corretto.',
+                    _getLocalizedText(context, 'change_username'),
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                   ),
@@ -74,8 +108,7 @@ class AccountScreen extends StatelessWidget {
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () async {
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.setString('userName', _usernameController.text); // Save the new username
+                      await _saveUsername();
                       // Notify the CourseListScreen
                       final courseListScreenState = context.findAncestorStateOfType<CourseListScreenState>();
                       courseListScreenState?.updateUserName(_usernameController.text);
@@ -95,7 +128,7 @@ class AccountScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: Text('Save', style: TextStyle(fontFamily: 'SF Pro')),
+                    child: Text(_getLocalizedText(context, 'save'), style: TextStyle(fontFamily: 'SF Pro')),
                   ),
                 ],
               ),

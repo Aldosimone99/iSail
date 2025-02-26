@@ -26,10 +26,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'settings': isEnglish ? 'Settings' : 'Impostazioni',
+      'search': isEnglish ? 'Search...' : 'Cerca...',
+      'account': isEnglish ? 'Account' : 'Account',
+      'language': isEnglish ? 'Language' : 'Lingua',
+      'storage_data': isEnglish ? 'Storage and Data' : 'Spazio e Dati',
+      'backup': isEnglish ? 'Backup' : 'Backup',
+    };
+    return translations[key] ?? key;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Sfondo scuro
+      backgroundColor: Colors.black, // Dark background
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
@@ -47,7 +61,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Align(
               alignment: Alignment.centerLeft, // Align the title text to the left
               child: Text(
-                'Impostazioni',
+                _getLocalizedText(context, 'settings'),
                 style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
               ),
             ),
@@ -62,7 +76,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
-                        hintText: 'Cerca...',
+                        hintText: _getLocalizedText(context, 'search'),
                         filled: true,
                         fillColor: Color(0xFF2C2C2E), // Light gray color
                         border: OutlineInputBorder(
@@ -81,7 +95,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           _buildSettingsSection([
-            _buildSettingsTile('Account', CupertinoIcons.person, const Color.fromARGB(255, 249, 248, 248), onTap: () {
+            _buildSettingsTile(_getLocalizedText(context, 'account'), CupertinoIcons.person, const Color.fromARGB(255, 249, 248, 248), onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -89,11 +103,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               );
             }),
-            _buildSettingsTile('Lingua', CupertinoIcons.globe, const Color.fromARGB(255, 255, 255, 255), onTap: () {
+            _buildSettingsTile(_getLocalizedText(context, 'language'), CupertinoIcons.globe, const Color.fromARGB(255, 255, 255, 255), onTap: () {
               // Handle language selection
             }),
-            _buildSettingsTile('Spazio e Dati', CupertinoIcons.folder, const Color.fromARGB(255, 255, 255, 255)),
-            _buildSettingsTile('Backup', CupertinoIcons.cloud_upload, const Color.fromARGB(255, 255, 255, 255)),
+            _buildSettingsTile(_getLocalizedText(context, 'storage_data'), CupertinoIcons.folder, const Color.fromARGB(255, 255, 255, 255)),
+            _buildSettingsTile(_getLocalizedText(context, 'backup'), CupertinoIcons.cloud_upload, const Color.fromARGB(255, 255, 255, 255)),
           ]),
         ],
       ),
