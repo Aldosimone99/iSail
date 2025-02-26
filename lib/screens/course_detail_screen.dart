@@ -155,7 +155,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
       final years = difference.inDays ~/ 365;
       final months = (difference.inDays % 365) ~/ 30;
       final days = (difference.inDays % 365) % 30;
-      return '${years > 0 ? '$years anni ' : ''}${months > 0 ? '$months mesi ' : ''}${days > 0 ? '$days giorni' : ''}';
+      final yearsText = years > 0 ? '$years ${years == 1 ? 'anno' : 'anni'}' : '';
+      final monthsText = months > 0 ? '$months ${months == 1 ? 'mese' : 'mesi'}' : '';
+      final daysText = days > 0 ? '$days ${days == 1 ? 'giorno' : 'giorni'}' : '';
+      return [yearsText, monthsText, daysText].where((text) => text.isNotEmpty).join(', ');
     }
   }
 
@@ -213,10 +216,10 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                       'Il corso scadrà tra:',
                       style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 8), // Add space between the text and the circle
+                    SizedBox(height: 2), // Add space between the text and the circle
                     Container(
-                      width: 140, // Increase the width of the circle
-                      height: 140, // Increase the height of the circle
+                      width: 150, // Increase the width of the circle
+                      height: 150, // Increase the height of the circle
                       decoration: BoxDecoration(
                         color: _getCircleColor(),
                         shape: BoxShape.circle,
