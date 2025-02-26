@@ -10,7 +10,7 @@ class CountdownWidget extends StatefulWidget {
 
 class CountdownWidgetState extends State<CountdownWidget> {
   DateTime? _endDate;
-  String _countdownMessage = 'Seleziona le date di fine imbarco';
+  String _countdownMessage = '';
 
   @override
   void initState() {
@@ -26,20 +26,34 @@ class CountdownWidgetState extends State<CountdownWidget> {
         _endDate = DateTime.parse(endDateString);
         _updateCountdownMessage();
       });
+    } else {
+      _updateCountdownMessage();
     }
+  }
+
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'select_end_date': isEnglish ? 'Select the end date of the embarkation' : 'Seleziona le date di fine imbarco',
+      'embarkation_ended': isEnglish ? 'The embarkation has already ended' : 'L\'imbarco è già terminato',
+      'days_remaining': isEnglish ? 'days remaining' : 'giorni',
+      'countdown': isEnglish ? 'Countdown' : 'Countdown',
+    };
+    return translations[key] ?? key;
   }
 
   void _updateCountdownMessage() {
     if (_endDate != null) {
       final now = DateTime.now();
       if (now.isAfter(_endDate!)) {
-        _countdownMessage = 'L\'imbarco è già terminato';
+        _countdownMessage = _getLocalizedText(context, 'embarkation_ended');
       } else {
         final remainingDays = _endDate!.difference(now).inDays;
-        _countdownMessage = 'Mancano $remainingDays giorni';
+        _countdownMessage = '${_getLocalizedText(context, 'days_remaining')}: $remainingDays';
       }
     } else {
-      _countdownMessage = 'Seleziona le date di fine imbarco';
+      _countdownMessage = _getLocalizedText(context, 'select_end_date');
     }
   }
 
@@ -55,7 +69,7 @@ class CountdownWidgetState extends State<CountdownWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'Countdown',
+            _getLocalizedText(context, 'countdown'),
             style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 10),

@@ -14,7 +14,7 @@ class CountdownScreen extends StatefulWidget {
 class CountdownScreenState extends State<CountdownScreen> {
   DateTime? _startDate;
   DateTime? _endDate;
-  String _countdownMessage = 'Seleziona le date di inizio e fine imbarco';
+  String _countdownMessage = '';
   bool _isEditMode = false;
 
   @override
@@ -33,6 +33,8 @@ class CountdownScreenState extends State<CountdownScreen> {
         _endDate = DateTime.parse(endDateString);
         _updateCountdownMessage();
       });
+    } else {
+      _updateCountdownMessage();
     }
   }
 
@@ -98,19 +100,39 @@ class CountdownScreenState extends State<CountdownScreen> {
     );
   }
 
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'select_start_end_dates': isEnglish ? 'Select the start and end dates of the embarkation' : 'Seleziona le date di inizio e fine imbarco',
+      'embarkation_not_started': isEnglish ? 'Embarkation not started' : 'Imbarco non iniziato',
+      'embarkation_completed': isEnglish ? 'Embarkation completed, welcome back home🏠' : 'Imbarco completato, bentornato a casa🏠',
+      'days_remaining': isEnglish ? 'days remaining' : 'giorni',
+      'countdown': isEnglish ? 'Countdown' : 'Countdown',
+      'start': isEnglish ? 'Start' : 'Inizio',
+      'end': isEnglish ? 'End' : 'Fine',
+      'edit': isEnglish ? 'Edit' : 'Modifica',
+      'start_date': isEnglish ? 'Start Date' : 'Data di inizio',
+      'end_date': isEnglish ? 'End Date' : 'Data di fine',
+      'total_days': isEnglish ? 'Total days' : 'Giorni totali',
+      'error_start_after_end': isEnglish ? 'Error: the start date is after the end date' : 'Errore: la data di inizio imbarco è successiva alla data di fine imbarco',
+    };
+    return translations[key] ?? key;
+  }
+
   void _updateCountdownMessage() {
     if (_startDate != null && _endDate != null) {
       final now = DateTime.now();
       if (now.isBefore(_startDate!)) {
-        _countdownMessage = 'Imbarco non iniziato';
+        _countdownMessage = _getLocalizedText(context, 'embarkation_not_started');
       } else if (now.isAfter(_endDate!)) {
-        _countdownMessage = 'Imbarco completato, bentornato a casa🏠';
+        _countdownMessage = _getLocalizedText(context, 'embarkation_completed');
       } else {
         final remainingDays = _endDate!.difference(now).inDays + 1; // Add 1 to include the current day
-        _countdownMessage = 'Mancano\n$remainingDays\n giorni\nper tornare a casa';
+        _countdownMessage = '${_getLocalizedText(context, 'days_remaining')}\n$remainingDays\n${_getLocalizedText(context, 'days_remaining')}\n${_getLocalizedText(context, 'countdown')}';
       }
     } else {
-      _countdownMessage = 'Seleziona le date di inizio e fine imbarco';
+      _countdownMessage = _getLocalizedText(context, 'select_start_end_dates');
     }
     setState(() {}); // Ensure the UI is updated
   }
@@ -132,7 +154,7 @@ class CountdownScreenState extends State<CountdownScreen> {
         title: Align(
           alignment: Alignment.centerLeft, // Align the title text to the left
           child: Text(
-            'Countdown',
+            _getLocalizedText(context, 'countdown'),
             style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
           ),
         ),
@@ -161,13 +183,13 @@ class CountdownScreenState extends State<CountdownScreen> {
             if (_startDate != null && _endDate != null)
               if (DateTime.now().isBefore(_startDate!))
                 Text(
-                  'Imbarco non iniziato',
+                  _getLocalizedText(context, 'embarkation_not_started'),
                   style: TextStyle(fontSize: 24, color: Colors.white),
                   textAlign: TextAlign.center,
                 )
               else if (DateTime.now().isAfter(_endDate!))
                 Text(
-                  'Imbarco completato, bentornato a casa',
+                  _getLocalizedText(context, 'embarkation_completed'),
                   style: TextStyle(fontSize: 24, color: Colors.white),
                   textAlign: TextAlign.center,
                 )
@@ -175,7 +197,7 @@ class CountdownScreenState extends State<CountdownScreen> {
                 Column(
                   children: [
                     Text(
-                      'Mancano',
+                      _getLocalizedText(context, 'days_remaining'),
                       style: TextStyle(fontSize: 24, color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
@@ -190,13 +212,13 @@ class CountdownScreenState extends State<CountdownScreen> {
                     Padding(
                       padding: EdgeInsets.only(top: 0), // Further reduce spacing
                       child: Text(
-                        'giorni',
+                        _getLocalizedText(context, 'days_remaining'),
                         style: TextStyle(fontSize: 24, color: Colors.white),
                         textAlign: TextAlign.center,
                       ),
                     ),
                     Text(
-                      'per tornare a casa',
+                      _getLocalizedText(context, 'countdown'),
                       style: TextStyle(fontSize: 24, color: Colors.white),
                       textAlign: TextAlign.center,
                     ),
@@ -215,13 +237,13 @@ class CountdownScreenState extends State<CountdownScreen> {
                 children: [
                   CupertinoButton(
                     color: Colors.white,
-                    child: Text('Inizio', style: TextStyle(color: Colors.black)),
+                    child: Text(_getLocalizedText(context, 'start'), style: TextStyle(color: Colors.black)),
                     onPressed: () => _selectDate(context, true),
                   ),
                   SizedBox(width: 20),
                   CupertinoButton(
                     color: Colors.white,
-                    child: Text('Fine', style: TextStyle(color: Colors.black)),
+                    child: Text(_getLocalizedText(context, 'end'), style: TextStyle(color: Colors.black)),
                     onPressed: () => _selectDate(context, false),
                   ),
                 ],
@@ -229,7 +251,7 @@ class CountdownScreenState extends State<CountdownScreen> {
             if (_startDate != null && _endDate != null && !_isEditMode)
               CupertinoButton(
                 color: Colors.white,
-                child: Text('Modifica', style: TextStyle(color: Colors.black)),
+                child: Text(_getLocalizedText(context, 'edit'), style: TextStyle(color: Colors.black)),
                 onPressed: () {
                   setState(() {
                     _isEditMode = true;
@@ -239,25 +261,25 @@ class CountdownScreenState extends State<CountdownScreen> {
             SizedBox(height: 20),
             if (_startDate != null)
               Text(
-                'Data di inizio: ${DateFormat('dd/MM/yyyy').format(_startDate!)}',
+                '${_getLocalizedText(context, 'start_date')}: ${DateFormat('dd/MM/yyyy').format(_startDate!)}',
                 style: TextStyle(fontSize: 18, color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             if (_endDate != null)
               Text(
-                'Data di fine: ${DateFormat('dd/MM/yyyy').format(_endDate!)}',
+                '${_getLocalizedText(context, 'end_date')}: ${DateFormat('dd/MM/yyyy').format(_endDate!)}',
                 style: TextStyle(fontSize: 18, color: Colors.white),
                 textAlign: TextAlign.center,
               ),
             if (_startDate != null && _endDate != null)
               _endDate!.difference(_startDate!).inDays < 0
                 ? Text(
-                    'Errore: la data di inizio imbarco è successiva alla data di fine imbarco',
+                    _getLocalizedText(context, 'error_start_after_end'),
                     style: TextStyle(fontSize: 18, color: Colors.white),
                     textAlign: TextAlign.center,
                   )
                 : Text(
-                    'Giorni totali: ${_endDate!.difference(_startDate!).inDays}',
+                    '${_getLocalizedText(context, 'total_days')}: ${_endDate!.difference(_startDate!).inDays}',
                     style: TextStyle(fontSize: 18, color: Colors.white),
                     textAlign: TextAlign.center,
                   ),
