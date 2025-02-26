@@ -15,10 +15,10 @@ class CourseDetailScreen extends StatefulWidget {
   const CourseDetailScreen({super.key, required this.course});
 
   @override
-  _CourseDetailScreenState createState() => _CourseDetailScreenState();
+  CourseDetailScreenState createState() => CourseDetailScreenState();
 }
 
-class _CourseDetailScreenState extends State<CourseDetailScreen> {
+class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   @override
   void initState() {

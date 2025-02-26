@@ -7,10 +7,10 @@ class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
   @override
-  _AccountScreenState createState() => _AccountScreenState();
+  AccountScreenState createState() => AccountScreenState();
 }
 
-class _AccountScreenState extends State<AccountScreen> {
+class AccountScreenState extends State<AccountScreen> {
   final FocusNode focusNode = FocusNode();
   final TextEditingController _usernameController = TextEditingController();
 
@@ -109,18 +109,27 @@ class _AccountScreenState extends State<AccountScreen> {
                   ElevatedButton(
                     onPressed: () async {
                       await _saveUsername();
+                      if (!mounted) return; // Check if the widget is still mounted
                       // Notify the CourseListScreen
                       final courseListScreenState = context.findAncestorStateOfType<CourseListScreenState>();
-                      courseListScreenState?.updateUserName(_usernameController.text);
+                      if (courseListScreenState != null && mounted) {
+                        courseListScreenState.updateUserName(_usernameController.text);
+                      }
                       // Show confirmation message
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Username aggiornato', style: TextStyle(color: Colors.white)),
-                          backgroundColor: Colors.black,
-                        ),
-                      );
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Username aggiornato', style: TextStyle(color: Colors.white)),
+                            backgroundColor: Colors.black,
+                          ),
+                        );
+                      }
                       // Clear the input field
-                      _usernameController.clear();
+                      if (mounted) {
+                        setState(() {
+                          _usernameController.clear();
+                        });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,

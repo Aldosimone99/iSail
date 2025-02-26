@@ -86,10 +86,10 @@ class CountdownScreenState extends State<CountdownScreen> {
                     ),
                   ),
                   CupertinoButton(
-                    child: Text('OK', style: TextStyle(color: Colors.black)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
+                    child: Text('OK', style: TextStyle(color: Colors.black)),
                   ),
                 ],
               ),
@@ -98,6 +98,17 @@ class CountdownScreenState extends State<CountdownScreen> {
         );
       },
     );
+  }
+
+  Future<void> _resetDates() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('startDate');
+    await prefs.remove('endDate');
+    setState(() {
+      _startDate = null;
+      _endDate = null;
+      _countdownMessage = _getLocalizedText(context, 'select_start_end_dates');
+    });
   }
 
   String _getLocalizedText(BuildContext context, String key) {
@@ -129,7 +140,7 @@ class CountdownScreenState extends State<CountdownScreen> {
         _countdownMessage = _getLocalizedText(context, 'embarkation_completed');
       } else {
         final remainingDays = _endDate!.difference(now).inDays + 1; // Add 1 to include the current day
-        _countdownMessage = '${_getLocalizedText(context, 'days_remaining')}\n$remainingDays\n${_getLocalizedText(context, 'days_remaining')}\n${_getLocalizedText(context, 'countdown')}';
+        _countdownMessage = '$remainingDays ${_getLocalizedText(context, 'days_remaining')}\n${_getLocalizedText(context, 'countdown')}';
       }
     } else {
       _countdownMessage = _getLocalizedText(context, 'select_start_end_dates');
@@ -209,19 +220,6 @@ class CountdownScreenState extends State<CountdownScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 0), // Further reduce spacing
-                      child: Text(
-                        _getLocalizedText(context, 'days_remaining'),
-                        style: TextStyle(fontSize: 24, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Text(
-                      _getLocalizedText(context, 'countdown'),
-                      style: TextStyle(fontSize: 24, color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
                   ],
                 )
             else
@@ -237,14 +235,20 @@ class CountdownScreenState extends State<CountdownScreen> {
                 children: [
                   CupertinoButton(
                     color: Colors.white,
-                    child: Text(_getLocalizedText(context, 'start'), style: TextStyle(color: Colors.black)),
                     onPressed: () => _selectDate(context, true),
+                    child: Text(_getLocalizedText(context, 'start'), style: TextStyle(color: Colors.black)),
                   ),
                   SizedBox(width: 20),
                   CupertinoButton(
                     color: Colors.white,
-                    child: Text(_getLocalizedText(context, 'end'), style: TextStyle(color: Colors.black)),
                     onPressed: () => _selectDate(context, false),
+                    child: Text(_getLocalizedText(context, 'end'), style: TextStyle(color: Colors.black)),
+                  ),
+                  SizedBox(width: 20),
+                  CupertinoButton(
+                    color: Colors.red,
+                    onPressed: _resetDates,
+                    child: Text('Reset', style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
