@@ -85,6 +85,72 @@ class S {
         name: 'welcomeBack',
         desc: 'Welcome back message',
       );
+
+  String get goodMorning => Intl.message(
+        'Good Morning',
+        name: 'goodMorning',
+        desc: 'Morning greeting',
+      );
+
+  String get goodAfternoon => Intl.message(
+        'Good Afternoon',
+        name: 'goodAfternoon',
+        desc: 'Afternoon greeting',
+      );
+
+  String get goodEvening => Intl.message(
+        'Good Evening',
+        name: 'goodEvening',
+        desc: 'Evening greeting',
+      );
+
+  String get sort => Intl.message(
+        'Sort',
+        name: 'sort',
+        desc: 'Sort option',
+      );
+
+  String get delete => Intl.message(
+        'Delete',
+        name: 'delete',
+        desc: 'Delete option',
+      );
+
+  String get cancel => Intl.message(
+        'Cancel',
+        name: 'cancel',
+        desc: 'Cancel option',
+      );
+
+  String get confirmDeletion => Intl.message(
+        'Confirm Deletion',
+        name: 'confirmDeletion',
+        desc: 'Confirm deletion title',
+      );
+
+  String get confirmDeletionMessage => Intl.message(
+        'Are you sure you want to delete this course?',
+        name: 'confirmDeletionMessage',
+        desc: 'Confirm deletion message',
+      );
+
+  String get search => Intl.message(
+        'Search...',
+        name: 'search',
+        desc: 'Search hint text',
+      );
+
+  String get due => Intl.message(
+        'Due',
+        name: 'due',
+        desc: 'Due date label',
+      );
+
+  String get noCoursesAdded => Intl.message(
+        'No Courses Added',
+        name: 'noCoursesAdded',
+        desc: 'No courses added message',
+      );
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -93,7 +159,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'), // English
-      // Add other supported locales here
+      Locale.fromSubtags(languageCode: 'it'), // Italian
     ];
   }
 

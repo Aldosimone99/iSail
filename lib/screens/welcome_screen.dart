@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui'; // Import for blur effect
 import '../main.dart'; // Import MainScreen
 import '../generated/l10n.dart'; // Import generated localization file
+import 'package:flutter_localizations/flutter_localizations.dart'; // Import for localization
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -59,81 +60,95 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
           Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                child: Container(
-                  width: 300, // Set a fixed width to make the box narrower
-                  padding: const EdgeInsets.all(16.0),
-                  color: Colors.black.withAlpha(128), // 0.5 * 255 = 128
-                  child: _userName == null
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              S.of(context).welcomeTitle, // Use localized string
-                              style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              S.of(context).welcomeSubtitle, // Use localized string
-                              style: TextStyle(fontSize: 18, color: Colors.white), // Subtitle
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 20),
-                            TextField(
-                              controller: _nameController,
-                              decoration: InputDecoration(labelText: S.of(context).name), // Use localized string
-                            ),
-                            SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: _submitName,
-                              child: Text(
-                                S.of(context).continueButton, // Use localized string
-                                style: TextStyle(color: Colors.black), // Changed text color to black
-                              ),
-                            ),
-                          ],
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              '${S.of(context).welcomeBack} $_userName', // Use localized string
-                              style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 20),
-                            GestureDetector(
-                              onTap: _navigateToHome,
-                              child: Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.blue.withAlpha((0.3 * 255).toInt()), // Circular background color
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    size: 40,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
+            child: _userName == null
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start, // Align to the top
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(height: 30), // Reduce the space at the top
+                      Text(
+                        S.of(context).welcomeTitle, // Use localized string
+                        style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        S.of(context).welcomeSubtitle, // Use localized string
+                        style: TextStyle(fontSize: 18, color: Colors.white), // Subtitle
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20),
+                      TextField(
+                        controller: _nameController,
+                        decoration: InputDecoration(labelText: S.of(context).name), // Use localized string
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _submitName,
+                        child: Text(
+                          S.of(context).continueButton, // Use localized string
+                          style: TextStyle(color: Colors.black), // Changed text color to black
                         ),
-                ),
-              ),
-            ),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start, // Align to the top
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(height: 1), // Reduce the space at the top
+                      Text(
+                        '$_userName', // Display the user name
+                        style: TextStyle(fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold), // Title
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        Localizations.localeOf(context).languageCode == 'it' ? 'Ciao 👋' : 'Hello 👋', // Greeting message
+                        style: TextStyle(fontSize: 22, color: Colors.white), // Subtitle
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: _navigateToHome,
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color.fromARGB(255, 20, 145, 248).withAlpha((0.5 * 255).toInt()), // Darker circular background color
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.arrow_forward,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      // ...existing code...
+      localizationsDelegates: [
+        S.delegate, // Add this line
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales, // Add this line
+      // ...existing code...
     );
   }
 }

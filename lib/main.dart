@@ -14,8 +14,6 @@ import 'widgets/countdown_widget.dart'; // Import CountdownWidget
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_localizations/flutter_localizations.dart'; // Import localization package
 import 'generated/l10n.dart'; // Import generated localization file
-// Ensure this import path is correct
-// Import dart:io to check the platform
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -122,6 +120,16 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales, // Add supported locales
+      localeResolutionCallback: (locale, supportedLocales) {
+        if (locale != null) {
+          for (var supportedLocale in supportedLocales) {
+            if (supportedLocale.languageCode == locale.languageCode) {
+              return supportedLocale;
+            }
+          }
+        }
+        return supportedLocales.first;
+      },
       home: WelcomeScreen(), // Always show WelcomeScreen on app start
       routes: {
         '/welcome': (context) => WelcomeScreen(),
