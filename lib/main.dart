@@ -12,6 +12,10 @@ import 'screens/countdown_screen.dart'; // Import CountdownScreen
 import 'widgets/custom_bottom_app_bar.dart'; // Import CustomBottomAppBar
 import 'widgets/countdown_widget.dart'; // Import CountdownWidget
 import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:flutter_localizations/flutter_localizations.dart'; // Import localization package
+import 'generated/l10n.dart'; // Import generated localization file
+// Ensure this import path is correct
+// Import dart:io to check the platform
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -111,6 +115,13 @@ class MyApp extends StatelessWidget {
         ),
         dividerColor: Color(0xFF38383A), // Separator
       ),
+      localizationsDelegates: [
+        S.delegate, // Add localization delegate
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: S.delegate.supportedLocales, // Add supported locales
       home: WelcomeScreen(), // Always show WelcomeScreen on app start
       routes: {
         '/welcome': (context) => WelcomeScreen(),
@@ -122,6 +133,12 @@ class MyApp extends StatelessWidget {
       },
     );
   }
+}
+
+class AppLocalizations {
+  static var delegate;
+
+  static of(BuildContext context) {}
 }
 
 class MainScreen extends StatefulWidget {

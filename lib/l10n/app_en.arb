@@ -1,0 +1,13 @@
+{
+  "@@locale": "en",
+  "title": "SailSafe",
+  "welcome": "Welcome",
+  "settings": "Settings",
+  "documents": "Documents",
+  "add_course": "Add Course",
+  "logbook": "Logbook",
+  "countdown": "Countdown",
+  "notification_title": "Notification Title",
+  "notification_content": "Notification Content",
+  "ok": "OK"
+}

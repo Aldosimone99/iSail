@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:ui'; // Import for blur effect
 import '../main.dart'; // Import MainScreen
+import '../generated/l10n.dart'; // Import generated localization file
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -72,26 +73,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text(
-                              'Benvenuto su SailSafe',
+                              S.of(context).welcomeTitle, // Use localized string
                               style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
                               textAlign: TextAlign.center,
                             ),
                             SizedBox(height: 10),
                             Text(
-                              'Inserisci il tuo nome per continuare',
+                              S.of(context).welcomeSubtitle, // Use localized string
                               style: TextStyle(fontSize: 18, color: Colors.white), // Subtitle
                               textAlign: TextAlign.center,
                             ),
                             SizedBox(height: 20),
                             TextField(
                               controller: _nameController,
-                              decoration: InputDecoration(labelText: 'Nome'),
+                              decoration: InputDecoration(labelText: S.of(context).name), // Use localized string
                             ),
                             SizedBox(height: 20),
                             ElevatedButton(
                               onPressed: _submitName,
                               child: Text(
-                                'Continua',
+                                S.of(context).continueButton, // Use localized string
                                 style: TextStyle(color: Colors.black), // Changed text color to black
                               ),
                             ),
@@ -102,7 +103,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text(
-                              'Bentornato su SailSafe $_userName',
+                              '${S.of(context).welcomeBack} $_userName', // Use localized string
                               style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
                               textAlign: TextAlign.center,
                             ),
