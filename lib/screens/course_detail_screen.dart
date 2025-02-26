@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io'; // Import for File class
 import 'package:flutter/cupertino.dart'; // Import for CupertinoActionSheet
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import '../models/course.dart';
 import 'file_viewer_screen.dart'; // Import for FileViewerScreen
 
@@ -18,25 +19,49 @@ class CourseDetailScreen extends StatefulWidget {
 }
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
-  String? _pdfPath;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPaths();
+  }
+
+  Future<void> _loadPaths() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      widget.course.imagePath = prefs.getString('course_${widget.course.id}_imagePath');
+      widget.course.pdfPath = prefs.getString('course_${widget.course.id}_pdfPath');
+    });
+  }
+
+  Future<void> _saveImagePath(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('course_${widget.course.id}_imagePath', path);
+    setState(() {
+      widget.course.imagePath = path;
+    });
+  }
+
+  Future<void> _savePDFPath(String path) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('course_${widget.course.id}_pdfPath', path);
+    setState(() {
+      widget.course.pdfPath = path;
+    });
+  }
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        widget.course.imagePath = pickedFile.path; // Save image path to course
-      });
+      await _saveImagePath(pickedFile.path); // Save image path to SharedPreferences
     }
   }
 
   Future<void> _pickPDF() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
     if (result != null) {
-      setState(() {
-        _pdfPath = result.files.single.path;
-        widget.course.pdfPath = _pdfPath; // Save PDF path to course
-      });
+      await _savePDFPath(result.files.single.path!); // Save PDF path to SharedPreferences
     }
   }
 
@@ -97,13 +122,15 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
         builder: (context) => FileViewerScreen(
           filePath: filePath,
           fileType: fileType,
-          onDelete: () {
+          onDelete: () async {
+            final prefs = await SharedPreferences.getInstance();
             setState(() {
               if (fileType == 'image') {
                 widget.course.imagePath = null; // Remove image path from course
+                prefs.remove('course_${widget.course.id}_imagePath'); // Remove image path from SharedPreferences
               } else if (fileType == 'pdf') {
-                _pdfPath = null;
                 widget.course.pdfPath = null; // Remove PDF path from course
+                prefs.remove('course_${widget.course.id}_pdfPath'); // Remove PDF path from SharedPreferences
               }
             });
             Navigator.of(context).pop(); // Close the FileViewerScreen

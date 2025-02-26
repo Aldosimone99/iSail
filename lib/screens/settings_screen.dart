@@ -106,8 +106,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _buildSettingsTile(_getLocalizedText(context, 'language'), CupertinoIcons.globe, const Color.fromARGB(255, 255, 255, 255), onTap: () {
               // Handle language selection
             }),
-            _buildSettingsTile(_getLocalizedText(context, 'storage_data'), CupertinoIcons.folder, const Color.fromARGB(255, 255, 255, 255)),
-            _buildSettingsTile(_getLocalizedText(context, 'backup'), CupertinoIcons.cloud_upload, const Color.fromARGB(255, 255, 255, 255)),
           ]),
         ],
       ),
