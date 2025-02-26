@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/course.dart';
-import 'dart:ui'; // Import per effetto blur
+import 'dart:ui'; // Import for blur effect
 import 'dart:math'; // Import for generating random ID
 
 class AddCourseScreen extends StatefulWidget {
@@ -16,23 +16,23 @@ class AddCourseScreen extends StatefulWidget {
 class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourseScreenState to AddCourseScreenState
   final List<Course> _predefinedCourses = [
     Course(id: Random().nextInt(1000000), name: 'PSSR (Personal Safety and Social Responsibilities)', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'Sopravvivenza e Salvataggio', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'Antincendio di Base', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'Primo Soccorso Elementare', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Survival and Rescue', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Basic Firefighting', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Elementary First Aid', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'Security Awareness', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'Antincendio Avanzato', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'MAMS (Marittimo Abilitato ai Mezzi di Salvataggio)', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'MABEV (Marittimo Abilitato ai Battelli di Emergenza Veloci)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Advanced Firefighting', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'MAMS (Able Seafarer Lifeboat)', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'MABEV (Able Seafarer Fast Rescue Boats)', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'High Voltage', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'IGF (International Gas Fuel)', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'ECDIS (Electronic Chart Display and Information System)', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'GMDSS (Global Maritime Distress and Safety System)', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'Corsi Radar', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Radar Courses', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'Security Duties', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'Ship Security Officer (SSO)', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'Crowd Management', deadline: DateTime.now()),
     Course(id: Random().nextInt(1000000), name: 'Crisis Management', deadline: DateTime.now()),
-    Course(id: Random().nextInt(1000000), name: 'Leadership e Teamwork', deadline: DateTime.now()),
+    Course(id: Random().nextInt(1000000), name: 'Leadership and Teamwork', deadline: DateTime.now()),
   ];
 
   Course? _selectedCourse;
@@ -86,7 +86,7 @@ class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourse
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
-        title: Text('Seleziona un corso'),
+        title: Text(_getLocalizedText(context, 'select_course')),
         actions: _predefinedCourses.map((course) {
           return CupertinoActionSheetAction(
             child: Text(course.name),
@@ -100,7 +100,7 @@ class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourse
           );
         }).toList(),
         cancelButton: CupertinoActionSheetAction(
-          child: Text('Annulla'),
+          child: Text(_getLocalizedText(context, 'cancel')),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -109,10 +109,25 @@ class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourse
     );
   }
 
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'add_course': isEnglish ? 'Add Course' : 'Aggiungi Corso',
+      'select_predefined_course': isEnglish ? 'Select a Predefined Course' : 'Seleziona un corso predefinito',
+      'course_name': isEnglish ? 'Course Name' : 'Nome Corso',
+      'deadline': isEnglish ? 'Deadline (YYYY-MM-DD)' : 'Scadenza (YYYY-MM-DD)',
+      'select_course': isEnglish ? 'Select a Course' : 'Seleziona un corso',
+      'cancel': isEnglish ? 'Cancel' : 'Annulla',
+      'ok': isEnglish ? 'OK' : 'OK',
+    };
+    return translations[key] ?? key;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // Sfondo nero OLED
+      backgroundColor: Colors.black, // OLED black background
       appBar: AppBar(
         automaticallyImplyLeading: false, // Remove the back arrow
         backgroundColor: Colors.transparent, // Set AppBar background color to transparent
@@ -128,7 +143,7 @@ class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourse
         title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Aggiungi Corso',
+            _getLocalizedText(context, 'add_course'),
             style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
@@ -149,12 +164,12 @@ class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourse
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   ),
-                  child: Text('Seleziona un corso predefinito'),
+                  child: Text(_getLocalizedText(context, 'select_predefined_course')),
                 ),
                 SizedBox(height: 20),
-                _buildTextField(_nameController, 'Nome Corso'),
+                _buildTextField(_nameController, _getLocalizedText(context, 'course_name')),
                 SizedBox(height: 20),
-                _buildTextField(_deadlineController, 'Scadenza (YYYY-MM-DD)',
+                _buildTextField(_deadlineController, _getLocalizedText(context, 'deadline'),
                     isDateField: true, context: context),
                 SizedBox(height: 20),
                 ElevatedButton(
@@ -164,7 +179,7 @@ class AddCourseScreenState extends State<AddCourseScreen> { // Change _AddCourse
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                   ),
-                  child: Text('Aggiungi Corso'),
+                  child: Text(_getLocalizedText(context, 'add_course')),
                 ),
               ],
             ),

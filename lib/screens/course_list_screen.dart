@@ -26,7 +26,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
   String _sortCriteria = 'name';
   bool _isDeleteMode = false;
   AnimationController? _controller;
-  final ValueNotifier<String> _userNameNotifier = ValueNotifier<String>('Utente'); // Add ValueNotifier
+  final ValueNotifier<String> _userNameNotifier = ValueNotifier<String>('User'); // Add ValueNotifier
 
   @override
   void initState() {
@@ -49,7 +49,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
 
   void _loadUserName() async {
     final prefs = await SharedPreferences.getInstance();
-    final userName = prefs.getString('userName') ?? 'Utente';
+    final userName = prefs.getString('userName') ?? 'User';
     _userNameNotifier.value = userName; // Update ValueNotifier
   }
 
@@ -57,11 +57,11 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     final hour = DateTime.now().hour;
     final userName = _userNameNotifier.value;
     if (hour >= 6 && hour < 12) {
-      _greeting = 'Buongiorno $userName';
+      _greeting = 'Good Morning $userName';
     } else if (hour >= 12 && hour < 18) {
-      _greeting = 'Buon Pomeriggio $userName';
+      _greeting = 'Good Afternoon $userName';
     } else {
-      _greeting = 'Buonasera $userName';
+      _greeting = 'Good Evening $userName';
     }
     setState(() {});
   }
@@ -118,14 +118,14 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: Text('Ordina'),
+            child: Text('Sort'),
             onPressed: () {
               Navigator.pop(context);
               _showOrderOptions(context);
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Elimina'),
+            child: Text('Delete'),
             onPressed: () {
               setState(() {
                 _isDeleteMode = true;
@@ -135,7 +135,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text('Annulla'),
+          child: Text('Cancel'),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -150,7 +150,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: Text('Nome'),
+            child: Text('Name'),
             onPressed: () {
               setState(() {
                 _sortCriteria = 'name';
@@ -160,7 +160,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Scadenza vicina'),
+            child: Text('Closest Deadline'),
             onPressed: () {
               setState(() {
                 _sortCriteria = 'deadline_asc';
@@ -170,7 +170,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Scadenza lontana'),
+            child: Text('Furthest Deadline'),
             onPressed: () {
               setState(() {
                 _sortCriteria = 'deadline_desc';
@@ -180,7 +180,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Aggiunta'),
+            child: Text('Added'),
             onPressed: () {
               setState(() {
                 _sortCriteria = 'added';
@@ -191,7 +191,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text('Annulla'),
+          child: Text('Cancel'),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -205,14 +205,14 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
-          title: Text('Conferma Eliminazione'),
-          content: Text('Sei sicuro di voler eliminare questo corso?'),
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this course?'),
           actions: [
             CupertinoDialogAction(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Annulla'),
+              child: Text('Cancel'),
             ),
             CupertinoDialogAction(
               onPressed: () {
@@ -220,7 +220,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
                 Navigator.of(context).pop();
               },
               isDestructiveAction: true,
-              child: Text('Elimina'),
+              child: Text('Delete'),
             ),
           ],
         );
@@ -235,16 +235,16 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30) {
         _scheduleNotification(
           id: course.hashCode,
-          title: 'Corso in scadenza',
-          body: 'Il corso "${course.name}" sta per scadere tra $daysRemaining giorni. Ricordati di rinnovarlo!',
+          title: 'Course Expiring',
+          body: 'The course "${course.name}" is expiring in $daysRemaining days. Remember to renew it!',
           scheduledDate: _nextInstanceOfNoon(),
         );
       } else if (daysRemaining <= 7 && daysRemaining > 0) {
         for (int i = 0; i <= daysRemaining; i++) {
           _scheduleNotification(
             id: course.hashCode + i,
-            title: 'Corso in scadenza',
-            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di rinnovarlo!',
+            title: 'Course Expiring',
+            body: 'The course "${course.name}" is expiring in ${daysRemaining - i} days. Remember to renew it!',
             scheduledDate: _nextInstanceOfNoon().add(Duration(days: i)),
           );
         }
@@ -252,8 +252,8 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
         for (int i = 0; i <= daysRemaining; i += 7) {
           _scheduleNotification(
             id: course.hashCode + i,
-            title: 'Corso in scadenza',
-            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di rinnovarlo!',
+            title: 'Course Expiring',
+            body: 'The course "${course.name}" is expiring in ${daysRemaining - i} days. Remember to renew it!',
             scheduledDate: _nextInstanceOfNoon().add(Duration(days: i)),
           );
         }
@@ -261,8 +261,8 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
         for (int i = 0; i <= daysRemaining; i += 30) {
           _scheduleNotification(
             id: course.hashCode + i,
-            title: 'Corso in scadenza',
-            body: 'Il corso "${course.name}" sta per scadere tra ${daysRemaining - i} giorni. Ricordati di rinnovarlo!',
+            title: 'Course Expiring',
+            body: 'The course "${course.name}" is expiring in ${daysRemaining - i} days. Remember to renew it!',
             scheduledDate: _nextInstanceOfNoon().add(Duration(days: i)),
           );
         }
@@ -349,7 +349,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: 'Cerca...',
+                            hintText: 'Search...',
                             filled: true,
                             fillColor: Color(0xFF2C2C2E), // Light gray color
                             border: OutlineInputBorder(
@@ -405,7 +405,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
                           children: [
                             CourseCard(
                               title: course.name,
-                              description: 'Scadenza: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
+                              description: 'Due: ${DateFormat('dd/MM/yyyy').format(course.deadline)}',
                               dueDate: course.deadline, // Ensure dueDate is passed correctly
                               course: course, // Pass the course object
                             ),
@@ -447,7 +447,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             if (_courses.isEmpty)
               Center(
                 child: Text(
-                  'Nessun Corso Aggiunto',
+                  'No Courses Added',
                   style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Set color to light gray
                 ),
               ),
