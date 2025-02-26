@@ -38,6 +38,19 @@ class DocumentsScreenState extends State<DocumentsScreen> {
     return pdfFiles;
   }
 
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'conventions': isEnglish ? 'Conventions' : 'Convenzioni',
+      'search': isEnglish ? 'Search...' : 'Cerca...',
+      'loading_error': isEnglish ? 'Error loading documents.' : 'Errore nel caricamento dei documenti.',
+      'no_documents': isEnglish ? 'No documents available.' : 'Nessun documento disponibile.',
+      'open_pdf': isEnglish ? 'Open PDF' : 'Apri PDF',
+    };
+    return translations[key] ?? key;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,7 +69,7 @@ class DocumentsScreenState extends State<DocumentsScreen> {
         title: Align(
           alignment: Alignment.centerLeft, // Align the title text to the left
           child: Text(
-            'Convenzioni',
+            _getLocalizedText(context, 'conventions'),
             style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Increase the font size, set color to white, and make bold
           ),
         ),
@@ -67,9 +80,9 @@ class DocumentsScreenState extends State<DocumentsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('Errore nel caricamento dei documenti.'));
+            return Center(child: Text(_getLocalizedText(context, 'loading_error')));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Nessun documento disponibile.'));
+            return Center(child: Text(_getLocalizedText(context, 'no_documents')));
           } else {
             var pdfFiles = snapshot.data!;
             pdfFiles = pdfFiles.where((pdfFile) {
@@ -85,7 +98,7 @@ class DocumentsScreenState extends State<DocumentsScreen> {
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: 'Cerca...',
+                            hintText: _getLocalizedText(context, 'search'),
                             filled: true,
                             fillColor: Color(0xFF2C2C2E), // Light gray color
                             border: OutlineInputBorder(
@@ -181,7 +194,7 @@ class DocumentsScreenState extends State<DocumentsScreen> {
                                     ),
                                     constraints: BoxConstraints(minWidth: 100), // Allow the pill to expand freely
                                     child: Text(
-                                      'Apri PDF',
+                                      _getLocalizedText(context, 'open_pdf'),
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: Colors.grey[800], // Set text color to dark gray
