@@ -50,13 +50,13 @@ class CourseCard extends StatelessWidget {
       final remainingDays = difference.inDays % 365;
       final months = (remainingDays / 30).floor();
       final days = remainingDays % 30;
-      return 'Scade in $years anni${months > 0 ? ', $months mesi' : ''}${days > 0 ? ', $days giorni' : ''}';
+      return 'Scade in $years ${years == 1 ? 'anno' : 'anni'}${months > 0 ? ', $months ${months == 1 ? 'mese' : 'mesi'}' : ''}${days > 0 ? ', $days ${days == 1 ? 'giorno' : 'giorni'}' : ''}';
     } else if (difference.inDays >= 30) {
       final months = (difference.inDays / 30).floor();
       final days = difference.inDays % 30;
-      return 'Scade in $months mesi${days > 0 ? ', $days giorni' : ''}';
+      return 'Scade in $months ${months == 1 ? 'mese' : 'mesi'}${days > 0 ? ', $days ${days == 1 ? 'giorno' : 'giorni'}' : ''}';
     } else {
-      return 'Scade in ${difference.inDays} giorni';
+      return 'Scade in ${difference.inDays} ${difference.inDays == 1 ? 'giorno' : 'giorni'}';
     }
   }
 
