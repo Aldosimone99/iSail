@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:ui'; // Import for blur effect
 import '../main.dart'; // Import MainScreen
 import '../generated/l10n.dart'; // Import generated localization file
 import 'package:flutter_localizations/flutter_localizations.dart'; // Import for localization

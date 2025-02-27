@@ -20,5 +20,13 @@
   "confirmDeletionMessage": "Sei sicuro di voler eliminare questo corso?",
   "search": "Cerca...",
   "due": "Scadenza",
-  "noCoursesAdded": "Nessun Corso Aggiunto"
+  "noCoursesAdded": "Nessun Corso Aggiunto",
+  "closestDeadline": "Scadenza più vicina",
+  "furthestDeadline": "Scadenza più lontana",
+  "added": "Aggiunto",
+  "welcomeTitle": "Benvenuto",
+  "welcomeSubtitle": "Inserisci il tuo nome per continuare",
+  "continueButton": "Continua",
+  "courseExpiring": "Corso in scadenza",
+  "courseExpiringInDays": "Il corso \"{courseName}\" scade tra {daysRemaining} giorni. Ricordati di rinnovarlo!"
 }

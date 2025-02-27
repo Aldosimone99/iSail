@@ -1,0 +1,6 @@
+{
+  // ...existing code...
+  "courseExpiringInMonths": "{courseName} scade tra {monthsRemaining} mesi",
+  "courseExpiringInMonthsDesc": "Messaggio di notifica per i corsi in scadenza in mesi"
+  // ...existing code...
+}

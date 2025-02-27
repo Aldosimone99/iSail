@@ -259,7 +259,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('iSail Home'),
+        title: Text('SailSafe Home'),
       ),
       body: Center(
         child: CountdownWidget(),
