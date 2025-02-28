@@ -28,5 +28,7 @@
   "welcomeSubtitle": "Enter your name to continue",
   "continueButton": "Continue",
   "courseExpiring": "Course Expiring",
-  "courseExpiringInDays": "The course \"{courseName}\" is expiring in {daysRemaining} days. Remember to renew it!"
+  "courseExpiringInDays": "The course \"{courseName}\" is expiring in {daysRemaining} days. Remember to renew it!",
+  "courseExpiringInMonths": "{courseName} is expiring in {monthsRemaining} months",
+  "courseExpiringInMonthsDesc": "Notification message for courses expiring in months"
 }

@@ -27,12 +27,14 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
   bool _isDeleteMode = false;
   AnimationController? _controller;
   final ValueNotifier<String> _userNameNotifier = ValueNotifier<String>('User'); // Add ValueNotifier
+// Add a variable to store the selected language
 
   @override
   void initState() {
     super.initState();
     _loadUserName();
     _loadCourses();
+    _loadSelectedLanguage(); // Load the selected language on init
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -312,6 +314,15 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     _userNameNotifier.value = userName;
   }
 
+
+  void _loadSelectedLanguage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final languageCode = prefs.getString('selectedLanguage') ?? 'en';
+    setState(() {
+      S.load(Locale(languageCode)); // Load the selected language
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredCourses = _courses.where((course) {
@@ -338,6 +349,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           ),
         ),
         actions: [
+          // Remove the language change button
         ],
       ),
       body: GestureDetector(

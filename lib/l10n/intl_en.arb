@@ -1,6 +1,0 @@
-{
-  // ...existing code...
-  "courseExpiringInMonths": "{courseName} is expiring in {monthsRemaining} months",
-  "courseExpiringInMonthsDesc": "Notification message for courses expiring in months"
-  // ...existing code...
-}

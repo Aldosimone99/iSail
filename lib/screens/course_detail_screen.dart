@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Import for blur effect
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io'; // Import for File class
@@ -30,7 +29,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       widget.course.imagePath = prefs.getString('course_${widget.course.id}_imagePath');
-      widget.course.pdfPath = prefs.getString('course_${widget.course.id}_pdfPath');
     });
   }
 
@@ -42,15 +40,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     });
   }
 
-  Future<void> _savePDFPath(String path) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('course_${widget.course.id}_pdfPath', path);
-    setState(() {
-      widget.course.pdfPath = path;
-    });
-  }
-
-  Future<void> _pickImage() async {
+  Future<void> _pickImageFromGallery() async {
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -58,10 +48,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     }
   }
 
-  Future<void> _pickPDF() async {
-    final result = await FilePicker.platform.pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+  Future<void> _pickImageFromFile() async {
+    final result = await FilePicker.platform.pickFiles(type: FileType.image);
     if (result != null) {
-      await _savePDFPath(result.files.single.path!); // Save PDF path to SharedPreferences
+      await _saveImagePath(result.files.single.path!); // Save image path to SharedPreferences
     }
   }
 
@@ -88,14 +78,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
                     CupertinoActionSheetAction(
                       child: Text(_getLocalizedText(context, 'select_from_gallery'), style: TextStyle(color: Colors.white)), // White text color
                       onPressed: () {
-                        _pickImage();
+                        _pickImageFromGallery();
                         Navigator.of(context).pop();
                       },
                     ),
                     CupertinoActionSheetAction(
                       child: Text(_getLocalizedText(context, 'select_from_files'), style: TextStyle(color: Colors.white)), // White text color
                       onPressed: () {
-                        _pickPDF();
+                        _pickImageFromFile();
                         Navigator.of(context).pop();
                       },
                     ),
@@ -128,9 +118,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
               if (fileType == 'image') {
                 widget.course.imagePath = null; // Remove image path from course
                 prefs.remove('course_${widget.course.id}_imagePath'); // Remove image path from SharedPreferences
-              } else if (fileType == 'pdf') {
-                widget.course.pdfPath = null; // Remove PDF path from course
-                prefs.remove('course_${widget.course.id}_pdfPath'); // Remove PDF path from SharedPreferences
               }
             });
             Navigator.of(context).pop(); // Close the FileViewerScreen
@@ -287,16 +274,6 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
                 ),
               ),
               SizedBox(height: 16),
-              if (widget.course.pdfPath != null)
-                GestureDetector(
-                  onTap: () => _openFile(context, widget.course.pdfPath!, 'pdf'),
-                  child: SizedBox(
-                    height: 400,
-                    child: PDFView(
-                      filePath: widget.course.pdfPath,
-                    ),
-                  ),
-                ),
               // Add more details as needed
             ],
           ),
