@@ -63,28 +63,28 @@ class S {
   String get search => Intl.message('Cerca', name: 'search');
   String get sort => Intl.message('Ordina', name: 'sort');
   String get delete => Intl.message('Elimina', name: 'delete');
-  String get cancel => Intl.message('Cancella', name: 'cancel');
+  String get cancel => Intl.message('Annulla', name: 'cancel');
   String get name => Intl.message('Nome', name: 'name');
   String get closestDeadline => Intl.message('Closest Deadline', name: 'closestDeadline');
   String get furthestDeadline => Intl.message('Furthest Deadline', name: 'furthestDeadline');
-  String get added => Intl.message('Added', name: 'added');
-  String get confirmDeletion => Intl.message('Confirm Deletion', name: 'confirmDeletion');
-  String get confirmDeletionMessage => Intl.message('Are you sure you want to delete this course?', name: 'confirmDeletionMessage');
-  String get noCoursesAdded => Intl.message('No courses added', name: 'noCoursesAdded');
+  String get added => Intl.message('Aggiunto', name: 'added');
+  String get confirmDeletion => Intl.message('Conferma Eliminazione', name: 'confirmDeletion');
+  String get confirmDeletionMessage => Intl.message('Sei sicuro di voler eliminare questo corso?', name: 'confirmDeletionMessage');
+  String get noCoursesAdded => Intl.message('Nessun Corso Aggiunto', name: 'noCoursesAdded');
   String get due => Intl.message('Scadenza', name: 'due');
   String get welcomeTitle => Intl.message('Welcome', name: 'welcomeTitle');
-  String get welcomeSubtitle => Intl.message('Enter your name to continue', name: 'welcomeSubtitle');
-  String get continueButton => Intl.message('Continue', name: 'continueButton');
+  String get welcomeSubtitle => Intl.message('Inserisci il tuo nome per continuare', name: 'welcomeSubtitle');
+  String get continueButton => Intl.message('Continua', name: 'continueButton');
   String get courseExpiring => Intl.message('Course Expiring', name: 'courseExpiring'); // Add this line
   String courseExpiringInDays(String courseName, int daysRemaining) => Intl.message(
-    'The course "$courseName" is expiring in $daysRemaining days. Remember to renew it!',
+    'Il corso "$courseName" scadrà in $daysRemaining giorni. Ricordati di rinnovarlo!',
     name: 'courseExpiringInDays',
     args: [courseName, daysRemaining],
   ); // Add this line
 
   String courseExpiringInMonths(String courseName, int monthsRemaining) {
     return Intl.message(
-      '$courseName is expiring in $monthsRemaining months',
+      '$courseName scadrà in $monthsRemaining mesi',
       name: 'courseExpiringInMonths',
       args: [courseName, monthsRemaining],
       desc: 'Notification message for courses expiring in months',
