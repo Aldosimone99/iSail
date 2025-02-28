@@ -234,40 +234,13 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     final now = DateTime.now();
     for (var course in _courses) {
       final daysRemaining = course.deadline.difference(now).inDays;
-      if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30) {
+      if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30 || daysRemaining <= 30) {
         _scheduleNotification(
           id: course.hashCode,
           title: S.of(context).courseExpiring, // Use localized string
           body: _getLocalizedBody(course.name, daysRemaining), // Use localized string
           scheduledDate: _nextInstanceOfNineAM(),
         );
-      } else if (daysRemaining <= 30 && daysRemaining > 0) {
-        for (int i = 0; i <= daysRemaining; i++) {
-          _scheduleNotification(
-            id: course.hashCode + i,
-            title: S.of(context).courseExpiring, // Use localized string
-            body: _getLocalizedBody(course.name, daysRemaining - i), // Use localized string
-            scheduledDate: _nextInstanceOfNineAM().add(Duration(days: i)),
-          );
-        }
-      } else if (daysRemaining <= 90 && daysRemaining > 30) {
-        for (int i = 0; i <= daysRemaining; i += 7) {
-          _scheduleNotification(
-            id: course.hashCode + i,
-            title: S.of(context).courseExpiring, // Use localized string
-            body: _getLocalizedBody(course.name, daysRemaining - i), // Use localized string
-            scheduledDate: _nextInstanceOfNineAM().add(Duration(days: i)),
-          );
-        }
-      } else if (daysRemaining <= 365 && daysRemaining > 90) {
-        for (int i = 0; i <= daysRemaining; i += 30) {
-          _scheduleNotification(
-            id: course.hashCode + i,
-            title: S.of(context).courseExpiring, // Use localized string
-            body: _getLocalizedBody(course.name, daysRemaining - i), // Use localized string
-            scheduledDate: _nextInstanceOfNineAM().add(Duration(days: i)),
-          );
-        }
       }
     }
   }
