@@ -20,15 +20,22 @@ class _NewsScreenState extends State<NewsScreen> {
     super.didChangeDependencies();
     final locale = Localizations.localeOf(context).languageCode;
     _language = locale == 'it' ? 'it' : 'en';
+    print('Locale: $locale, Language: $_language'); // Debug print
     _fetchNews();
   }
 
   Future<void> _fetchNews() async {
     try {
-      final response = await http.get(Uri.parse('https://newsapi.org/v2/everything?q=cruise+ships&language=$_language&apiKey=a176c42ccc144d9eaef246b83cd6c68b')); // Replace with your API key
+      final url = _language == 'it'
+          ? 'https://newsapi.org/v2/everything?q=navi+crociera&language=it&apiKey=a176c42ccc144d9eaef246b83cd6c68b'
+          : 'https://newsapi.org/v2/everything?q=cruise+ships&language=en&apiKey=a176c42ccc144d9eaef246b83cd6c68b';
+      print('Fetching news from: $url'); // Debug print
+      final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
+        final List<dynamic> articles = json.decode(response.body)['articles'];
+        articles.sort((a, b) => DateTime.parse(b['publishedAt']).compareTo(DateTime.parse(a['publishedAt']))); // Sort by date
         setState(() {
-          _news = json.decode(response.body)['articles'];
+          _news = articles;
         });
       } else {
         // Gestisci l'errore
@@ -50,6 +57,9 @@ class _NewsScreenState extends State<NewsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final title = locale == 'it' ? 'Notizie' : 'News';
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, // Remove the back arrow
@@ -66,7 +76,7 @@ class _NewsScreenState extends State<NewsScreen> {
         title: Align(
           alignment: Alignment.centerLeft, // Align the title text to the left
           child: Text(
-            'News',
+            title,
             style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
           ),
         ),
