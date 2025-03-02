@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:ui'; // Import for blur effect
+import 'package:url_launcher/url_launcher.dart'; // Import for URL launcher
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -24,7 +25,7 @@ class _NewsScreenState extends State<NewsScreen> {
 
   Future<void> _fetchNews() async {
     try {
-      final response = await http.get(Uri.parse('https://newsapi.org/v2/everything?q=maritime&language=$_language&apiKey=a176c42ccc144d9eaef246b83cd6c68b')); // Replace with your API key
+      final response = await http.get(Uri.parse('https://newsapi.org/v2/everything?q=cruise+ships&language=$_language&apiKey=a176c42ccc144d9eaef246b83cd6c68b')); // Replace with your API key
       if (response.statusCode == 200) {
         setState(() {
           _news = json.decode(response.body)['articles'];
@@ -36,6 +37,14 @@ class _NewsScreenState extends State<NewsScreen> {
       }
     } catch (e) {
       print('Error fetching news: $e');
+    }
+  }
+
+  Future<void> _openNews(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 
@@ -64,24 +73,63 @@ class _NewsScreenState extends State<NewsScreen> {
       ),
       body: _news.isEmpty
           ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          : ListView.separated(
               itemCount: _news.length,
+              separatorBuilder: (context, index) => Divider(color: Colors.grey[700]), // Add divider between news items
               itemBuilder: (context, index) {
                 final newsItem = _news[index];
                 final title = newsItem['title'] ?? 'No title';
-                final description = newsItem['description'] ?? 'No description';
+                final imageUrl = newsItem['urlToImage'] ?? '';
+                final url = newsItem['url'] ?? '';
+
                 return ListTile(
-                  title: Text(
-                    title,
-                    style: TextStyle(color: Colors.white),
+                  contentPadding: EdgeInsets.all(10),
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      imageUrl.isNotEmpty
+                          ? Image.network(
+                              imageUrl,
+                              width: double.infinity,
+                              height: 200,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: double.infinity,
+                                  height: 200,
+                                  color: Colors.grey,
+                                  child: Center(
+                                    child: Text(
+                                      'No image',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
+                              width: double.infinity,
+                              height: 200,
+                              color: Colors.grey,
+                              child: Center(
+                                child: Text(
+                                  'No image',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                      SizedBox(height: 5),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18, // Increase font size
+                        ),
+                      ),
+                    ],
                   ),
-                  subtitle: Text(
-                    description,
-                    style: TextStyle(color: Colors.white70),
-                  ),
-                  onTap: () {
-                    // Azione al tocco della notizia
-                  },
+                  onTap: () => _openNews(url), // Open the news URL when tapped
                 );
               },
             ),
