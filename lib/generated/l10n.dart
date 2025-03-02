@@ -65,9 +65,9 @@ class S {
   String get delete => Intl.message('Elimina', name: 'delete');
   String get cancel => Intl.message('Annulla', name: 'cancel');
   String get name => Intl.message('Nome', name: 'name');
-  String get closestDeadline => Intl.message('Closest Deadline', name: 'closestDeadline');
-  String get furthestDeadline => Intl.message('Furthest Deadline', name: 'furthestDeadline');
-  String get added => Intl.message('Aggiunto', name: 'added');
+  String get closestDeadline => Intl.message('Scadenza Vicina', name: 'closestDeadline');
+  String get furthestDeadline => Intl.message('Scadenza Lontana', name: 'furthestDeadline');
+  String get added => Intl.message('Aggiunta', name: 'added');
   String get confirmDeletion => Intl.message('Conferma Eliminazione', name: 'confirmDeletion');
   String get confirmDeletionMessage => Intl.message('Sei sicuro di voler eliminare questo corso?', name: 'confirmDeletionMessage');
   String get noCoursesAdded => Intl.message('Nessun Corso Aggiunto', name: 'noCoursesAdded');

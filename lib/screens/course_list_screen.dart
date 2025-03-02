@@ -234,6 +234,9 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     final now = DateTime.now();
     for (var course in _courses) {
       final daysRemaining = course.deadline.difference(now).inDays;
+      if (daysRemaining <= 0) {
+        continue; // Skip courses that have already expired
+      }
       if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30 || daysRemaining <= 30) {
         _scheduleNotification(
           id: course.hashCode,
