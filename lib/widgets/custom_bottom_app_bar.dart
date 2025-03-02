@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 class CustomBottomAppBar extends StatelessWidget {
   final VoidCallback onAnchorPressed;
   final VoidCallback onDocumentsPressed;
-  final VoidCallback onSettingsPressed;
   final VoidCallback onLogbookPressed;
-  final VoidCallback onCountdownPressed; // Add Countdown callback
+  final VoidCallback onCountdownPressed;
+  final VoidCallback onNewsPressed; // Add News callback
 
   const CustomBottomAppBar({
     super.key,
     required this.onAnchorPressed,
     required this.onDocumentsPressed,
-    required this.onSettingsPressed,
     required this.onLogbookPressed,
-    required this.onCountdownPressed, // Add Countdown callback
+    required this.onCountdownPressed,
+    required this.onNewsPressed, // Add News callback
   });
 
   String _getLocalizedText(BuildContext context, String key) {
@@ -23,7 +23,7 @@ class CustomBottomAppBar extends StatelessWidget {
       'conventions': isEnglish ? 'Conventions' : 'Convenzioni',
       'countdown': isEnglish ? 'Countdown' : 'Countdown',
       'logbook': isEnglish ? 'Logbook' : 'Logbook',
-      'settings': isEnglish ? 'Settings' : 'Impostazioni',
+      'news': isEnglish ? 'News' : 'Notizie', // Add News translation
     };
     return translations[key] ?? key;
   }
@@ -41,10 +41,10 @@ class CustomBottomAppBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             _buildNavItem(Icons.edit_document, _getLocalizedText(context, 'conventions'), onDocumentsPressed),
-            _buildNavItem(Icons.timer, _getLocalizedText(context, 'countdown'), onCountdownPressed), // Update to Countdown
+            _buildNavItem(Icons.newspaper, _getLocalizedText(context, 'news'), onNewsPressed), // Add News icon and callback
             SizedBox(width: 50), // Spazio per il FloatingActionButton
+            _buildNavItem(Icons.timer, _getLocalizedText(context, 'countdown'), onCountdownPressed),
             _buildNavItem(Icons.book, _getLocalizedText(context, 'logbook'), onLogbookPressed),
-            _buildNavItem(Icons.settings, _getLocalizedText(context, 'settings'), onSettingsPressed),
           ],
         ),
       ),

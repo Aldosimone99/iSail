@@ -4,11 +4,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logging/logging.dart'; // Import logging package
 import 'screens/course_list_screen.dart';
 import 'screens/welcome_screen.dart';
-import 'screens/settings_screen.dart'; // Import SettingsScreen
 import 'screens/documents_screen.dart'; // Import DocumentsScreen
 import 'screens/add_course_screen.dart'; // Import AddCourseScreen
 import 'screens/logbook_screen.dart'; // Import LogbookScreen
 import 'screens/countdown_screen.dart'; // Import CountdownScreen
+import 'screens/news_screen.dart'; // Import NewsScreen
 import 'widgets/custom_bottom_app_bar.dart'; // Import CustomBottomAppBar
 import 'widgets/countdown_widget.dart'; // Import CountdownWidget
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -133,11 +133,11 @@ class MyApp extends StatelessWidget {
       home: WelcomeScreen(), // Always show WelcomeScreen on app start
       routes: {
         '/welcome': (context) => WelcomeScreen(),
-        '/settings': (context) => SettingsScreen(),
         '/documents': (context) => DocumentsScreen(),
         '/add_course': (context) => AddCourseScreen(onAddCourse: (course) {  },), // Add route for AddCourseScreen
         '/logbook': (context) => LogbookScreen(), // Add route for LogbookScreen
         '/countdown': (context) => CountdownScreen(), // Add route for CountdownScreen
+        '/news': (context) => NewsScreen(), // Add route for NewsScreen
       },
     );
   }
@@ -172,9 +172,9 @@ class MainScreenState extends State<MainScreen> {
   int _getPageIndex(String route) {
     switch (route) {
       case '/welcome': return 0;
-      case '/settings': return 1;
-      case '/documents': return 2;
-      case '/countdown': return 3; // Add CountdownScreen index
+      case '/documents': return 1;
+      case '/countdown': return 2;
+      case '/news': return 3; // Add NewsScreen index
       default: return 4;
     }
   }
@@ -199,9 +199,9 @@ class MainScreenState extends State<MainScreen> {
         physics: NeverScrollableScrollPhysics(),
         children: [
           WelcomeScreen(),
-          SettingsScreen(),
           DocumentsScreen(),
-          CountdownScreen(), // Add CountdownScreen to PageView
+          CountdownScreen(),
+          NewsScreen(), // Add NewsScreen to PageView
           CourseListScreen(),
           LogbookScreen(), // Add LogbookScreen to PageView
         ],
@@ -241,10 +241,10 @@ class MainScreenState extends State<MainScreen> {
               ? SizedBox.shrink()
               : CustomBottomAppBar(
                   onAnchorPressed: () => _onItemTapped(4),
-                  onDocumentsPressed: () => _onItemTapped(2),
-                  onSettingsPressed: () => _onItemTapped(1),
+                  onDocumentsPressed: () => _onItemTapped(1),
+                  onNewsPressed: () => _onItemTapped(3), // Add News callback
                   onLogbookPressed: () => _onItemTapped(5), // Updated
-                  onCountdownPressed: () => _onItemTapped(3), // Add Countdown callback
+                  onCountdownPressed: () => _onItemTapped(2), // Updated
                 );
         },
       ),
