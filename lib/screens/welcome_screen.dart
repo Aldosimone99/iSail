@@ -44,6 +44,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 
+  String _getLocalizedText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'welcomeTitle': isEnglish ? 'Welcome' : 'Benvenuto',
+      'welcomeSubtitle': isEnglish ? 'Enter your name to continue' : 'Inserisci il tuo nome per continuare',
+      'name': isEnglish ? 'Name' : 'Nome',
+      'continueButton': isEnglish ? 'Continue' : 'Continua',
+      'hello': isEnglish ? 'Hello 👋' : 'Ciao 👋',
+    };
+    return translations[key] ?? key;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,26 +79,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     children: <Widget>[
                       SizedBox(height: 30), // Reduce the space at the top
                       Text(
-                        S.of(context).welcomeTitle, // Use localized string
+                        _getLocalizedText(context, 'welcomeTitle'), // Use localized string
                         style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 10),
                       Text(
-                        S.of(context).welcomeSubtitle, // Use localized string
+                        _getLocalizedText(context, 'welcomeSubtitle'), // Use localized string
                         style: TextStyle(fontSize: 18, color: Colors.white), // Subtitle
                         textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20),
                       TextField(
                         controller: _nameController,
-                        decoration: InputDecoration(labelText: S.of(context).name), // Use localized string
+                        decoration: InputDecoration(labelText: _getLocalizedText(context, 'name')), // Use localized string
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: _submitName,
                         child: Text(
-                          S.of(context).continueButton, // Use localized string
+                          _getLocalizedText(context, 'continueButton'), // Use localized string
                           style: TextStyle(color: Colors.black), // Changed text color to black
                         ),
                       ),
@@ -103,7 +116,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        Localizations.localeOf(context).languageCode == 'it' ? 'Ciao 👋' : 'Hello 👋', // Greeting message
+                        _getLocalizedText(context, 'hello'), // Use localized string
                         style: TextStyle(fontSize: 22, color: Colors.white), // Subtitle
                         textAlign: TextAlign.center,
                       ),

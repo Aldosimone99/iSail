@@ -55,15 +55,41 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     _userNameNotifier.value = userName; // Update ValueNotifier
   }
 
+  String _getLocalizedText(BuildContext context, String key, {String? courseName, int? daysRemaining, int? monthsRemaining}) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'goodMorning': isEnglish ? 'Good Morning' : 'Buongiorno',
+      'goodAfternoon': isEnglish ? 'Good Afternoon' : 'Buon Pomeriggio',
+      'goodEvening': isEnglish ? 'Good Evening' : 'Buonasera',
+      'search': isEnglish ? 'Search' : 'Cerca',
+      'sort': isEnglish ? 'Sort' : 'Ordina',
+      'delete': isEnglish ? 'Delete' : 'Elimina',
+      'cancel': isEnglish ? 'Cancel' : 'Annulla',
+      'name': isEnglish ? 'Name' : 'Nome',
+      'closestDeadline': isEnglish ? 'Closest Deadline' : 'Scadenza Vicina',
+      'furthestDeadline': isEnglish ? 'Furthest Deadline' : 'Scadenza Lontana',
+      'added': isEnglish ? 'Added' : 'Aggiunta',
+      'confirmDeletion': isEnglish ? 'Confirm Deletion' : 'Conferma Eliminazione',
+      'confirmDeletionMessage': isEnglish ? 'Are you sure you want to delete this course?' : 'Sei sicuro di voler eliminare questo corso?',
+      'noCoursesAdded': isEnglish ? 'No Courses Added' : 'Nessun Corso Aggiunto',
+      'due': isEnglish ? 'Due' : 'Scadenza',
+      'courseExpiring': isEnglish ? 'Course Expiring' : 'Corso in Scadenza',
+      'courseExpiringInDays': isEnglish ? 'The course "$courseName" will expire in $daysRemaining days. Remember to renew it!' : 'Il corso "$courseName" scadrà in $daysRemaining giorni. Ricordati di rinnovarlo!',
+      'courseExpiringInMonths': isEnglish ? '$courseName will expire in $monthsRemaining months' : '$courseName scadrà in $monthsRemaining mesi',
+    };
+    return translations[key] ?? key;
+  }
+
   void _updateGreeting() {
     final hour = DateTime.now().hour;
     final userName = _userNameNotifier.value;
     if (hour >= 6 && hour < 12) {
-      _greeting = '${S.of(context).goodMorning} $userName';
+      _greeting = '${_getLocalizedText(context, 'goodMorning')} $userName';
     } else if (hour >= 12 && hour < 18) {
-      _greeting = '${S.of(context).goodAfternoon} $userName';
+      _greeting = '${_getLocalizedText(context, 'goodAfternoon')} $userName';
     } else {
-      _greeting = '${S.of(context).goodEvening} $userName';
+      _greeting = '${_getLocalizedText(context, 'goodEvening')} $userName';
     }
     setState(() {});
   }
@@ -240,7 +266,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30 || daysRemaining <= 30) {
         _scheduleNotification(
           id: course.hashCode,
-          title: S.of(context).courseExpiring, // Use localized string
+          title: _getLocalizedText(context, 'courseExpiring'), // Use localized string
           body: _getLocalizedBody(course.name, daysRemaining), // Use localized string
           scheduledDate: _nextInstanceOfNineAM(),
         );
@@ -280,9 +306,9 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
   String _getLocalizedBody(String courseName, int daysRemaining) {
     if (daysRemaining > 30) {
       final monthsRemaining = (daysRemaining / 30).floor();
-      return S.of(context).courseExpiringInMonths(courseName, monthsRemaining); // Use localized string for months
+      return _getLocalizedText(context, 'courseExpiringInMonths', courseName: courseName, monthsRemaining: monthsRemaining); // Use localized string for months
     } else {
-      return S.of(context).courseExpiringInDays(courseName, daysRemaining); // Use localized string for days
+      return _getLocalizedText(context, 'courseExpiringInDays', courseName: courseName, daysRemaining: daysRemaining); // Use localized string for days
     }
   }
 
@@ -347,7 +373,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
                       Expanded(
                         child: TextField(
                           decoration: InputDecoration(
-                            hintText: S.of(context).search, // Use localized string
+                            hintText: _getLocalizedText(context, 'search'), // Use localized string
                             filled: true,
                             fillColor: Color(0xFF2C2C2E), // Light gray color
                             border: OutlineInputBorder(
@@ -403,7 +429,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
                           children: [
                             CourseCard(
                               title: course.name,
-                              description: '${S.of(context).due}: ${DateFormat('dd/MM/yyyy').format(course.deadline)}', // Use localized string
+                              description: '${_getLocalizedText(context, 'due')}: ${DateFormat('dd/MM/yyyy').format(course.deadline)}', // Use localized string
                               dueDate: course.deadline, // Ensure dueDate is passed correctly
                               course: course, // Pass the course object
                             ),
@@ -445,7 +471,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             if (_courses.isEmpty)
               Center(
                 child: Text(
-                  S.of(context).noCoursesAdded, // Use localized string
+                  _getLocalizedText(context, 'noCoursesAdded'), // Use localized string
                   style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Set color to light gray
                 ),
               ),

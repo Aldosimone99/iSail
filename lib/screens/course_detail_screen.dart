@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Import for blur effect
-import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
-import 'dart:io'; // Import for File class
 import 'package:flutter/cupertino.dart'; // Import for CupertinoActionSheet
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import '../models/course.dart';
@@ -29,29 +27,27 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       widget.course.imagePath = prefs.getString('course_${widget.course.id}_imagePath');
+      widget.course.pdfPath = prefs.getString('course_${widget.course.id}_pdfPath');
     });
   }
 
-  Future<void> _saveImagePath(String path) async {
+  Future<void> _saveFilePath(String path, FileType type) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('course_${widget.course.id}_imagePath', path);
+    final key = type == FileType.image ? 'imagePath' : 'pdfPath';
+    await prefs.setString('course_${widget.course.id}_$key', path);
     setState(() {
-      widget.course.imagePath = path;
+      if (type == FileType.image) {
+        widget.course.imagePath = path;
+      } else {
+        widget.course.pdfPath = path;
+      }
     });
   }
 
-  Future<void> _pickImageFromGallery() async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      await _saveImagePath(pickedFile.path); // Save image path to SharedPreferences
-    }
-  }
-
-  Future<void> _pickImageFromFile() async {
-    final result = await FilePicker.platform.pickFiles(type: FileType.image);
+  Future<void> _pickFile(FileType type) async {
+    final result = await FilePicker.platform.pickFiles(type: type);
     if (result != null) {
-      await _saveImagePath(result.files.single.path!); // Save image path to SharedPreferences
+      await _saveFilePath(result.files.single.path!, type);
     }
   }
 
@@ -78,14 +74,14 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
                     CupertinoActionSheetAction(
                       child: Text(_getLocalizedText(context, 'select_from_gallery'), style: TextStyle(color: Colors.white)), // White text color
                       onPressed: () {
-                        _pickImageFromGallery();
+                        _pickFile(FileType.image);
                         Navigator.of(context).pop();
                       },
                     ),
                     CupertinoActionSheetAction(
                       child: Text(_getLocalizedText(context, 'select_from_files'), style: TextStyle(color: Colors.white)), // White text color
                       onPressed: () {
-                        _pickImageFromFile();
+                        _pickFile(FileType.any);
                         Navigator.of(context).pop();
                       },
                     ),
@@ -118,6 +114,9 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
               if (fileType == 'image') {
                 widget.course.imagePath = null; // Remove image path from course
                 prefs.remove('course_${widget.course.id}_imagePath'); // Remove image path from SharedPreferences
+              } else if (fileType == 'pdf') {
+                widget.course.pdfPath = null;
+                prefs.remove('course_${widget.course.id}_pdfPath');
               }
             });
             Navigator.of(context).pop(); // Close the FileViewerScreen
@@ -180,6 +179,16 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     return translations[key] ?? key;
   }
 
+  String _getLocalizedButtonText(BuildContext context, String key) {
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
+    final translations = {
+      'view_image': isEnglish ? 'View Image' : 'Visualizza Immagine',
+      'view_pdf': isEnglish ? 'View PDF' : 'Visualizza PDF',
+    };
+    return translations[key] ?? key;
+  }
+
   List<String> _getDaysRemaining(BuildContext context) {
     final now = DateTime.now();
     final difference = widget.course.deadline.difference(now);
@@ -236,13 +245,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start, // Align children to the left
             children: [
-              SizedBox(height: 16),
-              if (widget.course.imagePath != null)
-                GestureDetector(
-                  onTap: () => _openFile(context, widget.course.imagePath!, 'image'),
-                  child: Image.file(File(widget.course.imagePath!)),
-                ),
-              SizedBox(height: 16), // Reduce space above the text
+              SizedBox(height: 32), // Increase the top padding
               Center(
                 child: Column(
                   children: [
@@ -250,7 +253,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
                       _getLocalizedText(context, 'course_will_expire_in'),
                       style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 2), // Add space between the text and the circle
+                    SizedBox(height: 16), // Increase space between the text and the circle
                     Container(
                       width: 150, // Increase the width of the circle
                       height: 150, // Increase the height of the circle
@@ -270,10 +273,48 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 32), // Increase space between the circle and the buttons
+                    if (widget.course.imagePath != null && widget.course.pdfPath != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.black, backgroundColor: Colors.white, // Text color
+                            ),
+                            onPressed: () => _openFile(context, widget.course.imagePath!, 'image'),
+                            child: Text(_getLocalizedButtonText(context, 'view_image')),
+                          ),
+                          SizedBox(width: 16), // Space between buttons
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.black, backgroundColor: Colors.white, // Text color
+                            ),
+                            onPressed: () => _openFile(context, widget.course.pdfPath!, 'pdf'),
+                            child: Text(_getLocalizedButtonText(context, 'view_pdf')),
+                          ),
+                        ],
+                      )
+                    else if (widget.course.imagePath != null)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black, backgroundColor: Colors.white, // Text color
+                        ),
+                        onPressed: () => _openFile(context, widget.course.imagePath!, 'image'),
+                        child: Text(_getLocalizedButtonText(context, 'view_image')),
+                      )
+                    else if (widget.course.pdfPath != null)
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black, backgroundColor: Colors.white, // Text color
+                        ),
+                        onPressed: () => _openFile(context, widget.course.pdfPath!, 'pdf'),
+                        child: Text(_getLocalizedButtonText(context, 'view_pdf')),
+                      ),
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 32), // Increase bottom padding
               // Add more details as needed
             ],
           ),
