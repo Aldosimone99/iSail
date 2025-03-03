@@ -256,12 +256,15 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     );
   }
 
-  void _checkExpiringCourses() {
+  void _checkExpiringCourses() async {
+    final prefs = await SharedPreferences.getInstance();
     final now = DateTime.now();
+    final Set<String> notifiedCourses = prefs.getStringList('notifiedCourses')?.toSet() ?? {};
+
     for (var course in _courses) {
       final daysRemaining = course.deadline.difference(now).inDays;
-      if (daysRemaining <= 0) {
-        continue; // Skip courses that have already expired
+      if (daysRemaining <= 0 || notifiedCourses.contains(course.id.toString())) {
+        continue; // Skip courses that have already expired or have been notified
       }
       if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30 || daysRemaining <= 30) {
         _scheduleNotification(
@@ -270,8 +273,11 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           body: _getLocalizedBody(course.name, daysRemaining), // Use localized string
           scheduledDate: _nextInstanceOfNineAM(),
         );
+        notifiedCourses.add(course.id.toString()); // Mark course as notified
       }
     }
+
+    await prefs.setStringList('notifiedCourses', notifiedCourses.toList()); // Save notified courses
   }
 
   tz.TZDateTime _nextInstanceOfNineAM() {
