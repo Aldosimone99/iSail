@@ -32,13 +32,13 @@ class FileViewerScreen extends StatelessWidget {
               },
             ),
             CupertinoDialogAction(
-              child: Text('Elimina'),
               isDestructiveAction: true,
               onPressed: () {
                 onDelete();
                 Navigator.of(context).pop();
                 Navigator.of(context).pop();
               },
+              child: Text('Elimina'),
             ),
           ],
         );

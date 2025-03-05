@@ -146,14 +146,14 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: Text(S.of(context).sort), // Use localized string
+            child: Text(_getLocalizedText(context, 'sort')), // Use localized string
             onPressed: () {
               Navigator.pop(context);
               _showOrderOptions(context);
             },
           ),
           CupertinoActionSheetAction(
-            child: Text(S.of(context).delete), // Use localized string
+            child: Text(_getLocalizedText(context, 'delete')), // Use localized string
             onPressed: () {
               setState(() {
                 _isDeleteMode = true;
@@ -163,7 +163,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text(S.of(context).cancel), // Use localized string
+          child: Text(_getLocalizedText(context, 'cancel')), // Use localized string
           onPressed: () {
             Navigator.pop(context);
           },
@@ -178,7 +178,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: Text(S.of(context).name), // Use localized string
+            child: Text(_getLocalizedText(context, 'name')), // Use localized string
             onPressed: () {
               setState(() {
                 _sortCriteria = 'name';
@@ -188,7 +188,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             },
           ),
           CupertinoActionSheetAction(
-            child: Text(S.of(context).closestDeadline), // Use localized string
+            child: Text(_getLocalizedText(context, 'closestDeadline')), // Use localized string
             onPressed: () {
               setState(() {
                 _sortCriteria = 'deadline_asc';
@@ -198,7 +198,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             },
           ),
           CupertinoActionSheetAction(
-            child: Text(S.of(context).furthestDeadline), // Use localized string
+            child: Text(_getLocalizedText(context, 'furthestDeadline')), // Use localized string
             onPressed: () {
               setState(() {
                 _sortCriteria = 'deadline_desc';
@@ -208,7 +208,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             },
           ),
           CupertinoActionSheetAction(
-            child: Text(S.of(context).added), // Use localized string
+            child: Text(_getLocalizedText(context, 'added')), // Use localized string
             onPressed: () {
               setState(() {
                 _sortCriteria = 'added';
@@ -219,7 +219,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: Text(S.of(context).cancel), // Use localized string
+          child: Text(_getLocalizedText(context, 'cancel')), // Use localized string
           onPressed: () {
             Navigator.pop(context);
           },

@@ -321,10 +321,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showPickerOptions(context),
-        child: Icon(Icons.add, color: Colors.black), // Black icon color
+        onPressed: () => _showPickerOptions(context), // Black icon color
         backgroundColor: Colors.white, // White background color
-        shape: CircleBorder(), // Ensure the button is round
+        shape: CircleBorder(),
+        child: Icon(Icons.add, color: Colors.black), // Ensure the button is round
       ),
     );
   }
