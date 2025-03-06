@@ -201,10 +201,11 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
     }
 
     final totalMonths = years * 12 + months;
-    final monthsText = totalMonths == 1 ? _getLocalizedText(context, 'month') : _getLocalizedText(context, 'months');
-    final daysText = days == 1 ? _getLocalizedText(context, 'day') : _getLocalizedText(context, 'days');
+    final locale = Localizations.localeOf(context).languageCode;
+    final monthsText = locale == 'en' ? 'm' : 'm';
+    final daysText = locale == 'en' ? 'd' : 'g';
 
-    return '$totalMonths $monthsText, $days $daysText';
+    return '${totalMonths}${monthsText}, ${days}${daysText}';
   }
 
   String _getLocalizedText(BuildContext context, String key) {
@@ -231,8 +232,19 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
     return translations[key] ?? key;
   }
 
+  double getContainerWidth(double screenWidth) {
+    if (screenWidth <= 375) return 150; // iPhone SE e simili
+    if (screenWidth <= 390) return 180; // iPhone 12, 13, 14
+    if (screenWidth <= 430) return 220; // iPhone Pro Max e Plus
+    if (screenWidth > 430) return 240; // iPhone 16 Pro Max
+    return 200; // Default
+  }
+
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final containerWidth = getContainerWidth(screenWidth);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, // Remove the back arrow
@@ -280,7 +292,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
                   crossAxisCount: 2, // Two boxes per row
                   crossAxisSpacing: 10.0, // Increase horizontal spacing between cards
                   mainAxisSpacing: 20.0, // Increase vertical spacing between cards
-                  childAspectRatio: 1.2, // Adjust the aspect ratio to match course boxes
+                  childAspectRatio: 1.2, // Ensure the boxes are squares
                 ),
                 padding: EdgeInsets.all(10),
                 itemCount: _logbookEntries.length,
@@ -293,6 +305,8 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
                     child: Stack(
                       children: [
                         Container(
+                          width: containerWidth, // Set dynamic width
+                          height: containerWidth, // Set dynamic height
                           margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
                           decoration: BoxDecoration(
                             color: Colors.grey[300], // Light gray background color
@@ -311,28 +325,32 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center, // Center the text vertically
                               children: [
-                                Text(
-                                  entry['title']!,
-                                  style: TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[800], // Set text color to dark gray
+                                Expanded(
+                                  child: Text(
+                                    entry['title']!,
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey[800], // Set text color to dark gray
+                                    ),
+                                    textAlign: TextAlign.center, // Center the text horizontally
+                                    overflow: TextOverflow.visible, // Ensure the text is fully readable
                                   ),
-                                  textAlign: TextAlign.center, // Center the text horizontally
-                                  overflow: TextOverflow.visible, // Ensure the text is fully readable
                                 ),
-                                SizedBox(height: 8), // Add some space between title and subtitle
-                                Text(
-                                  '${_getLocalizedText(context, 'start_date')}: ${entry['startDate']} ${_getLocalizedText(context, 'end_date')}: ${entry['endDate']}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700], // Set text color to gray
+                                SizedBox(height: screenWidth > 430 ? 1 : 2), // Further reduce the space between title and subtitle for iPhone 16 Pro Max
+                                Expanded(
+                                  child: Text(
+                                    '${_getLocalizedText(context, 'start_date')}: ${entry['startDate']} ${_getLocalizedText(context, 'end_date')}: ${entry['endDate']}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[700], // Set text color to gray
+                                    ),
+                                    textAlign: TextAlign.center, // Center the text horizontally
+                                    maxLines: 3, // Limit to a maximum of 3 lines
+                                    overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines
                                   ),
-                                  textAlign: TextAlign.center, // Center the text horizontally
-                                  maxLines: 3, // Limit to a maximum of 3 lines
-                                  overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines
                                 ),
-                                SizedBox(height: 8), // Add some space between subtitle and duration
+                                SizedBox(height: screenWidth > 430 ? 1 : 2), // Further reduce the space between subtitle and duration for iPhone 16 Pro Max
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
                                   decoration: BoxDecoration(
