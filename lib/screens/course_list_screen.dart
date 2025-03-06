@@ -40,6 +40,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       vsync: this,
     )..repeat(reverse: true);
     _userNameNotifier.addListener(_updateGreeting); // Add listener to update greeting when username changes
+    _scheduleDailyNotification(); // Schedule daily notification check
   }
 
   @override
@@ -329,6 +330,26 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     setState(() {
       S.load(Locale(languageCode)); // Load the selected language
     });
+  }
+
+  void _scheduleDailyNotification() async {
+    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      'Daily Course Check',
+      'Checking for courses expiring within 1 month.',
+      _nextInstanceOfNineAM(),
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // Ensure it repeats daily at the same time
+    );
   }
 
   @override
