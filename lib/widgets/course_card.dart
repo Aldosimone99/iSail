@@ -78,6 +78,46 @@ class CourseCard extends StatelessWidget {
     }
   }
 
+  double getTitleFontSize(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 375) {
+      return 14; // Smaller font size for iPhone SE (3rd generation)
+    } else if (screenWidth <= 414) {
+      return 15; // Smaller font size for iPhone 16
+    } else {
+      return 17; // Default font size for larger devices
+    }
+  }
+
+  double getDescriptionFontSize(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 375) {
+      return 13; // Smaller font size for iPhone SE (3rd generation)
+    } else if (screenWidth <= 414) {
+      return 13; // Smaller font size for iPhone 16
+    } else {
+      return 15; // Default font size for larger devices
+    }
+  }
+
+  double getPillFontSize(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 375) {
+      return 13; // Smaller font size for iPhone SE (3rd generation)
+    } else {
+      return 15; // Default font size for larger devices
+    }
+  }
+
+  EdgeInsets getPillPadding(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 375) {
+      return EdgeInsets.symmetric(horizontal: 8, vertical: 4); // Smaller padding for iPhone SE (3rd generation)
+    } else {
+      return EdgeInsets.symmetric(horizontal: 10, vertical: 5); // Default padding for larger devices
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final pillColor = _getPillColor();
@@ -128,7 +168,7 @@ class CourseCard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: getTitleFontSize(context), // Adjusted font size
                       fontWeight: FontWeight.bold,
                       color: borderColor, // Set text color based on due date
                     ),
@@ -140,13 +180,13 @@ class CourseCard extends StatelessWidget {
                     description,
                     style: TextStyle(
                       color: borderColor, // Set text color based on due date
-                      fontSize: 15,
+                      fontSize: getDescriptionFontSize(context), // Adjusted font size
                     ),
                   ),
                   Spacer(), // Push the countdown text to the bottom
                   Center(
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
+                      padding: getPillPadding(context), // Adjusted padding
                       decoration: BoxDecoration(
                         color: pillColor,
                         borderRadius: BorderRadius.circular(20),
@@ -155,7 +195,7 @@ class CourseCard extends StatelessWidget {
                       child: Text(
                         _getCountdownText(context), // Pass context to _getCountdownText
                         style: TextStyle(
-                          fontSize: 15,
+                          fontSize: getPillFontSize(context), // Adjusted font size
                           color: pillTextColor, // Set text color based on due date
                         ),
                         textAlign: TextAlign.center,

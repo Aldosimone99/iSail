@@ -122,20 +122,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       ),
                     ),
                   )
-                : ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
-                      child: Container(
-                        padding: EdgeInsets.all(16.0),
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.start, // Align to the top
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Adjust padding
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.3), // Semi-transparent background color
+                          color: Colors.black.withOpacity(0.5), // Semi-transparent background color
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.start, // Align to the top
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            SizedBox(height: 80), // Move content upwards
                             Text(
                               '$_userName', // Display the user name
                               style: TextStyle(fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold), // Title
@@ -147,29 +147,29 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               style: TextStyle(fontSize: 22, color: Colors.white), // Subtitle
                               textAlign: TextAlign.center,
                             ),
-                            SizedBox(height: 20),
-                            GestureDetector(
-                              onTap: _navigateToHome,
-                              child: Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color.fromARGB(255, 20, 145, 248).withAlpha((0.5 * 255).toInt()), // Darker circular background color
-                                ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.arrow_forward,
-                                    size: 40,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
-                    ),
+                      SizedBox(height: 20),
+                      GestureDetector(
+                        onTap: _navigateToHome,
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color.fromARGB(255, 20, 145, 248).withAlpha((0.5 * 255).toInt()), // Darker circular background color
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.arrow_forward,
+                              size: 40,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
           ),
         ],
