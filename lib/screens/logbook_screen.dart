@@ -219,12 +219,14 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
       'delete': isEnglish ? 'Delete' : 'Elimina',
       'sort': isEnglish ? 'Sort' : 'Ordina',
       'sort_by_title': isEnglish ? 'Sort by Title' : 'Ordina per titolo',
-      'sort_by_start_date_asc': isEnglish ? 'Sort by Start Date (Ascending)' : 'Ordina per data di inizio (crescente)',
-      'sort_by_start_date_desc': isEnglish ? 'Sort by Start Date (Descending)' : 'Ordina per data di inizio (decrescente)',
+      'sort_by_start_date_asc': isEnglish ? 'Sort by Start Date (Ascending)' : 'Ordina per inizio (crescente)',
+      'sort_by_start_date_desc': isEnglish ? 'Sort by Start Date (Descending)' : 'Ordina per inizio (decrescente)',
       'months': isEnglish ? 'months' : 'mesi',
       'month': isEnglish ? 'month' : 'mese',
       'days': isEnglish ? 'days' : 'giorni',
       'day': isEnglish ? 'day' : 'giorno',
+      'start_date': isEnglish ? 'Start' : 'Inizio',
+      'end_date': isEnglish ? 'End' : 'Fine',
     };
     return translations[key] ?? key;
   }
