@@ -54,7 +54,7 @@ class AddLogbookEntryScreenState extends State<AddLogbookEntryScreen> {
     final locale = Localizations.localeOf(context).languageCode;
     final isEnglish = locale == 'en';
     final translations = {
-      'add_logbook_entry': isEnglish ? 'Add Logbook Entry' : 'Aggiungi Registro Imbarchi',
+      'add_logbook_entry': isEnglish ? 'Add Logbook Entry' : 'Aggiungi Imbarco',
       'title': isEnglish ? 'Title' : 'Titolo',
       'start_date': isEnglish ? 'Start Date (YYYY-MM-DD)' : 'Data di Inizio (YYYY-MM-DD)',
       'end_date': isEnglish ? 'End Date (YYYY-MM-DD)' : 'Data di Fine (YYYY-MM-DD)',

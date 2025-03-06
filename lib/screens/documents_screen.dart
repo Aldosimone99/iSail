@@ -51,6 +51,37 @@ class DocumentsScreenState extends State<DocumentsScreen> {
     return translations[key] ?? key;
   }
 
+  double getContainerWidth(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 320) {
+      return 150; // Small iPhone (e.g., iPhone SE)
+    } else if (screenWidth <= 375) {
+      return 170; // Medium iPhone (e.g., iPhone 8)
+    } else if (screenWidth <= 414) {
+      return 190; // Large iPhone (e.g., iPhone 11)
+    } else {
+      return 210; // Extra large iPhone (e.g., iPhone 11 Pro Max)
+    }
+  }
+
+  double getTitleFontSize(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 414) {
+      return 15; // Smaller font size for iPhone 16
+    } else {
+      return 17; // Default font size for larger devices
+    }
+  }
+
+  double getSubtitleFontSize(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 414) {
+      return 13; // Smaller font size for iPhone 16
+    } else {
+      return 15; // Default font size for larger devices
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,6 +176,7 @@ class DocumentsScreenState extends State<DocumentsScreen> {
                           );
                         },
                         child: Container(
+                          width: getContainerWidth(context), // Use the method to set the width
                           margin: const EdgeInsets.symmetric(horizontal: 8.0), // Add some horizontal margins
                           decoration: BoxDecoration(
                             color: Colors.grey[300], // Light gray background color
@@ -166,18 +198,18 @@ class DocumentsScreenState extends State<DocumentsScreen> {
                                 Text(
                                   pdfName,
                                   style: TextStyle(
-                                    fontSize: 17,
+                                    fontSize: getTitleFontSize(context), // Adjusted font size
                                     fontWeight: FontWeight.bold,
                                     color: Colors.grey[800], // Set text color to dark gray
                                   ),
                                   textAlign: TextAlign.center, // Center the text horizontally
                                   overflow: TextOverflow.visible, // Ensure the text is fully readable
                                 ),
-                                SizedBox(height: 8), // Add some space between title and subtitle
+                                SizedBox(height: 4), // Reduced space between title and subtitle
                                 Text(
                                   pdfSubtitle,
                                   style: TextStyle(
-                                    fontSize: 14,
+                                    fontSize: getSubtitleFontSize(context), // Adjusted font size
                                     color: Colors.grey[700], // Set text color to gray
                                   ),
                                   textAlign: TextAlign.center, // Center the text horizontally
