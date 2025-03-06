@@ -75,10 +75,39 @@ class DocumentsScreenState extends State<DocumentsScreen> {
 
   double getSubtitleFontSize(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    if (screenWidth <= 414) {
+    if (screenWidth <= 375) {
+      return 13; // Smaller font size for iPhone SE (3rd generation)
+    } else if (screenWidth <= 414) {
       return 13; // Smaller font size for iPhone 16
     } else {
       return 15; // Default font size for larger devices
+    }
+  }
+
+  double getPillFontSize(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 375) {
+      return 13; // Smaller font size for iPhone SE (3rd generation)
+    } else {
+      return 15; // Default font size for larger devices
+    }
+  }
+
+  EdgeInsets getPillPadding(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 375) {
+      return EdgeInsets.symmetric(horizontal: 8, vertical: 4); // Smaller padding for iPhone SE (3rd generation)
+    } else {
+      return EdgeInsets.symmetric(horizontal: 10, vertical: 5); // Default padding for larger devices
+    }
+  }
+
+  int getSubtitleMaxLines(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    if (screenWidth <= 375) {
+      return 2; // Limit to 2 lines for iPhone SE (3rd generation)
+    } else {
+      return 3; // Default max lines for larger devices
     }
   }
 
@@ -213,13 +242,13 @@ class DocumentsScreenState extends State<DocumentsScreen> {
                                     color: Colors.grey[700], // Set text color to gray
                                   ),
                                   textAlign: TextAlign.center, // Center the text horizontally
-                                  maxLines: 3, // Limit to a maximum of 3 lines
-                                  overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds 3 lines
+                                  maxLines: getSubtitleMaxLines(context), // Adjusted max lines
+                                  overflow: TextOverflow.ellipsis, // Add ellipsis if text exceeds max lines
                                 ),
                                 Spacer(), // Push the text to the bottom
                                 Center(
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Slightly increase padding
+                                    padding: getPillPadding(context), // Adjusted padding
                                     decoration: BoxDecoration(
                                       color: Colors.grey[600]!.withAlpha(50), // Light gray background color
                                       borderRadius: BorderRadius.circular(20),
@@ -228,7 +257,7 @@ class DocumentsScreenState extends State<DocumentsScreen> {
                                     child: Text(
                                       _getLocalizedText(context, 'open_pdf'),
                                       style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: getPillFontSize(context), // Adjusted font size
                                         color: Colors.grey[800], // Set text color to dark gray
                                       ),
                                       textAlign: TextAlign.center,
