@@ -100,7 +100,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               textAlign: TextAlign.center,
                             ),
                             SizedBox(height: 20),
-                            Container(
+                            SizedBox(
                               width: 250, // Reduce the width of the input field
                               child: TextField(
                                 controller: _nameController,

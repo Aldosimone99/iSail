@@ -40,7 +40,6 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       vsync: this,
     )..repeat(reverse: true);
     _userNameNotifier.addListener(_updateGreeting); // Add listener to update greeting when username changes
-    _scheduleDailyNotification(); // Schedule daily notification check
   }
 
   @override
@@ -267,12 +266,12 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       if (daysRemaining <= 0 || notifiedCourses.contains(course.id.toString())) {
         continue; // Skip courses that have already expired or have been notified
       }
-      if (daysRemaining == 365 || daysRemaining == 182 || daysRemaining == 91 || daysRemaining == 30 || daysRemaining <= 30) {
-        _scheduleNotification(
+      if (daysRemaining <= 30) {
+        _scheduleDailyNotification(
           id: course.hashCode,
           title: _getLocalizedText(context, 'courseExpiring'), // Use localized string
           body: _getLocalizedBody(course.name, daysRemaining), // Use localized string
-          scheduledDate: _nextInstanceOfNineAM(),
+          courseId: course.id.toString(),
         );
         notifiedCourses.add(course.id.toString()); // Mark course as notified
       }
@@ -290,6 +289,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     return scheduledDate;
   }
 
+  // ignore: unused_element
   Future<void> _scheduleNotification({required int id, required String title, required String body, required tz.TZDateTime scheduledDate}) async {
     const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
       presentAlert: true,
@@ -307,6 +307,27 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
       payload: jsonEncode({'locale': Localizations.localeOf(context).toString()}), // Pass locale information
+    );
+  }
+
+  Future<void> _scheduleDailyNotification({required int id, required String title, required String body, required String courseId}) async {
+    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      _nextInstanceOfNineAM(),
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time, // Ensure it repeats daily at the same time
+      payload: jsonEncode({'courseId': courseId, 'locale': Localizations.localeOf(context).toString()}), // Pass courseId and locale information
     );
   }
 
@@ -330,26 +351,6 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     setState(() {
       S.load(Locale(languageCode)); // Load the selected language
     });
-  }
-
-  void _scheduleDailyNotification() async {
-    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
-      'Daily Course Check',
-      'Checking for courses expiring within 1 month.',
-      _nextInstanceOfNineAM(),
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time, // Ensure it repeats daily at the same time
-    );
   }
 
   @override

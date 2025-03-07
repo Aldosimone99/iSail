@@ -205,7 +205,7 @@ class LogbookScreenState extends State<LogbookScreen> with SingleTickerProviderS
     final monthsText = locale == 'en' ? 'm' : 'm';
     final daysText = locale == 'en' ? 'd' : 'g';
 
-    return '${totalMonths}${monthsText}, ${days}${daysText}';
+    return '$totalMonths$monthsText, $days$daysText';
   }
 
   String _getLocalizedText(BuildContext context, String key) {
