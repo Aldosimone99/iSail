@@ -49,7 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final locale = Localizations.localeOf(context).languageCode;
     final isEnglish = locale == 'en';
     final translations = {
-      'welcomeTitle': isEnglish ? 'Welcome to SailSafe' : 'Benvenuto su Sailsafe',
+      'welcomeTitle': isEnglish ? 'Welcome to Mariner Hub' : 'Benvenuto su Mariner Hub',
       'welcomeSubtitle': isEnglish ? 'Enter your name to continue' : 'Inserisci il tuo nome per continuare',
       'name': isEnglish ? 'Name' : 'Nome',
       'continueButton': isEnglish ? 'Continue' : 'Continua',
