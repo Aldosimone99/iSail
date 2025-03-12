@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:ui'; // Import for blur effect
-// Import for URL launcher
 import 'package:html/parser.dart' as parser; // Import for HTML parsing
 import 'package:html/dom.dart' as dom; // Import for HTML DOM manipulation
 import 'package:intl/intl.dart'; // Import for date formatting
@@ -38,7 +37,7 @@ class _NewsScreenState extends State<NewsScreen> {
         final document = parser.parse(response.body);
         final items = document.getElementsByTagName('item');
         final DateFormat dateFormat = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z', 'en_US');
-        final List<dynamic> articles = items.map((dom.Element element) {
+        final List<dynamic> articles = await Future.wait(items.map((dom.Element element) async {
           final title = element.getElementsByTagName('title').first.text;
           final linkElement = element.getElementsByTagName('link').first;
           final link = linkElement.text.trim();
@@ -46,15 +45,14 @@ class _NewsScreenState extends State<NewsScreen> {
           final description = descriptionElement.text;
           final linkFromDescription = RegExp(r'href="(.*?)"').firstMatch(description)?.group(1) ?? link;
           final pubDate = element.getElementsByTagName('pubDate').first.text;
-          final enclosure = element.getElementsByTagName('enclosure');
-          final imageUrl = enclosure.isNotEmpty ? enclosure.first.attributes['url'] : '';
+          final imageUrl = await _fetchMainImage(linkFromDescription);
           return {
             'title': title,
             'url': linkFromDescription,
             'publishedAt': dateFormat.parse(pubDate).toIso8601String(),
             'urlToImage': imageUrl,
           };
-        }).toList();
+        }).toList());
         articles.sort((a, b) => DateTime.parse(b['publishedAt']).compareTo(DateTime.parse(a['publishedAt']))); // Sort by date
         setState(() {
           _news = articles;
@@ -67,6 +65,35 @@ class _NewsScreenState extends State<NewsScreen> {
     } catch (e) {
       print('Error fetching news: $e');
     }
+  }
+
+  Future<String> _fetchMainImage(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url), headers: {'User-Agent': 'Mozilla/5.0'});
+      if (response.isRedirect) {
+        final redirectedUrl = response.headers['location'];
+        if (redirectedUrl != null) {
+          return await _fetchMainImage(redirectedUrl);
+        }
+      }
+      if (response.statusCode == 200) {
+        final document = parser.parse(response.body);
+        final metaTags = document.getElementsByTagName('meta');
+        for (var meta in metaTags) {
+          if (meta.attributes['property'] == 'og:image' || meta.attributes['name'] == 'twitter:image') {
+            return meta.attributes['content'] ?? '';
+          }
+        }
+        // Fallback to finding the first image in the article
+        final images = document.getElementsByTagName('img');
+        if (images.isNotEmpty) {
+          return images.first.attributes['src'] ?? '';
+        }
+      }
+    } catch (e) {
+      print('Error fetching main image: $e');
+    }
+    return '';
   }
 
   Future<void> _openNews(String url) async {
@@ -117,35 +144,20 @@ class _NewsScreenState extends State<NewsScreen> {
                 final title = newsItem['title'] ?? 'No title';
                 final imageUrl = newsItem['urlToImage'] ?? '';
                 final url = newsItem['url'] ?? '';
+                final publishedAt = DateFormat.yMMMd().format(DateTime.parse(newsItem['publishedAt']));
 
                 return ListTile(
                   contentPadding: EdgeInsets.all(10),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      imageUrl.isNotEmpty
-                          ? Image.network(
-                              imageUrl,
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  width: double.infinity,
-                                  height: 200,
-                                  color: Colors.grey,
-                                  child: Center(
-                                    child: Text(
-                                      'No image',
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                  ),
-                                );
-                              },
-                            )
-                          : Container(
-                              width: double.infinity,
-                              height: 200,
+                  leading: imageUrl.isNotEmpty
+                      ? Image.network(
+                          imageUrl,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Container(
+                              width: 100,
+                              height: 100,
                               color: Colors.grey,
                               child: Center(
                                 child: Text(
@@ -153,17 +165,34 @@ class _NewsScreenState extends State<NewsScreen> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
+                            );
+                          },
+                        )
+                      : Container(
+                          width: 100,
+                          height: 100,
+                          color: Colors.grey,
+                          child: Center(
+                            child: Text(
+                              'No image',
+                              style: TextStyle(color: Colors.white),
                             ),
-                      SizedBox(height: 5),
-                      Text(
-                        title,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18, // Increase font size
+                          ),
                         ),
-                      ),
-                    ],
+                  title: Text(
+                    title,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18, // Increase font size
+                    ),
+                  ),
+                  subtitle: Text(
+                    publishedAt,
+                    style: TextStyle(
+                      color: Colors.grey[400],
+                      fontSize: 14,
+                    ),
                   ),
                   onTap: () => _openNews(url), // Open the news URL when tapped
                 );
