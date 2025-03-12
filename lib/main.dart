@@ -21,7 +21,9 @@ final Logger _logger = Logger('MainLogger'); // Initialize logger
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+  const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
   final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
@@ -46,7 +48,9 @@ void main() async {
       );
     },
   );
+
   final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
     iOS: initializationSettingsIOS,
   );
 

@@ -5,11 +5,12 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:intl/intl.dart';
 import 'package:isail/screens/add_course_screen.dart';
+// Remove import for notifications
+// Remove import for timezone
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'; // Import for notifications
-import 'package:timezone/timezone.dart' as tz; // Import for timezone
 import '../models/course.dart';
 import '../widgets/course_card.dart';
-import '../main.dart'; // Import the main.dart file to access the notification plugin
+// Import the main.dart file to access the notification plugin
 import '../generated/l10n.dart'; // Import for localization
 
 class CourseListScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
   bool _isDeleteMode = false;
   AnimationController? _controller;
   final ValueNotifier<String> _userNameNotifier = ValueNotifier<String>('User'); // Add ValueNotifier
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin(); // Add notification plugin instance
 // Add a variable to store the selected language
 
   @override
@@ -35,6 +37,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     _loadUserName();
     _loadCourses();
     _loadSelectedLanguage(); // Load the selected language on init
+    _scheduleDailyNotifications(); // Schedule daily notifications
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -102,7 +105,6 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       setState(() {
         _courses.addAll(coursesJson.map((json) => Course.fromJson(json)).toList());
       });
-      _checkExpiringCourses(); // Ensure this is called after loading courses
     }
   }
 
@@ -256,176 +258,6 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     );
   }
 
-  void _checkExpiringCourses() async {
-    final prefs = await SharedPreferences.getInstance();
-    final now = DateTime.now();
-    final Set<String> notifiedCourses = prefs.getStringList('notifiedCourses')?.toSet() ?? {};
-
-    for (var course in _courses) {
-      final daysRemaining = course.deadline.difference(now).inDays;
-      if (daysRemaining <= 0 || notifiedCourses.contains(course.id.toString())) {
-        continue; // Skip courses that have already expired or have been notified
-      }
-      if (daysRemaining <= 7) { // Daily notifications for the last week
-        _scheduleDailyNotification(
-          id: course.hashCode,
-          title: _getLocalizedText(context, 'courseExpiring'), // Use localized string
-          body: _getLocalizedBody(course.name, daysRemaining), // Use localized string
-          courseId: course.id.toString(),
-          daysRemaining: daysRemaining, // Pass days remaining
-        );
-      } else if (daysRemaining <= 90) { // Weekly notifications for the last 3 months
-        _scheduleWeeklyNotification(
-          id: course.hashCode,
-          title: _getLocalizedText(context, 'courseExpiring'), // Use localized string
-          body: _getLocalizedBody(course.name, daysRemaining), // Use localized string
-          courseId: course.id.toString(),
-          weeksRemaining: (daysRemaining / 7).ceil(), // Pass weeks remaining
-        );
-      } else if (daysRemaining <= 365) { // Monthly notifications for the last year
-        _scheduleMonthlyNotification(
-          id: course.hashCode,
-          title: _getLocalizedText(context, 'courseExpiring'), // Use localized string
-          body: _getLocalizedBody(course.name, daysRemaining), // Use localized string
-          courseId: course.id.toString(),
-          monthsRemaining: (daysRemaining / 30).ceil(), // Pass months remaining
-        );
-      }
-      notifiedCourses.add(course.id.toString()); // Mark course as notified
-    }
-
-    await prefs.setStringList('notifiedCourses', notifiedCourses.toList()); // Save notified courses
-  }
-
-  tz.TZDateTime _nextInstanceOfNineAM() {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 9); // Change to 9 AM
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(Duration(days: 1));
-    }
-    return scheduledDate;
-  }
-
-  // ignore: unused_element
-  Future<void> _scheduleNotification({required int id, required String title, required String body, required tz.TZDateTime scheduledDate}) async {
-    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      id,
-      title,
-      body,
-      scheduledDate,
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-      payload: jsonEncode({'locale': Localizations.localeOf(context).toString()}), // Pass locale information
-    );
-  }
-
-  Future<void> _scheduleDailyNotification({required int id, required String title, required String body, required String courseId, required int daysRemaining}) async {
-    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
-
-    for (int i = 0; i < daysRemaining; i++) {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        id + i, // Ensure unique ID for each notification
-        title,
-        _getLocalizedBody(courseId, daysRemaining - i), // Update body with recalculated days remaining
-        _nextInstanceOfNineAM().add(Duration(days: i)), // Schedule for each day
-        platformChannelSpecifics,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time, // Ensure it repeats daily at the same time
-        payload: jsonEncode({'courseId': courseId, 'locale': Localizations.localeOf(context).toString()}), // Pass courseId and locale information
-      );
-    }
-  }
-
-  Future<void> _scheduleWeeklyNotification({required int id, required String title, required String body, required String courseId, required int weeksRemaining}) async {
-    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
-
-    for (int i = 0; i < weeksRemaining; i++) {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        id + i, // Ensure unique ID for each notification
-        title,
-        _getLocalizedBody(courseId, weeksRemaining * 7 - i * 7), // Update body with recalculated weeks remaining
-        _nextInstanceOfMondayNineAM().add(Duration(days: i * 7)), // Schedule for each week on Monday
-        platformChannelSpecifics,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime, // Ensure it repeats weekly at the same time
-        payload: jsonEncode({'courseId': courseId, 'locale': Localizations.localeOf(context).toString()}), // Pass courseId and locale information
-      );
-    }
-  }
-
-  Future<void> _scheduleMonthlyNotification({required int id, required String title, required String body, required String courseId, required int monthsRemaining}) async {
-    const IOSNotificationDetails iOSPlatformChannelSpecifics = IOSNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(iOS: iOSPlatformChannelSpecifics);
-
-    for (int i = 0; i < monthsRemaining; i++) {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        id + i, // Ensure unique ID for each notification
-        title,
-        _getLocalizedBody(courseId, monthsRemaining * 30 - i * 30), // Update body with recalculated months remaining
-        _nextInstanceOfFirstDayNineAM().add(Duration(days: i * 30)), // Schedule for each month on the first day
-        platformChannelSpecifics,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.dayOfMonthAndTime, // Ensure it repeats monthly at the same time
-        payload: jsonEncode({'courseId': courseId, 'locale': Localizations.localeOf(context).toString()}), // Pass courseId and locale information
-      );
-    }
-  }
-
-  tz.TZDateTime _nextInstanceOfMondayNineAM() {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, 9); // Change to 9 AM
-    while (scheduledDate.weekday != DateTime.monday) {
-      scheduledDate = scheduledDate.add(Duration(days: 1));
-    }
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(Duration(days: 7));
-    }
-    return scheduledDate;
-  }
-
-  tz.TZDateTime _nextInstanceOfFirstDayNineAM() {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, 1, 9); // Change to 9 AM on the first day of the month
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = tz.TZDateTime(tz.local, now.year, now.month + 1, 1, 9);
-    }
-    return scheduledDate;
-  }
-
-  String _getLocalizedBody(String courseName, int daysRemaining) {
-    if (daysRemaining > 30) {
-      final monthsRemaining = (daysRemaining / 30).floor();
-      return _getLocalizedText(context, 'courseExpiringInMonths', courseName: courseName, monthsRemaining: monthsRemaining); // Use localized string for months
-    } else {
-      return _getLocalizedText(context, 'courseExpiringInDays', courseName: courseName, daysRemaining: daysRemaining); // Use localized string for days
-    }
-  }
-
   void updateUserName(String userName) {
     _userNameNotifier.value = userName;
   }
@@ -436,6 +268,41 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     setState(() {
       S.load(Locale(languageCode)); // Load the selected language
     });
+  }
+
+  void _scheduleDailyNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? coursesString = prefs.getString('courses');
+    if (coursesString != null) {
+      final List<dynamic> coursesJson = jsonDecode(coursesString);
+      final List<Course> courses = coursesJson.map((json) => Course.fromJson(json)).toList();
+
+      final now = DateTime.now();
+      final notificationTime = Time(9, 0, 0); // Schedule notifications for 9 AM
+
+      for (var course in courses) {
+        final daysRemaining = course.deadline.difference(now).inDays;
+        if (daysRemaining > 0 && daysRemaining <= 30) {
+          final androidDetails = AndroidNotificationDetails(
+            'course_expiring_channel',
+            'Course Expiring',
+            channelDescription: 'Notifications for courses expiring within a month',
+            importance: Importance.max,
+            priority: Priority.high,
+          );
+          final iOSDetails = IOSNotificationDetails();
+          final platformDetails = NotificationDetails(android: androidDetails, iOS: iOSDetails);
+
+          await flutterLocalNotificationsPlugin.showDailyAtTime(
+            course.hashCode, // Unique ID for each course
+            _getLocalizedText(context, 'courseExpiring'), // Notification title
+            _getLocalizedText(context, 'courseExpiringInDays', courseName: course.name, daysRemaining: daysRemaining), // Notification body
+            notificationTime,
+            platformDetails,
+          );
+        }
+      }
+    }
   }
 
   @override
