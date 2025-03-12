@@ -38,6 +38,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     _loadCourses();
     _loadSelectedLanguage(); // Load the selected language on init
     _scheduleDailyNotifications(); // Schedule daily notifications
+    _scheduleWeeklyNotifications(); // Schedule weekly notifications
     _controller = AnimationController(
       duration: const Duration(milliseconds: 300),
       vsync: this,
@@ -297,6 +298,42 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
             course.hashCode, // Unique ID for each course
             _getLocalizedText(context, 'courseExpiring'), // Notification title
             'Il corso "${course.name}" scadrà tra pochi giorni.', // Notification body
+            notificationTime,
+            platformDetails,
+          );
+        }
+      }
+    }
+  }
+
+  void _scheduleWeeklyNotifications() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? coursesString = prefs.getString('courses');
+    if (coursesString != null) {
+      final List<dynamic> coursesJson = jsonDecode(coursesString);
+      final List<Course> courses = coursesJson.map((json) => Course.fromJson(json)).toList();
+
+      final now = DateTime.now();
+      final notificationTime = Time(9, 0, 0); // Schedule notifications for 9 AM
+
+      for (var course in courses) {
+        final monthsRemaining = course.deadline.difference(now).inDays ~/ 30;
+        if (monthsRemaining > 0 && monthsRemaining <= 6) {
+          final androidDetails = AndroidNotificationDetails(
+            'course_expiring_monthly_channel',
+            'Course Expiring Soon',
+            channelDescription: 'Notifications for courses expiring within six months',
+            importance: Importance.max,
+            priority: Priority.high,
+          );
+          final iOSDetails = IOSNotificationDetails();
+          final platformDetails = NotificationDetails(android: androidDetails, iOS: iOSDetails);
+
+          await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
+            course.hashCode + 1000, // Unique ID for each course, offset to avoid conflicts with daily notifications
+            _getLocalizedText(context, 'courseExpiring'), // Notification title
+            'Il corso "${course.name}" scadrà tra pochi mesi.', // Notification body
+            Day.monday, // Schedule notifications for every Monday
             notificationTime,
             platformDetails,
           );
