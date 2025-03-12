@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:ui'; // Import for blur effect
-import 'package:url_launcher/url_launcher.dart'; // Import for URL launcher
+// Import for URL launcher
+import 'package:html/parser.dart' as parser; // Import for HTML parsing
+import 'package:html/dom.dart' as dom; // Import for HTML DOM manipulation
+import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:url_launcher/url_launcher_string.dart'; // Import for URL launcher with string support
 
 class NewsScreen extends StatefulWidget {
   const NewsScreen({super.key});
@@ -27,18 +30,37 @@ class _NewsScreenState extends State<NewsScreen> {
   Future<void> _fetchNews() async {
     try {
       final url = _language == 'it'
-          ? 'https://newsapi.org/v2/everything?q=navi+crociera&language=it&apiKey=a176c42ccc144d9eaef246b83cd6c68b'
-          : 'https://newsapi.org/v2/everything?q=cruise+ships&language=en&apiKey=a176c42ccc144d9eaef246b83cd6c68b';
+          ? 'https://news.google.com/rss/search?q=navi+crociera&hl=it&gl=IT&ceid=IT:it'
+          : 'https://news.google.com/rss/search?q=cruise+ships&hl=en&gl=US&ceid=US:en';
       print('Fetching news from: $url'); // Debug print
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        final List<dynamic> articles = json.decode(response.body)['articles'];
+        final document = parser.parse(response.body);
+        final items = document.getElementsByTagName('item');
+        final DateFormat dateFormat = DateFormat('EEE, dd MMM yyyy HH:mm:ss Z', 'en_US');
+        final List<dynamic> articles = items.map((dom.Element element) {
+          final title = element.getElementsByTagName('title').first.text;
+          final linkElement = element.getElementsByTagName('link').first;
+          final link = linkElement.text.trim();
+          final descriptionElement = element.getElementsByTagName('description').first;
+          final description = descriptionElement.text;
+          final linkFromDescription = RegExp(r'href="(.*?)"').firstMatch(description)?.group(1) ?? link;
+          final pubDate = element.getElementsByTagName('pubDate').first.text;
+          final enclosure = element.getElementsByTagName('enclosure');
+          final imageUrl = enclosure.isNotEmpty ? enclosure.first.attributes['url'] : '';
+          return {
+            'title': title,
+            'url': linkFromDescription,
+            'publishedAt': dateFormat.parse(pubDate).toIso8601String(),
+            'urlToImage': imageUrl,
+          };
+        }).toList();
         articles.sort((a, b) => DateTime.parse(b['publishedAt']).compareTo(DateTime.parse(a['publishedAt']))); // Sort by date
         setState(() {
           _news = articles;
         });
       } else {
-        // Gestisci l'errore
+        // Handle error
         print('Failed to load news: ${response.statusCode}');
         print('Response body: ${response.body}');
       }
@@ -48,10 +70,14 @@ class _NewsScreenState extends State<NewsScreen> {
   }
 
   Future<void> _openNews(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (url.isNotEmpty && Uri.tryParse(url)?.hasAbsolutePath == true) {
+      if (await canLaunchUrlString(url)) {
+        await launchUrlString(url);
+      } else {
+        print('Could not launch $url');
+      }
     } else {
-      throw 'Could not launch $url';
+      print('Invalid URL: $url');
     }
   }
 
