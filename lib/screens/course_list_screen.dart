@@ -296,7 +296,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           await flutterLocalNotificationsPlugin.showDailyAtTime(
             course.hashCode, // Unique ID for each course
             _getLocalizedText(context, 'courseExpiring'), // Notification title
-            _getLocalizedText(context, 'courseExpiringInDays', courseName: course.name, daysRemaining: daysRemaining), // Notification body
+            'Il corso "${course.name}" scadrà tra pochi giorni.', // Notification body
             notificationTime,
             platformDetails,
           );
