@@ -347,7 +347,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           final platformDetails = NotificationDetails(android: androidDetails, iOS: iOSDetails);
 
           await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
-            course.id + 1000 + monthsRemaining, // Unique ID for each course, offset to avoid conflicts with daily notifications
+            course.id + monthsRemaining, // Unique ID for each course, offset to avoid conflicts with daily notifications
             _getLocalizedText(context, 'courseExpiring'), // Notification title
             'Il corso "${course.name}" scadrà tra pochi mesi.', // Notification body
             Day.monday, // Schedule notifications for every Monday
