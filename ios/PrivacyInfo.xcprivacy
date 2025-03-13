@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dict>
+    <key>NSPrivacyAccessedAPICategories</key>
+    <array>
+        <dict>
+            <key>NSPrivacyAccessedAPICategory</key>
+            <string>File Access</string>
+        </dict>
+        <dict>
+            <key>NSPrivacyAccessedAPICategory</key>
+            <string>Notifications</string>
+        </dict>
+        <dict>
+            <key>NSPrivacyAccessedAPICategory</key>
+            <string>Sharing</string>
+        </dict>
+    </array>
+</dict>
