@@ -335,7 +335,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
 
       for (var course in courses) {
         final monthsRemaining = course.deadline.difference(now).inDays ~/ 30;
-        if (monthsRemaining > 0 && monthsRemaining <= 6) {
+        if (monthsRemaining > 0 && monthsRemaining <= 12) {
           final androidDetails = AndroidNotificationDetails(
             'course_expiring_monthly_channel',
             'Course Expiring Soon',
@@ -349,7 +349,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
             course.id + monthsRemaining, // Unique ID for each course, offset to avoid conflicts with daily notifications
             _getLocalizedText(context, 'courseExpiring'), // Notification title
-            'Il corso "${course.name}" scadrà tra pochi mesi.', // Notification body
+            'Il corso "${course.name}" scadrà entro pochi mesi.', // Notification body
             Day.monday, // Schedule notifications for every Monday
             notificationTime,
             platformDetails,
@@ -359,46 +359,6 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     }
   }
 
-  void _scheduleMonthlyNotifications() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? coursesString = prefs.getString('courses');
-    if (coursesString != null) {
-      final List<dynamic> coursesJson = jsonDecode(coursesString);
-      final List<Course> courses = coursesJson.map((json) => Course.fromJson(json)).toList();
-
-      final now = DateTime.now();
-      final notificationTime = Time(9, 0, 0); // Schedule notifications for 9 AM
-
-      for (var course in courses) {
-        final monthsRemaining = course.deadline.difference(now).inDays ~/ 30;
-        if (monthsRemaining > 0 && monthsRemaining <= 12) {
-          final androidDetails = AndroidNotificationDetails(
-            'course_expiring_yearly_channel',
-            'Course Expiring Soon',
-            channelDescription: 'Notifications for courses expiring within a year',
-            importance: Importance.max,
-            priority: Priority.high,
-          );
-          final iOSDetails = IOSNotificationDetails();
-          final platformDetails = NotificationDetails(android: androidDetails, iOS: iOSDetails);
-
-          for (int i = 1; i <= monthsRemaining; i++) {
-            final notificationDate = tz.TZDateTime(tz.local, now.year, now.month + i, 1, 9, 0); // First day of each month at 9 AM
-            await flutterLocalNotificationsPlugin.zonedSchedule(
-              course.id + 2000 + i, // Unique ID for each course, offset to avoid conflicts with other notifications
-              _getLocalizedText(context, 'courseExpiring'), // Notification title
-              'Il corso "${course.name}" scadrà tra pochi mesi.', // Notification body
-              notificationDate,
-              platformDetails,
-              androidAllowWhileIdle: true,
-              uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
-              matchDateTimeComponents: DateTimeComponents.time,
-            );
-          }
-        }
-      }
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
