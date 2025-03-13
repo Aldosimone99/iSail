@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:isail/screens/add_course_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // Import timezone data
-import 'package:timezone/timezone.dart' as tz; // Import timezone package
+// Import timezone package
 import '../models/course.dart';
 import '../widgets/course_card.dart';
 import '../generated/l10n.dart';
@@ -58,7 +58,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     _userNameNotifier.value = userName; // Update ValueNotifier
   }
 
-  String _getLocalizedText(BuildContext context, String key, {String? courseName, int? daysRemaining, int? monthsRemaining}) {
+  String _getLocalizedText(BuildContext context, String key, {String? courseName}) {
     final locale = Localizations.localeOf(context).languageCode;
     final isEnglish = locale == 'en';
     final translations = {
@@ -78,8 +78,8 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       'noCoursesAdded': isEnglish ? 'No Courses Added' : 'Nessun Corso Aggiunto',
       'due': isEnglish ? 'Due' : 'Scadenza',
       'courseExpiring': isEnglish ? 'Course Expiring' : 'Corso in Scadenza',
-      'courseExpiringInDays': isEnglish ? 'The course "$courseName" will expire in $daysRemaining days. Remember to renew it!' : 'Il corso "$courseName" scadrà in $daysRemaining giorni. Ricordati di rinnovarlo!',
-      'courseExpiringInMonths': isEnglish ? '$courseName will expire in $monthsRemaining months' : '$courseName scadrà in $monthsRemaining mesi',
+      'courseExpiringInDays': isEnglish ? 'The course "$courseName" will expire in a few days. Remember to renew it!' : 'Il corso "$courseName" scadrà tra pochi giorni. Ricordati di rinnovarlo!',
+      'courseExpiringInMonths': isEnglish ? '$courseName will expire in a few months' : '$courseName scadrà tra pochi mesi',
     };
     return translations[key] ?? key;
   }
@@ -314,7 +314,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           await flutterLocalNotificationsPlugin.showDailyAtTime(
             course.id + daysRemaining, // Unique ID for each course
             _getLocalizedText(context, 'courseExpiring'), // Notification title
-            'Il corso "${course.name}" scadrà tra pochi giorni.', // Notification body
+            _getLocalizedText(context, 'courseExpiringInDays', courseName: course.name), // Notification body
             notificationTime,
             platformDetails,
           );
@@ -334,7 +334,8 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       final notificationTime = Time(9, 0, 0); // Schedule notifications for 9 AM
 
       for (var course in courses) {
-        final monthsRemaining = course.deadline.difference(now).inDays ~/ 30;
+        final daysRemaining = course.deadline.difference(now).inDays;
+        final monthsRemaining = daysRemaining ~/ 30;
         if (monthsRemaining > 0 && monthsRemaining <= 12) {
           final androidDetails = AndroidNotificationDetails(
             'course_expiring_monthly_channel',
@@ -349,7 +350,7 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
           await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
             course.id + monthsRemaining, // Unique ID for each course, offset to avoid conflicts with daily notifications
             _getLocalizedText(context, 'courseExpiring'), // Notification title
-            'Il corso "${course.name}" scadrà entro pochi mesi.', // Notification body
+            _getLocalizedText(context, 'courseExpiringInMonths', courseName: course.name), // Notification body
             Day.monday, // Schedule notifications for every Monday
             notificationTime,
             platformDetails,
@@ -358,7 +359,6 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
