@@ -24,7 +24,7 @@ void main() async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-  final IOSInitializationSettings initializationSettingsIOS = IOSInitializationSettings(
+  final DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
     requestSoundPermission: true,
@@ -56,10 +56,10 @@ void main() async {
 
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onSelectNotification: (String? payload) async {
-      _logger.info('Notification selected with payload: $payload'); // Debug log
-      if (payload != null) {
-        _logger.info('Notification payload: $payload'); // Debug log
+    onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) async {
+      _logger.info('Notification selected with payload: ${notificationResponse.payload}'); // Debug log
+      if (notificationResponse.payload != null) {
+        _logger.info('Notification payload: ${notificationResponse.payload}'); // Debug log
       }
     },
   );
@@ -273,7 +273,7 @@ class HomeScreen extends StatelessWidget {
 }
 
 void showNotification() async {
-  var iOSDetails = IOSNotificationDetails();
+  var iOSDetails = DarwinNotificationDetails();
   var generalNotificationDetails = NotificationDetails(iOS: iOSDetails);
 
   await flutterLocalNotificationsPlugin.show(

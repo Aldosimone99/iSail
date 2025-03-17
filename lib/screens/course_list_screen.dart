@@ -6,8 +6,7 @@ import 'dart:ui';
 import 'package:intl/intl.dart';
 import 'package:isail/screens/add_course_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// Import timezone data
-// Import timezone package
+import 'package:timezone/timezone.dart' as tz; // Import timezone package
 import '../models/course.dart';
 import '../widgets/course_card.dart';
 import '../generated/l10n.dart';
@@ -295,28 +294,24 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       final List<Course> courses = coursesJson.map((json) => Course.fromJson(json)).toList();
 
       final now = DateTime.now();
-      final notificationTime = Time(9, 0, 0); // Schedule notifications for 9 AM
+      final notificationTime = tz.TZDateTime.from(DateTime(now.year, now.month, now.day, 9), tz.local); // Schedule notifications for 9 AM
 
       for (var course in courses) {
         final daysRemaining = course.deadline.difference(now).inDays;
         if (daysRemaining > 0 && daysRemaining <= 30) {
-          final androidDetails = AndroidNotificationDetails(
-            'course_expiring_channel',
-            'Course Expiring',
-            channelDescription: 'Notifications for courses expiring within a month',
-            importance: Importance.max,
-            priority: Priority.high,
-          );
-          final iOSDetails = IOSNotificationDetails();
-          final platformDetails = NotificationDetails(android: androidDetails, iOS: iOSDetails);
+          final iOSDetails = DarwinNotificationDetails();
+          final platformDetails = NotificationDetails(iOS: iOSDetails);
 
           // Schedule daily notifications
-          await flutterLocalNotificationsPlugin.showDailyAtTime(
+          await flutterLocalNotificationsPlugin.zonedSchedule(
             course.id + daysRemaining, // Unique ID for each course
             _getLocalizedText(context, 'courseExpiring'), // Notification title
             _getLocalizedText(context, 'courseExpiringInDays', courseName: course.name), // Notification body
             notificationTime,
             platformDetails,
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+            matchDateTimeComponents: DateTimeComponents.time,
           );
         }
       }
@@ -331,29 +326,24 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
       final List<Course> courses = coursesJson.map((json) => Course.fromJson(json)).toList();
 
       final now = DateTime.now();
-      final notificationTime = Time(9, 0, 0); // Schedule notifications for 9 AM
+      final notificationTime = tz.TZDateTime.from(DateTime(now.year, now.month, now.day, 9), tz.local); // Schedule notifications for 9 AM
 
       for (var course in courses) {
         final daysRemaining = course.deadline.difference(now).inDays;
         final monthsRemaining = daysRemaining ~/ 30;
         if (monthsRemaining > 0 && monthsRemaining <= 12) {
-          final androidDetails = AndroidNotificationDetails(
-            'course_expiring_monthly_channel',
-            'Course Expiring Soon',
-            channelDescription: 'Notifications for courses expiring within six months',
-            importance: Importance.max,
-            priority: Priority.high,
-          );
-          final iOSDetails = IOSNotificationDetails();
-          final platformDetails = NotificationDetails(android: androidDetails, iOS: iOSDetails);
+          final iOSDetails = DarwinNotificationDetails();
+          final platformDetails = NotificationDetails(iOS: iOSDetails);
 
-          await flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
+          await flutterLocalNotificationsPlugin.zonedSchedule(
             course.id + monthsRemaining, // Unique ID for each course, offset to avoid conflicts with daily notifications
             _getLocalizedText(context, 'courseExpiring'), // Notification title
             _getLocalizedText(context, 'courseExpiringInMonths', courseName: course.name), // Notification body
-            Day.monday, // Schedule notifications for every Monday
             notificationTime,
             platformDetails,
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.wallClockTime,
+            matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
           );
         }
       }
