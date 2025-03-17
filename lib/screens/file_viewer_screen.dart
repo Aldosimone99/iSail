@@ -14,7 +14,7 @@ class FileViewerScreen extends StatelessWidget {
   const FileViewerScreen({super.key, required this.filePath, required this.fileType, required this.onDelete});
 
   void _shareFile(BuildContext context) {
-    Share.shareFiles([filePath]);
+    Share.shareXFiles([XFile(filePath)]);
   }
 
   void _confirmDelete(BuildContext context) {
