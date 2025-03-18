@@ -55,6 +55,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
         widget.course.pdfPath = file.path;
       }
     });
+
+    // Clear the image cache
+    if (type == FileType.image) {
+      await clearImageCache(file.path);
+    }
+
+    _loadPaths(); // Reload paths to ensure the UI is updated
+  }
+
+  Future<void> clearImageCache(String imagePath) async {
+    final imageCache = PaintingBinding.instance.imageCache;
+    imageCache.clear();
+    imageCache.clearLiveImages();
+    await precacheImage(FileImage(File(imagePath)), context);
   }
 
   Future<void> _pickFile(FileType type) async {
@@ -136,6 +150,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
               }
             });
             Navigator.of(context).pop(); // Close the FileViewerScreen
+            _loadPaths(); // Reload paths to ensure the UI is updated
           },
         ),
       ),
