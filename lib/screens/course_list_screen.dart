@@ -274,8 +274,10 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     );
   }
 
-  void updateUserName(String userName) {
+  void updateUserName(String userName) async {
     _userNameNotifier.value = userName;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userName', userName);
   }
 
   void _loadSelectedLanguage() async {

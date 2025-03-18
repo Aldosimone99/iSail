@@ -3,7 +3,7 @@ description: "A new Flutter project."
 
 publish_to: 'none' 
 
-version: 1.0.1+1
+version: 1.0.2+1
 
 environment:
   sdk: ^3.7.0
@@ -47,7 +47,7 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/welcome_background.jpg
+    - assets/welcome_background.png
     - assets/documents/document1.pdf
     - assets/documents/document2.pdf
     - assets/documents/document3.pdf
