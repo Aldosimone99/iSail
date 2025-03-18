@@ -1,0 +1,10 @@
+<key>NSUbiquitousContainers</key>
+<dict>
+    <key>iCloud.com.yourcompany.yourapp</key>
+    <dict>
+        <key>NSUbiquitousContainerIsDocumentScopePublic</key>
+        <true/>
+        <key>NSUbiquitousContainerName</key>
+        <string>YourAppName</string>
+    </dict>
+</dict>

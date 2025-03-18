@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:ui'; // Import for blur effect
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart'; // Import for CupertinoActionSheet
-import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+import 'package:path_provider/path_provider.dart'; // Import path_provider
+import 'dart:io'; // Import for File operations
 import '../models/course.dart';
 import 'file_viewer_screen.dart'; // Import for FileViewerScreen
 
@@ -24,17 +25,20 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
   }
 
   Future<void> _loadPaths() async {
-    final prefs = await SharedPreferences.getInstance();
+    final directory = await getApplicationDocumentsDirectory();
+    final imagePath = File('${directory.path}/course_${widget.course.id}_imagePath');
+    final pdfPath = File('${directory.path}/course_${widget.course.id}_pdfPath');
     setState(() {
-      widget.course.imagePath = prefs.getString('course_${widget.course.id}_imagePath');
-      widget.course.pdfPath = prefs.getString('course_${widget.course.id}_pdfPath');
+      widget.course.imagePath = imagePath.existsSync() ? imagePath.path : null;
+      widget.course.pdfPath = pdfPath.existsSync() ? pdfPath.path : null;
     });
   }
 
   Future<void> _saveFilePath(String path, FileType type) async {
-    final prefs = await SharedPreferences.getInstance();
+    final directory = await getApplicationDocumentsDirectory();
     final key = type == FileType.image ? 'imagePath' : 'pdfPath';
-    await prefs.setString('course_${widget.course.id}_$key', path);
+    final file = File('${directory.path}/course_${widget.course.id}_$key');
+    await file.writeAsString(path);
     setState(() {
       if (type == FileType.image) {
         widget.course.imagePath = path;
@@ -109,14 +113,17 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           filePath: filePath,
           fileType: fileType,
           onDelete: () async {
-            final prefs = await SharedPreferences.getInstance();
+            final directory = await getApplicationDocumentsDirectory();
+            final key = fileType == 'image' ? 'imagePath' : 'pdfPath';
+            final file = File('${directory.path}/course_${widget.course.id}_$key');
+            if (file.existsSync()) {
+              file.deleteSync();
+            }
             setState(() {
               if (fileType == 'image') {
-                widget.course.imagePath = null; // Remove image path from course
-                prefs.remove('course_${widget.course.id}_imagePath'); // Remove image path from SharedPreferences
+                widget.course.imagePath = null;
               } else if (fileType == 'pdf') {
                 widget.course.pdfPath = null;
-                prefs.remove('course_${widget.course.id}_pdfPath');
               }
             });
             Navigator.of(context).pop(); // Close the FileViewerScreen
