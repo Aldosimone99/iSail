@@ -350,6 +350,50 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
     }
   }
 
+  void _showChangeUsernameDialog() {
+    final TextEditingController _usernameController = TextEditingController(text: _userNameNotifier.value);
+
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text(
+            'Change Username',
+            style: TextStyle(color: Colors.white), // Set text color to white
+          ),
+          content: Padding(
+            padding: const EdgeInsets.only(top: 16.0), // Add padding between title and input
+            child: CupertinoTextField(
+              controller: _usernameController,
+              placeholder: "Enter new username",
+              placeholderStyle: TextStyle(color: Colors.grey), // Set placeholder text color to gray
+              style: TextStyle(color: Colors.white), // Set input text color to white
+              decoration: BoxDecoration(
+                color: Color(0xFF2C2C2E), // Set fill color to dark gray
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+          ),
+          actions: [
+            CupertinoDialogAction(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: Colors.blue)), // Set button text color to blue
+            ),
+            CupertinoDialogAction(
+              onPressed: () {
+                updateUserName(_usernameController.text);
+                Navigator.of(context).pop();
+              },
+              child: Text('Save', style: TextStyle(color: Colors.blue)), // Set button text color to blue
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final filteredCourses = _courses.where((course) {
@@ -370,9 +414,12 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
         ),
         title: Align(
           alignment: Alignment.centerLeft, // Align the greeting text to the left
-          child: Text(
-            _greeting,
-            style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
+          child: GestureDetector(
+            onTap: _showChangeUsernameDialog, // Show dialog on tap
+            child: Text(
+              _greeting,
+              style: TextStyle(fontSize: 24, color: Colors.grey[300], fontWeight: FontWeight.bold), // Increase the font size, set color to light gray, and make bold
+            ),
           ),
         ),
         actions: [
