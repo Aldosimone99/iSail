@@ -38,12 +38,21 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     final directory = await getApplicationDocumentsDirectory();
     final key = type == FileType.image ? 'imagePath' : 'pdfPath';
     final file = File('${directory.path}/course_${widget.course.id}_$key');
-    await file.writeAsString(path);
+    
+    // Delete the previous file if it exists
+    if (file.existsSync()) {
+      file.deleteSync();
+    }
+
+    // Copy the selected file to the app's directory
+    final originalFile = File(path);
+    await originalFile.copy(file.path);
+    
     setState(() {
       if (type == FileType.image) {
-        widget.course.imagePath = path;
+        widget.course.imagePath = file.path;
       } else {
-        widget.course.pdfPath = path;
+        widget.course.pdfPath = file.path;
       }
     });
   }

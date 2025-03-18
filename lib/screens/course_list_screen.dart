@@ -352,20 +352,22 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
 
   void _showChangeUsernameDialog() {
     final TextEditingController _usernameController = TextEditingController(text: _userNameNotifier.value);
+    final locale = Localizations.localeOf(context).languageCode;
+    final isEnglish = locale == 'en';
 
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
         return CupertinoAlertDialog(
           title: Text(
-            'Change Username',
+            isEnglish ? 'Change Username' : 'Cambia Nome Utente',
             style: TextStyle(color: Colors.white), // Set text color to white
           ),
           content: Padding(
             padding: const EdgeInsets.only(top: 16.0), // Add padding between title and input
             child: CupertinoTextField(
               controller: _usernameController,
-              placeholder: "Enter new username",
+              placeholder: isEnglish ? "Enter new username" : "Inserisci nuovo nome utente",
               placeholderStyle: TextStyle(color: Colors.grey), // Set placeholder text color to gray
               style: TextStyle(color: Colors.white), // Set input text color to white
               decoration: BoxDecoration(
@@ -379,14 +381,14 @@ class CourseListScreenState extends State<CourseListScreen> with SingleTickerPro
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.blue)), // Set button text color to blue
+              child: Text(isEnglish ? 'Cancel' : 'Annulla', style: TextStyle(color: Colors.blue)), // Set button text color to blue
             ),
             CupertinoDialogAction(
               onPressed: () {
                 updateUserName(_usernameController.text);
                 Navigator.of(context).pop();
               },
-              child: Text('Save', style: TextStyle(color: Colors.blue)), // Set button text color to blue
+              child: Text(isEnglish ? 'Save' : 'Salva', style: TextStyle(color: Colors.blue)), // Set button text color to blue
             ),
           ],
         );
