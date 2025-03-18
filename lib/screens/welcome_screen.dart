@@ -74,81 +74,56 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           ),
           Center(
             child: _userName == null
-                ? ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0), // Apply blur effect
-                      child: Container(
-                        padding: EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5), // Semi-transparent background color
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start, // Align to the top
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            SizedBox(height: 20), // Move content upwards
-                            Text(
-                              _getLocalizedText(context, 'welcomeTitle'), // Use localized string
-                              style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              _getLocalizedText(context, 'welcomeSubtitle'), // Use localized string
-                              style: TextStyle(fontSize: 18, color: Colors.white), // Subtitle
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 20),
-                            SizedBox(
-                              width: 250, // Reduce the width of the input field
-                              child: TextField(
-                                controller: _nameController,
-                                decoration: InputDecoration(
-                                  // Removed hintText
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: _submitName,
-                              child: Text(
-                                _getLocalizedText(context, 'continueButton'), // Use localized string
-                                style: TextStyle(color: Colors.black), // Changed text color to black
-                              ),
-                            ),
-                          ],
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.start, // Align to the top
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      SizedBox(height: 20), // Move content upwards
+                      Text(
+                        _getLocalizedText(context, 'welcomeTitle'), // Use localized string
+                        style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold), // Title
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        _getLocalizedText(context, 'welcomeSubtitle'), // Use localized string
+                        style: TextStyle(fontSize: 18, color: Colors.white), // Subtitle
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        width: 250, // Reduce the width of the input field
+                        child: TextField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            // Removed hintText
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _submitName,
+                        child: Text(
+                          _getLocalizedText(context, 'continueButton'), // Use localized string
+                          style: TextStyle(color: Colors.black), // Changed text color to black
+                        ),
+                      ),
+                    ],
                   )
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.start, // Align to the top
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Adjust padding
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.5), // Semi-transparent background color
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start, // Align to the top
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              '$_userName', // Display the user name
-                              style: TextStyle(fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold), // Title
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              _getLocalizedText(context, 'hello'), // Use localized string
-                              style: TextStyle(fontSize: 22, color: Colors.white), // Subtitle
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
+                      Text(
+                        '$_userName', // Display the user name
+                        style: TextStyle(fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold), // Title
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        _getLocalizedText(context, 'hello'), // Use localized string
+                        style: TextStyle(fontSize: 22, color: Colors.white), // Subtitle
+                        textAlign: TextAlign.center,
                       ),
                       SizedBox(height: 20),
                       GestureDetector(
