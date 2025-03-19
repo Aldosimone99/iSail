@@ -26,19 +26,26 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   Future<void> _loadPaths() async {
     final directory = await getApplicationDocumentsDirectory();
-    final imagePath = File('${directory.path}/course_${widget.course.id}_imagePath');
-    final pdfPath = File('${directory.path}/course_${widget.course.id}_pdfPath');
+    final imagePath = directory.listSync().firstWhere(
+      (file) => file.path.contains('course_${widget.course.id}_imagePath'),
+      orElse: () => File(''),
+    );
+    final pdfPath = directory.listSync().firstWhere(
+      (file) => file.path.contains('course_${widget.course.id}_pdfPath'),
+      orElse: () => File(''),
+    );
     setState(() {
-      widget.course.imagePath = imagePath.existsSync() ? imagePath.path : null;
-      widget.course.pdfPath = pdfPath.existsSync() ? pdfPath.path : null;
+      widget.course.imagePath = imagePath.path.isNotEmpty ? imagePath.path : null;
+      widget.course.pdfPath = pdfPath.path.isNotEmpty ? pdfPath.path : null;
     });
   }
 
   Future<void> _saveFilePath(String path, FileType type) async {
     final directory = await getApplicationDocumentsDirectory();
+    final extension = path.split('.').last; // Get the file extension
     final key = type == FileType.image ? 'imagePath' : 'pdfPath';
-    final file = File('${directory.path}/course_${widget.course.id}_$key');
-    
+    final file = File('${directory.path}/course_${widget.course.id}_$key.$extension'); // Include the extension
+
     // Delete the previous file if it exists
     if (file.existsSync()) {
       file.deleteSync();
@@ -47,7 +54,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
     // Copy the selected file to the app's directory
     final originalFile = File(path);
     await originalFile.copy(file.path);
-    
+
     setState(() {
       if (type == FileType.image) {
         widget.course.imagePath = file.path;
@@ -73,7 +80,7 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
 
   Future<void> _pickFile(FileType type) async {
     final result = await FilePicker.platform.pickFiles(type: type);
-    if (result != null) {
+    if (result != null && result.files.single.path != null) {
       await _saveFilePath(result.files.single.path!, type);
     }
   }
