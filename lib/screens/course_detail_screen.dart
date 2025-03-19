@@ -145,7 +145,10 @@ class CourseDetailScreenState extends State<CourseDetailScreen> {
           onDelete: () async {
             final directory = await getApplicationDocumentsDirectory();
             final key = fileType == 'image' ? 'imagePath' : 'pdfPath';
-            final file = File('${directory.path}/course_${widget.course.id}_$key');
+            final file = directory.listSync().firstWhere(
+              (f) => f.path.contains('course_${widget.course.id}_$key'),
+              orElse: () => File(''),
+            );
             if (file.existsSync()) {
               file.deleteSync();
             }
