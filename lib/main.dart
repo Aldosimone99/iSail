@@ -14,6 +14,7 @@ import 'widgets/countdown_widget.dart'; // Import CountdownWidget
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:flutter_localizations/flutter_localizations.dart'; // Import localization package
 import 'generated/l10n.dart'; // Import generated localization file
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import syncfusion_flutter_pdfviewer
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'; // Import services for asset loading
-import 'package:flutter_pdfview/flutter_pdfview.dart'; // Import flutter_pdfview
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart'; // Import syncfusion_flutter_pdfviewer
 import 'dart:io'; // Import dart:io for file operations
 import 'package:path_provider/path_provider.dart'; // Import path_provider for temporary directory
 import 'dart:ui'; // Import dart:ui for ImageFilter
@@ -69,17 +69,17 @@ class PdfViewerScreenState extends State<PdfViewerScreen> {
       body: Stack(
         children: [
           if (_errorMessage.isEmpty && _pdfPath != null)
-            PDFView(
-              filePath: _pdfPath!,
-              onRender: (pages) {
+            SfPdfViewer.file(
+              File(_pdfPath!),
+              onDocumentLoaded: (details) {
                 setState(() {
                   _isLoading = false;
                 });
               },
-              onError: (error) {
+              onDocumentLoadFailed: (details) {
                 setState(() {
                   _isLoading = false;
-                  _errorMessage = error.toString();
+                  _errorMessage = 'Error loading PDF: ${details.error}';
                 });
               },
             ),
