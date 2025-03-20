@@ -151,32 +151,6 @@ class DocumentsScreenState extends State<DocumentsScreen> {
             }).toList();
             return Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            hintText: _getLocalizedText(context, 'search'),
-                            filled: true,
-                            fillColor: Color(0xFF2C2C2E), // Light gray color
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30), // Make the borders more rounded
-                              borderSide: BorderSide.none,
-                            ),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _searchQuery = value;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 Expanded(
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
